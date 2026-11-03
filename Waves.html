@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Waves: light and sound — PHY 1020 practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --paper:#F4F7FB; --surface:#FFFFFF; --surface-2:#EEF3F9;
+  --ink:#132235; --ink-2:#465770; --line:#C3CEDC; --grid:#DCE4EE; --axis:#5B6B82;
+  --wave:#1A56C4; --sound:#9A4500; --mark:#A3106F;
+  --ok:#14693B; --ok-bg:#E5F4EB; --bad:#AE2318; --bad-bg:#FBEAE8; --warn:#7A5400; --warn-bg:#FFF4D6;
+  --focus:#1A56C4; --btn:#132235; --btn-ink:#FFFFFF;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --paper:#0E1622; --surface:#152132; --surface-2:#1B2A3F;
+    --ink:#E9EFF7; --ink-2:#AEBBCC; --line:#33445C; --grid:#24344A; --axis:#8C9BB0;
+    --wave:#86B4FF; --sound:#FFB070; --mark:#FF84CF;
+    --ok:#7BDDA4; --ok-bg:#12301F; --bad:#FF9A90; --bad-bg:#3A1714; --warn:#FFD27A; --warn-bg:#33280C;
+    --focus:#86B4FF; --btn:#E9EFF7; --btn-ink:#0E1622;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --paper:#0E1622; --surface:#152132; --surface-2:#1B2A3F;
+  --ink:#E9EFF7; --ink-2:#AEBBCC; --line:#33445C; --grid:#24344A; --axis:#8C9BB0;
+  --wave:#86B4FF; --sound:#FFB070; --mark:#FF84CF;
+  --ok:#7BDDA4; --ok-bg:#12301F; --bad:#FF9A90; --bad-bg:#3A1714; --warn:#FFD27A; --warn-bg:#33280C;
+  --focus:#86B4FF; --btn:#E9EFF7; --btn-ink:#0E1622;
+}
+html{ scroll-padding-top:env(safe-area-inset-top,0px); }
+*,*::before,*::after{ box-sizing:border-box; }
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:'Atkinson Hyperlegible', Verdana, 'Segoe UI', Arial, sans-serif;
+  font-size:1.0625rem; line-height:1.55;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:28px 28px; background-attachment:fixed;
+}
+.skip{ position:absolute; left:-999px; top:8px; background:var(--btn); color:var(--btn-ink); padding:10px 14px; border-radius:6px; z-index:20; }
+.skip:focus{ left:12px; }
+.sr-only{ position:absolute!important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+:focus-visible{ outline:3px solid var(--focus); outline-offset:3px; }
+
+.wrap{ max-width:1180px; margin:0 auto; padding:28px 20px 56px; }
+header.top{ display:grid; gap:6px; margin-bottom:22px; }
+.course{ color:var(--ink-2); font-weight:700; margin:0; }
+h1{ font-size:clamp(2rem,5vw,3.1rem); line-height:1.08; margin:0; letter-spacing:-0.01em; }
+.title-wave{ width:min(420px,80%); height:26px; display:block; }
+.title-wave path{ fill:none; stroke-width:3; stroke-linecap:round; }
+.lede{ max-width:68ch; margin:4px 0 0; color:var(--ink-2); }
+
+.layout{ display:grid; grid-template-columns:270px minmax(0,1fr); gap:22px; align-items:start; }
+nav.qnav{ background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:10px; position:sticky; top:calc(12px + env(safe-area-inset-top,0px)); }
+nav.qnav h2{ font-size:1rem; margin:6px 8px 8px; }
+nav.qnav ol{ list-style:none; margin:0; padding:0; display:grid; gap:4px; }
+nav.qnav a{
+  display:grid; grid-template-columns:2rem 1fr; gap:8px; align-items:start;
+  padding:8px 8px; border-radius:7px; color:var(--ink); text-decoration:none; min-height:44px;
+}
+nav.qnav a:hover{ background:var(--surface-2); }
+nav.qnav a[aria-current="page"]{ background:var(--surface-2); box-shadow:inset 3px 0 0 var(--wave); }
+.qn{ font-weight:700; display:inline-grid; place-items:center; width:2rem; height:2rem; border-radius:50%; border:2px solid var(--line); font-size:.95rem; }
+.qtxt{ font-size:.95rem; line-height:1.3; }
+.qstat{ display:block; font-size:.82rem; color:var(--ink-2); margin-top:2px; }
+.qstat.ok{ color:var(--ok); } .qstat.bad{ color:var(--bad); } .qstat.part{ color:var(--warn); }
+.group-label{ font-size:.82rem; color:var(--ink-2); margin:10px 8px 2px; font-weight:700; }
+
+main{ min-width:0; }
+.card{ background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:clamp(16px,3vw,28px); }
+.qhead{ display:flex; flex-wrap:wrap; gap:6px 14px; align-items:baseline; margin-bottom:6px; }
+.qhead .count{ color:var(--ink-2); font-weight:700; }
+.qhead .pts{ color:var(--ink-2); }
+.tag{ font-size:.85rem; font-weight:700; padding:2px 10px; border-radius:999px; border:1.5px solid currentColor; }
+.tag.light{ color:var(--wave); } .tag.sound{ color:var(--sound); } .tag.mech{ color:var(--ink-2); }
+h2.qtitle{ font-size:clamp(1.4rem,3vw,1.85rem); line-height:1.2; margin:0 0 10px; }
+h2.qtitle:focus{ outline:none; }
+h2.qtitle:focus-visible{ outline:3px solid var(--focus); }
+.intro{ max-width:72ch; margin:0 0 14px; }
+.given{ display:inline-block; background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:6px 12px; font-weight:700; margin-bottom:14px; }
+
+.figure{ border:1px solid var(--line); border-radius:10px; background:var(--surface); padding:8px; margin:0 0 14px; }
+.figure svg{ display:block; width:100%; height:auto; }
+.drawzone{ touch-action:none; cursor:crosshair; }
+svg text{ font-family:'Atkinson Hyperlegible', Verdana, Arial, sans-serif; fill:var(--ink-2); }
+.figcap{ font-size:.92rem; color:var(--ink-2); margin:6px 4px 2px; }
+
+.controls{ display:flex; flex-wrap:wrap; gap:10px; margin:6px 0 14px; }
+button{
+  font:inherit; font-weight:700; min-height:44px; padding:8px 16px; border-radius:8px; cursor:pointer;
+  border:2px solid var(--ink); background:transparent; color:var(--ink);
+}
+button:hover{ background:var(--surface-2); }
+button.primary{ background:var(--btn); color:var(--btn-ink); border-color:var(--btn); }
+button.primary:hover{ filter:brightness(1.15); }
+button:disabled{ opacity:.5; cursor:not-allowed; }
+
+.help{ font-size:.93rem; color:var(--ink-2); max-width:72ch; margin:0 0 12px; }
+kbd{ font-family:inherit; border:1px solid var(--line); border-bottom-width:2px; border-radius:4px; padding:0 5px; background:var(--surface-2); }
+
+.feedback{ border-radius:8px; padding:12px 14px; margin-top:6px; border:1.5px solid transparent; max-width:76ch; }
+.feedback:empty{ display:none; }
+.feedback.ok{ background:var(--ok-bg); border-color:var(--ok); }
+.feedback.bad{ background:var(--bad-bg); border-color:var(--bad); }
+.feedback.part{ background:var(--warn-bg); border-color:var(--warn); }
+.feedback strong{ display:block; margin-bottom:2px; }
+
+.fields{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:4px 0 12px; }
+.field label{ display:block; font-weight:700; margin-bottom:4px; }
+.inrow{ display:flex; align-items:stretch; border:2px solid var(--axis); border-radius:8px; background:var(--surface); overflow:hidden; }
+.inrow:focus-within{ outline:3px solid var(--focus); outline-offset:2px; }
+.inrow input{ flex:1; min-width:0; font:inherit; font-size:1.1rem; padding:8px 10px; border:0; background:transparent; color:var(--ink); }
+.inrow input:focus{ outline:none; }
+.unit{ display:grid; place-items:center; padding:0 12px; background:var(--surface-2); color:var(--ink-2); font-weight:700; border-left:1px solid var(--line); }
+.fres{ font-size:.92rem; margin-top:5px; min-height:1.2em; }
+.fres.ok{ color:var(--ok); } .fres.bad{ color:var(--bad); }
+.field.is-ok .inrow{ border-color:var(--ok); } .field.is-bad .inrow{ border-color:var(--bad); }
+
+fieldset.choices{ border:0; padding:0; margin:0 0 12px; }
+fieldset.choices legend{ font-weight:700; margin-bottom:8px; padding:0; }
+.choice{ display:flex; gap:12px; align-items:center; border:2px solid var(--line); border-radius:9px; padding:10px 14px; margin-bottom:8px; cursor:pointer; max-width:420px; min-height:48px; }
+.choice:hover{ border-color:var(--axis); }
+.choice:has(input:checked){ border-color:var(--ink); background:var(--surface-2); }
+.choice input{ width:1.25rem; height:1.25rem; accent-color:var(--wave); }
+.choice .sub{ display:block; font-size:.88rem; color:var(--ink-2); }
+
+details.data{ margin:0 0 14px; }
+details.data summary{ cursor:pointer; font-weight:700; color:var(--ink); padding:10px 0; }
+.tablewrap{ overflow-x:auto; max-height:320px; overflow-y:auto; border:1px solid var(--line); border-radius:8px; }
+table{ border-collapse:collapse; width:100%; font-size:.95rem; }
+th,td{ padding:6px 12px; text-align:right; border-bottom:1px solid var(--line); }
+th{ background:var(--surface-2); position:sticky; top:0; }
+caption{ text-align:left; padding:8px 12px; color:var(--ink-2); font-size:.9rem; }
+
+.pager{ display:flex; justify-content:space-between; gap:10px; margin-top:22px; flex-wrap:wrap; }
+.pager a{ display:inline-flex; align-items:center; min-height:44px; padding:8px 16px; border-radius:8px; border:2px solid var(--ink); color:var(--ink); text-decoration:none; font-weight:700; }
+.pager a:hover{ background:var(--surface-2); }
+.pager a.next{ background:var(--btn); color:var(--btn-ink); border-color:var(--btn); margin-left:auto; }
+
+.statement{ margin:0 0 18px; padding:14px 18px; border-left:5px solid var(--wave); background:var(--surface-2); border-radius:0 8px 8px 0; font-size:1.2rem; font-weight:700; max-width:60ch; }
+.choice.student{ max-width:680px; align-items:flex-start; padding:14px 16px; }
+.choice.student input{ margin-top:.6rem; flex:none; }
+.avatar{ flex:none; display:grid; place-items:center; width:2.4rem; height:2.4rem; border-radius:50%; background:var(--surface-2); border:2px solid var(--axis); color:var(--ink); font-weight:700; }
+.sname{ display:block; font-weight:700; }
+.quote{ display:block; }
+.whylist{ margin:6px 0 0; padding-left:1.1rem; }
+.whylist li{ margin-bottom:6px; }
+.ranklist{ list-style:none; margin:0 0 6px; padding:0; display:grid; gap:8px; max-width:680px; }
+.rankitem{ display:flex; align-items:center; gap:14px; border:2px solid var(--line); border-radius:10px; padding:10px 12px; background:var(--surface); }
+.rankitem.is-ok{ border-color:var(--ok); } .rankitem.is-bad{ border-color:var(--bad); }
+.rpos{ flex:none; display:grid; place-items:center; width:2.2rem; height:2.2rem; border-radius:50%; background:var(--btn); color:var(--btn-ink); font-weight:700; }
+.rbody{ flex:1; min-width:0; }
+.rlabel{ display:block; font-weight:700; }
+.rdetail{ display:block; color:var(--ink-2); }
+.rmark{ display:block; font-size:.9rem; font-weight:700; }
+.rmark.ok{ color:var(--ok); } .rmark.bad{ color:var(--bad); }
+.rbtns{ flex:none; display:flex; gap:6px; }
+button.mv{ padding:6px 10px; font-size:.92rem; }
+.rank-end{ font-weight:700; color:var(--ink-2); margin:4px 0 8px; }
+@media (max-width:520px){ .rankitem{ flex-wrap:wrap; } .rbtns{ width:100%; } .rbtns button{ flex:1; } }
+.fill-box{ background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:18px 20px; margin:0 0 14px; max-width:760px; }
+.fill-sentence{ margin:0; font-size:1.2rem; line-height:2.6; }
+.blank{ display:inline-flex; align-items:center; gap:4px; white-space:nowrap; line-height:1.2; vertical-align:middle; }
+.bmark:empty{ display:none; }
+.bnum{ display:inline-grid; place-items:center; width:1.4rem; height:1.4rem; border-radius:50%; background:var(--btn); color:var(--btn-ink); font-size:.8rem; font-weight:700; }
+.blank select{ font:inherit; font-size:1.05rem; font-weight:700; color:var(--ink); background:var(--surface); border:2px solid var(--axis); border-radius:8px; padding:4px 8px; min-height:44px; max-width:100%; }
+.blank.is-ok select{ border-color:var(--ok); } .blank.is-bad select{ border-color:var(--bad); }
+.bmark{ font-weight:700; min-width:1ch; }
+.blank.is-ok .bmark{ color:var(--ok); } .blank.is-bad .bmark{ color:var(--bad); }
+.sliders{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 24px; margin:4px 0 8px; max-width:760px; }
+.slider label{ display:block; font-weight:700; margin-bottom:6px; }
+.sval{ display:inline-block; min-width:5.5rem; padding:1px 8px; margin-left:4px; border-radius:6px; background:var(--surface-2); border:1px solid var(--line); color:var(--sound); }
+.slider input[type=range]{ width:100%; height:44px; accent-color:var(--sound); cursor:pointer; }
+@media (max-width:560px){ .sliders{ grid-template-columns:1fr; } }
+.summary-table td:first-child, .summary-table th:first-child{ text-align:left; }
+.score{ font-size:2.2rem; font-weight:700; margin:0; }
+
+/* attempts, reveal, start, celebration */
+.teamline{ margin:2px 0 0; color:var(--ink); font-weight:700; }
+.teamline a{ color:var(--wave); font-weight:400; margin-left:6px; }
+.tries{ display:flex; align-items:center; gap:10px; margin:0 0 10px; color:var(--ink-2); font-weight:700; }
+.pips{ display:inline-flex; gap:5px; }
+.pip{ width:.8rem; height:.8rem; border-radius:50%; border:2px solid var(--axis); }
+.pip.used{ background:var(--axis); }
+.reveal{ margin-top:14px; border:2px solid var(--wave); border-radius:10px; padding:14px 18px; background:var(--surface-2); max-width:76ch; }
+.reveal h3{ margin:0 0 6px; font-size:1.15rem; }
+.reveal p{ margin:6px 0; }
+.reveal ol, .reveal ul{ margin:6px 0; padding-left:1.3rem; }
+.reveal li{ margin-bottom:4px; }
+.reveal .ans{ font-weight:700; }
+input:disabled, select:disabled, button:disabled{ cursor:not-allowed; }
+.choice:has(input:disabled){ cursor:default; }
+.inrow:has(input:disabled){ background:var(--surface-2); }
+
+.start .namefield{ margin-bottom:16px; max-width:420px; }
+.start label{ display:block; font-weight:700; margin-bottom:4px; }
+.start .opt{ font-weight:400; color:var(--ink-2); }
+.start input[type=text]{ width:100%; font:inherit; font-size:1.1rem; padding:10px 12px; border:2px solid var(--axis); border-radius:8px; background:var(--surface); color:var(--ink); min-height:48px; }
+.start input[aria-invalid="true"]{ border-color:var(--bad); }
+.start .err{ color:var(--bad); font-weight:700; margin:4px 0 0; min-height:1.2em; }
+.rules{ margin:18px 0 0; padding:14px 18px 14px 34px; background:var(--surface-2); border-radius:10px; border:1px solid var(--line); max-width:62ch; }
+.rules li{ margin-bottom:4px; }
+
+.celebrate{ position:relative; overflow:hidden; text-align:center; border:3px solid var(--wave); padding:clamp(22px,5vw,44px) clamp(16px,4vw,40px); margin-bottom:22px; }
+.celebrate .kicker{ font-weight:700; color:var(--ink-2); margin:0; }
+.celebrate h2{ font-size:clamp(1.8rem,5vw,2.8rem); line-height:1.1; margin:8px 0 6px; }
+.celebrate h2:focus{ outline:none; } .celebrate h2:focus-visible{ outline:3px solid var(--focus); }
+.celebrate .bigscore{ font-size:clamp(3rem,10vw,5rem); font-weight:700; line-height:1; margin:14px 0 0; color:var(--wave); }
+.celebrate .outof{ margin:2px 0 14px; color:var(--ink-2); font-weight:700; }
+.celebrate .msg{ font-size:1.15rem; max-width:52ch; margin:0 auto 14px; }
+.celebrate .stats{ display:flex; justify-content:center; flex-wrap:wrap; gap:10px 28px; margin:10px 0 6px; }
+.celebrate .stat b{ display:block; font-size:1.6rem; }
+.celebrate .stat span{ color:var(--ink-2); }
+.celebrate .date{ color:var(--ink-2); margin:10px 0 0; }
+.celebrate .cwave{ width:min(520px,90%); height:34px; display:block; margin:6px auto 0; }
+.celebrate .cwave path{ fill:none; stroke-width:4; stroke-linecap:round; }
+.confetti{ position:absolute; inset:0; pointer-events:none; }
+.confetti i{ position:absolute; top:-20px; width:10px; height:16px; border-radius:3px; opacity:0; animation:fall 2.6s ease-in forwards; }
+@keyframes fall{ 0%{ transform:translateY(0) rotate(0); opacity:1; } 85%{ opacity:1; } 100%{ transform:translateY(560px) rotate(540deg); opacity:0; } }
+@media (prefers-reduced-motion: reduce){ .confetti{ display:none; } }
+.todo{ text-align:left; max-width:52ch; margin:10px auto 0; }
+
+h2[tabindex="-1"]:focus, h2[tabindex="-1"]:focus-visible{ outline:none; }
+.reveal:focus{ outline:none; }
+a{ color:var(--wave); }
+.summary-table td:nth-child(2), .summary-table th:nth-child(2){ text-align:left; }
+.reveal th:first-child{ text-align:left; }
+
+@media (max-width:560px){ .fields{ grid-template-columns:1fr; } }
+@media (max-width:880px){
+  .layout{ grid-template-columns:1fr; }
+  nav.qnav{ position:static; }
+  nav.qnav ol{ grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); }
+  .group-label{ grid-column:1/-1; }
+}
+@media (prefers-reduced-motion: reduce){ *{ scroll-behavior:auto!important; } }
+@media print{
+  body{ background:none; } nav.qnav, .controls, .pager{ display:none; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the question</a>
+<div class="wrap">
+  <header class="top">
+    <p class="course">PHY 1020, Activity 19 practice</p>
+    <h1>Waves: light and sound</h1>
+    <svg class="title-wave" viewBox="0 0 420 26" aria-hidden="true" focusable="false">
+      <path d="M2 13 C 22 -3, 42 -3, 62 13 S 102 29, 122 13 S 162 -3, 182 13 S 222 29, 242 13" style="stroke:var(--wave)"/>
+      <path d="M242 13 C 252 5, 262 5, 272 13 S 292 21, 302 13 S 322 5, 332 13 S 352 21, 362 13 S 382 5, 392 13 S 412 21, 418 13" style="stroke:var(--sound)"/>
+    </svg>
+    <p class="teamline" id="teamline" hidden></p>
+    <p class="lede">Draw on moving waves, read values off graphs, and watch how particles move in different kinds of waves. Check each answer as you go. Everything works with a keyboard: use <kbd>Tab</kbd> to move between controls.</p>
+  </header>
+
+  <div class="layout">
+    <nav class="qnav" aria-label="Questions">
+      <h2>Questions</h2>
+      <ol id="navlist"></ol>
+    </nav>
+    <main id="main" tabindex="-1">
+      <div id="stage"></div>
+    </main>
+  </div>
+</div>
+<div id="announcer" class="sr-only" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+const NS = "http://www.w3.org/2000/svg";
+const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const TAU = Math.PI*2;
+const PTS=5, MAX_TRIES=3, STORE="phy1020-waves-activity19-v2";
+
+function S(tag, attrs, parent){ const e=document.createElementNS(NS,tag); if(attrs) for(const k in attrs) e.setAttribute(k, attrs[k]); if(parent) parent.appendChild(e); return e; }
+function H(tag, attrs, ...kids){
+  const e=document.createElement(tag);
+  if(attrs) for(const k in attrs){
+    const v=attrs[k];
+    if(k==="class") e.className=v;
+    else if(k==="text") e.textContent=v;
+    else if(k==="html") e.innerHTML=v;
+    else if(k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  }
+  kids.forEach(c=>{ if(c!=null) e.append(c); });
+  return e;
+}
+const announcer=document.getElementById("announcer");
+let annT=null;
+function announce(msg, delay){ clearTimeout(annT); annT=setTimeout(()=>{ announcer.textContent=""; setTimeout(()=>{announcer.textContent=msg;},30); }, delay||0); }
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const near=(v,target,tol)=>Math.abs(v-target)<=Math.abs(target)*tol;
+function fmtPts(v){ return String(Number(v.toFixed(2))); }
+function trimNum(v){ return String(Number(v.toPrecision(6))); }
+const SUP={"-":"⁻","0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹"};
+function nice(v){
+  const a=Math.abs(v); if(a===0) return "0";
+  if(a>=1e-3 && a<1e5) return trimNum(Number(v.toPrecision(3)));
+  let e=Math.floor(Math.log10(a)); let m=Number((v/Math.pow(10,e)).toPrecision(3));
+  if(Math.abs(m)>=10){ m=Number((m/10).toPrecision(3)); e+=1; }
+  return m+" × 10"+String(e).split("").map(c=>SUP[c]).join("");
+}
+function parseNum(raw){
+  if(raw==null) return NaN;
+  let s=String(raw).trim().replace(/−/g,"-").replace(/,/g,"").replace(/\s+/g,"");
+  s=s.replace(/[×xX*·]10\^?\(?([+-]?\d+)\)?/,"e$1");
+  s=s.replace(/^10\^([+-]?\d+)/,"1e$1");
+  const m=s.match(/^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?/i);
+  return m? parseFloat(m[0]) : NaN;
+}
+function triesWord(n){ return n+" "+(n===1?"attempt":"attempts"); }
+
+/* ---------------- Question bank ---------------- */
+const QUESTIONS=[
+  { id:"q1", group:"Draw on the wave", type:"arrow", kind:"amplitude", tag:"light",
+    short:"Amplitude of a light wave",
+    title:"Draw the amplitude of a light wave",
+    intro:"The animation shows the electric field of red light as it travels to the right. Draw one arrow that shows the amplitude of this wave.",
+    A:30, lambda:650, xMax:1950, yMax:45, period:3.2,
+    xName:"Position (nm)", yName:"Electric field (V/m)", xUnit:"nm", yUnit:"V/m", xDec:0, yDec:1, color:"--wave",
+    explain:"The amplitude is the distance from the rest position (the dashed middle line) straight up to a crest, or straight down to a trough. For this light wave it is 30 V/m. A common mistake is to measure from a crest down to a trough: that distance (60 V/m) is twice the amplitude." },
+  { id:"q2", group:"Draw on the wave", type:"arrow", kind:"wavelength", tag:"sound",
+    short:"Wavelength of a sound wave",
+    title:"Draw the wavelength of a sound wave",
+    intro:"A speaker plays a steady note. The graph shows the change in air pressure along a line in front of the speaker: above the middle line the air is squeezed together, below it the air is spread apart. Draw one arrow that shows the wavelength.",
+    A:0.5, lambda:0.8, xMax:2.0, yMax:0.75, period:2.6,
+    xName:"Distance from speaker (m)", yName:"Pressure change (Pa)", xUnit:"m", yUnit:"Pa", xDec:2, yDec:2, color:"--sound",
+    explain:"One wavelength is the length of one complete cycle of the wave, measured horizontally from a crest to the next crest (or from a trough to the next trough). Here λ = 0.8 m. Going from a crest to the next trough covers only half a wavelength." },
+
+  { id:"q3", group:"Read the graph", type:"read", tag:"sound",
+    short:"Sound wave in air",
+    title:"Sound wave in air",
+    intro:"A sound wave travels through air. The graph is a snapshot showing how far air molecules are pushed from their resting positions at one instant.",
+    v:340, vText:"340 m/s",
+    fn:x=>-0.4*Math.cos(TAU*x/0.68),
+    xMax:2.04, xStep:0.17, xLabelEvery:1, yMax:0.5, yStep:0.1, yLabelEvery:1,
+    xName:"Position along the sound’s path (m)", yName:"Displacement (mm)",
+    color:"--sound",
+    fields:[
+      {key:"A", label:"Amplitude", unit:"mm", ans:0.4},
+      {key:"lambda", label:"Wavelength", unit:"m", ans:0.68, toMeters:1},
+      {key:"f", label:"Frequency", unit:"Hz", ans:500},
+      {key:"T", label:"Period", unit:"s", ans:0.002}
+    ] },
+  { id:"q4", group:"Read the graph", type:"read", tag:"sound",
+    short:"Sonar pulse in seawater",
+    title:"Sound wave in seawater",
+    intro:"A ship’s sonar sends a sound wave through seawater. The graph is a snapshot of how far water molecules are pushed from their resting positions.",
+    v:1500, vText:"1500 m/s",
+    fn:x=>0.2*Math.cos(TAU*(x-2)/6),
+    xMax:15, xStep:1, xLabelEvery:1, yMax:0.3, yStep:0.05, yLabelEvery:2,
+    xName:"Position (m)", yName:"Displacement (mm)",
+    color:"--sound",
+    fields:[
+      {key:"A", label:"Amplitude", unit:"mm", ans:0.2},
+      {key:"lambda", label:"Wavelength", unit:"m", ans:6, toMeters:1},
+      {key:"f", label:"Frequency", unit:"Hz", ans:250},
+      {key:"T", label:"Period", unit:"s", ans:0.004}
+    ] },
+  { id:"q5", group:"Read the graph", type:"read", tag:"light",
+    short:"Microwave in an oven",
+    title:"Microwaves in an oven",
+    intro:"Microwaves are light waves we cannot see. The graph is a snapshot of the electric field of a microwave inside an oven. Notice the horizontal axis is in centimeters.",
+    v:3e8, vText:"3.0 × 10⁸ m/s",
+    fn:x=>50*Math.sin(TAU*x/12),
+    xMax:36, xStep:2, xLabelEvery:2, yMax:60, yStep:10, yLabelEvery:2,
+    xName:"Position (cm)", yName:"Electric field (V/m)",
+    color:"--wave",
+    fields:[
+      {key:"A", label:"Amplitude", unit:"V/m", ans:50},
+      {key:"lambda", label:"Wavelength", unit:"cm", ans:12, toMeters:0.01},
+      {key:"f", label:"Frequency", unit:"Hz", ans:2.5e9},
+      {key:"T", label:"Period", unit:"s", ans:4e-10}
+    ] },
+  { id:"q6", group:"Read the graph", type:"read", tag:"light",
+    short:"Green light",
+    title:"Green light",
+    intro:"The graph is a snapshot of the electric field of green light. The horizontal axis is in nanometers (1 nm = 10⁻⁹ m).",
+    v:3e8, vText:"3.0 × 10⁸ m/s",
+    fn:x=>-25*Math.sin(TAU*x/500),
+    xMax:1500, xStep:50, xLabelEvery:2, yMax:30, yStep:5, yLabelEvery:2,
+    xName:"Position (nm)", yName:"Electric field (V/m)",
+    color:"--wave",
+    fields:[
+      {key:"A", label:"Amplitude", unit:"V/m", ans:25},
+      {key:"lambda", label:"Wavelength", unit:"nm", ans:500, toMeters:1e-9},
+      {key:"f", label:"Frequency", unit:"Hz", ans:6e14},
+      {key:"T", label:"Period", unit:"s", ans:1/6e14}
+    ] },
+
+  { id:"q7", group:"Transverse or longitudinal?", type:"kind", tag:"mech", anim:"slinky",
+    short:"Slinky",
+    title:"A wave on a slinky",
+    intro:"A slinky lies stretched out on a table. One end is pushed and pulled to make a wave. Watch the coil marked in pink.",
+    desc:"Animation of a slinky stretched from left to right. Bunched-up groups of coils travel to the right. The marked coil moves a small distance left and right around its resting spot, along the length of the slinky. It does not move up or down.",
+    answer:"longitudinal",
+    right:"The marked coil moves back and forth along the slinky, in the same direction the wave travels. Squeezed regions (compressions) and stretched regions (rarefactions) move along the slinky. When the particles vibrate parallel to the direction of travel, the wave is longitudinal.",
+    wrong:"Watch the marked coil again. Does it move up and down, or back and forth along the length of the slinky? Compare that with the direction the wave travels." },
+  { id:"q8", group:"Transverse or longitudinal?", type:"kind", tag:"sound", anim:"fork",
+    short:"Tuning fork",
+    title:"Sound from a tuning fork",
+    intro:"A tuning fork is struck and sends sound through the air. The motion is slowed down a lot so you can see it. Each dot is a small bit of air; watch the one marked in pink. Is the sound wave in the air transverse or longitudinal?",
+    desc:"Animation of a tuning fork on the left whose prongs move side to side. To the right, rows of dots represent air. Bands where the dots are crowded together travel to the right, away from the fork. The marked dot moves a small distance left and right around its resting spot, along the direction the sound travels. It does not move up or down.",
+    answer:"longitudinal",
+    right:"Sound in air is longitudinal. Each bit of air moves back and forth along the direction the sound travels, creating compressions and rarefactions that move away from the fork. The air itself does not travel with the sound; only the pattern does.",
+    wrong:"Watch the marked dot of air. Does it move up and down, or back and forth toward and away from the fork? Compare that with the direction the sound travels." },
+  { id:"q9", group:"Transverse or longitudinal?", type:"kind", tag:"mech", anim:"string",
+    short:"Long string",
+    title:"A wave on a long string",
+    intro:"A hand shakes one end of a long string. Watch the bead marked in pink.",
+    desc:"Animation of a long horizontal string with a hand at the left end. Crests and troughs travel to the right. The marked bead moves straight up and down along a dashed vertical guide line. It does not move left or right.",
+    answer:"transverse",
+    right:"The marked bead moves up and down, perpendicular to the direction the wave travels along the string. When the particles vibrate perpendicular to the direction of travel, the wave is transverse. Light waves are also transverse.",
+    wrong:"Watch the marked bead. Does it travel along the string with the wave, or move up and down across it? Compare that with the direction the wave travels." },
+
+  { id:"q10", group:"True or false", type:"tf", tag:"sound",
+    short:"Sound in air and water", title:"Sound in air and water",
+    statement:"Sound travels faster in air than in water.", answer:false,
+    explain:"Sound travels about 340 m/s in air but about 1500 m/s in water, more than four times faster. Particles in a liquid are packed closer together, so they pass the vibration along more quickly." },
+  { id:"q11", group:"True or false", type:"tf", tag:"sound",
+    short:"Range of human hearing", title:"Range of human hearing",
+    statement:"A person with normal hearing can hear a sound with a frequency of 10 000 Hz.", answer:true,
+    explain:"Humans hear roughly from 20 Hz to 20 000 Hz, so 10 000 Hz is well inside that range. Below 20 Hz is infrasound; above 20 000 Hz is ultrasound." },
+  { id:"q12", group:"True or false", type:"tf", tag:"light",
+    short:"Speed of electromagnetic waves", title:"Speed of electromagnetic waves",
+    statement:"In a vacuum, radio waves, visible light and X-rays all travel at the same speed.", answer:true,
+    explain:"Every electromagnetic wave travels at 3.0 × 10⁸ m/s in a vacuum. What changes across the spectrum is the wavelength and frequency, not the speed." },
+  { id:"q13", group:"True or false", type:"tf", tag:"sound",
+    short:"Sound in space", title:"Sound in space",
+    statement:"Sound can travel through the vacuum of outer space.", answer:false,
+    explain:"Sound is a mechanical wave: it needs particles (a medium) to push on each other. A vacuum has no particles, so sound cannot travel through it. Light can, because it doesn’t need a medium." },
+
+  { id:"q14", group:"Who is right?", type:"who", tag:"sound",
+    short:"Raising the pitch",
+    title:"Who is right about raising the pitch?",
+    intro:"A musician plays a note, then plays a higher note (a higher frequency) on the same instrument in the same room. Four students argue about what happens to the sound wave traveling through the air. Only one of them is correct.",
+    students:[
+      { name:"Amara", says:"A higher note has a higher frequency, so the sound travels faster and reaches the audience sooner.", correct:false,
+        why:"Amara is mixing up frequency and speed. The speed of sound depends on the medium (the air), not on the frequency. Every note crosses the room at about 340 m/s." },
+      { name:"Bruno", says:"The speed stays the same because it’s still the same air, so with a higher frequency the wavelength has to get shorter.", correct:true,
+        why:"Bruno is right. The air sets the speed, so v stays the same. Since v = f × λ, raising f means λ must get smaller." },
+      { name:"Chen", says:"Only the frequency changes. The wavelength stays the same, since it’s the same instrument making the sound.", correct:false,
+        why:"Chen forgot that v = f × λ. If the speed stays the same and the frequency goes up, the wavelength can’t stay the same; it has to get shorter." },
+      { name:"Dalia", says:"A higher note is a bigger vibration, so the amplitude goes up and the note gets louder.", correct:false,
+        why:"Dalia is confusing pitch with loudness. Pitch depends on frequency; loudness depends on amplitude. A high note can be quiet and a low note can be loud." }
+    ] },
+  { id:"q15", group:"Who is right?", type:"who", tag:"light",
+    short:"Red and blue lasers",
+    title:"Who is right about red and blue light?",
+    intro:"Scientists fire a red laser and a blue laser at the same moment toward a mirror on the Moon. The light crosses the vacuum of space. Four students argue about what happens. Only one of them is correct.",
+    students:[
+      { name:"Elias", says:"Blue light has a higher frequency, so it travels faster and reaches the Moon first.", correct:false,
+        why:"Elias is mixing up frequency and speed. In a vacuum, all light travels at the same speed, 3.0 × 10⁸ m/s, so both beams arrive together." },
+      { name:"Farah", says:"Red light has a longer wavelength, so each vibration carries it farther and it gets there first.", correct:false,
+        why:"Farah forgot that a longer wavelength comes with a lower frequency. Since v = f × λ, the two changes cancel out and the speed is the same for both colors." },
+      { name:"Gustavo", says:"Light needs air to travel, just like sound, so neither beam can reach the Moon.", correct:false,
+        why:"Gustavo is treating light like sound. Sound is a mechanical wave and needs a medium; light is an electromagnetic wave and travels through a vacuum. That’s how sunlight reaches Earth." },
+      { name:"Hana", says:"Both beams travel at the same speed, so they arrive together. The blue light has the higher frequency, so it must have the shorter wavelength.", correct:true,
+        why:"Hana is right. In a vacuum every color moves at 3.0 × 10⁸ m/s. With v fixed, v = f × λ means the higher-frequency blue light has the shorter wavelength." }
+    ] },
+
+  { id:"q16", group:"Ranking", type:"rank", tag:"light",
+    short:"Electromagnetic spectrum",
+    title:"Rank the electromagnetic waves by wavelength",
+    intro:"Put these electromagnetic waves in order from the longest wavelength (top) to the shortest wavelength (bottom). Use the Up and Down buttons next to each wave.",
+    topLabel:"Longest wavelength", bottomLabel:"Shortest wavelength",
+    items:{ radio:{label:"Radio waves"}, micro:{label:"Microwaves"}, ir:{label:"Infrared light"}, red:{label:"Red light"}, uv:{label:"Ultraviolet light"}, xray:{label:"X-rays"} },
+    start:["uv","radio","xray","red","micro","ir"],
+    correct:["radio","micro","ir","red","uv","xray"],
+    explain:"From longest to shortest wavelength: radio waves, microwaves, infrared, visible light (red is the longest visible wavelength), ultraviolet, then X-rays. All of them travel at the same speed in a vacuum, so the shorter the wavelength, the higher the frequency." },
+  { id:"q17", group:"Ranking", type:"rank", tag:"sound",
+    short:"Frequencies of four sounds",
+    title:"Rank four sound waves by frequency",
+    intro:"Four sound waves travel through air at 340 m/s. Each one is described differently. Work out each frequency, then put them in order from the highest frequency (top) to the lowest frequency (bottom).",
+    topLabel:"Highest frequency", bottomLabel:"Lowest frequency",
+    items:{ A:{label:"Sound A", detail:"Period T = 0.010 s"}, B:{label:"Sound B", detail:"Wavelength λ = 0.85 m"}, C:{label:"Sound C", detail:"Frequency f = 250 Hz"}, D:{label:"Sound D", detail:"Wavelength λ = 1.7 m"} },
+    start:["A","C","D","B"],
+    correct:["B","C","D","A"],
+    explain:"Sound B: f = 340 ÷ 0.85 = 400 Hz. Sound C: 250 Hz. Sound D: f = 340 ÷ 1.7 = 200 Hz. Sound A: f = 1 ÷ 0.010 = 100 Hz. So the order is B, C, D, A." },
+
+  { id:"q18", group:"Complete the sentence", type:"fill", tag:"sound",
+    short:"How sound travels",
+    title:"Complete the sentence: how sound travels",
+    intro:"Choose the correct word or phrase for each of the four blanks.",
+    parts:[
+      "Sound is a ", {opts:["electromagnetic","mechanical","transverse","gravitational"], ans:1},
+      " wave, so it needs a ", {opts:["vacuum","magnetic field","medium","light source"], ans:2},
+      " to travel. In air, sound is a ", {opts:["longitudinal","transverse","electromagnetic","standing"], ans:0},
+      " wave made of compressions and ", {opts:["crests","reflections","amplitudes","rarefactions"], ans:3},
+      "."
+    ],
+    explain:"Sound is a mechanical wave, so it needs a medium (such as air, water or a solid) to travel. In air, the particles move back and forth along the direction the sound travels, so it is a longitudinal wave made of compressions (squeezed regions) and rarefactions (spread-out regions)." },
+  { id:"q19", group:"Complete the sentence", type:"fill", tag:"light",
+    short:"Red and blue light",
+    title:"Complete the sentence: red and blue light",
+    intro:"Choose the correct word or phrase for each of the four blanks.",
+    parts:[
+      "Light is an ", {opts:["mechanical","electromagnetic","longitudinal","acoustic"], ans:1},
+      " wave that can travel through ", {opts:["only air","only water","a vacuum","only solids"], ans:2},
+      " at 3.0 × 10⁸ m/s. Compared with red light, blue light has a ", {opts:["higher","lower","zero","the same"], ans:0},
+      " frequency and a ", {opts:["longer","louder","equal","shorter"], ans:3},
+      " wavelength."
+    ],
+    explain:"Light is an electromagnetic wave, so it can travel through a vacuum, where every color moves at 3.0 × 10⁸ m/s. Blue light has a higher frequency than red light, and since v = f × λ with v the same, blue light has a shorter wavelength." },
+
+  { id:"q20", group:"Match the wave", type:"match", tag:"sound",
+    short:"Tune the speaker",
+    title:"Tune the speaker to match the target sound",
+    intro:"The dashed gray wave is a target sound traveling through air at 340 m/s. Use the two sliders to set your speaker’s amplitude and frequency until your wave (solid orange) lies exactly on top of the target. There is no wavelength slider: you control the wavelength only through the frequency.",
+    v:340, targetA:0.25, targetF:340,
+    aMin:0.05, aMax:0.45, aStep:0.05, fMin:100, fMax:1000, fStep:10, startA:0.10, startF:700,
+    xMax:4, xStep:0.25, xLabelEvery:2, yMax:0.5, yStep:0.05, yLabelEvery:2,
+    xName:"Position (m)", yName:"Displacement (mm)" }
+];
+const PARTS={read:4, fill:4, match:2};
+
+/* ---------------- State and saving ---------------- */
+const team={names:["",""]};
+const state={};
+function freshState(){ QUESTIONS.forEach(q=>{ state[q.id]={earned:0, max:PARTS[q.type]||1, tries:0, locked:false, success:false}; }); }
+freshState();
+function save(){ try{ localStorage.setItem(STORE, JSON.stringify({names:team.names, state})); }catch(e){} }
+function load(){
+  try{
+    const raw=localStorage.getItem(STORE); if(!raw) return;
+    const d=JSON.parse(raw);
+    if(d && Array.isArray(d.names)) team.names=[String(d.names[0]||""),String(d.names[1]||"")];
+    if(d && d.state) for(const id in state){ const s=d.state[id]; if(s) Object.assign(state[id],{earned:+s.earned||0,tries:+s.tries||0,locked:!!s.locked,success:!!s.success}); }
+  }catch(e){}
+}
+load();
+function namesText(){ const n=team.names.filter(Boolean); return n.length===2? n[0]+" and "+n[1] : (n[0]||""); }
+
+/* ---------------- Navigation ---------------- */
+const navlist=document.getElementById("navlist");
+const stage=document.getElementById("stage");
+const teamline=document.getElementById("teamline");
+const views={};
+let current=null;
+
+function statusText(id){
+  const s=state[id]; const pts=fmtPts(PTS*s.earned/s.max);
+  if(s.locked) return s.success? {t:"✓ "+pts+" of "+PTS+" points", c:"ok"} : {t:"Done: "+pts+" of "+PTS+" points", c:s.earned>0?"part":"bad"};
+  if(s.tries>0){ const left=MAX_TRIES-s.tries; return {t:(s.earned>0?"◐ ":"✗ ")+triesWord(left)+" left", c:s.earned>0?"part":"bad"}; }
+  return {t:"Not answered", c:""};
+}
+function buildNav(){
+  navlist.innerHTML="";
+  navlist.append(H("li",null,H("a",{href:"#start",id:"nav-start"},
+    H("span",{class:"qn","aria-hidden":"true",text:"✎"}), H("span",{class:"qtxt",text:"Your names"}))));
+  let lastGroup=null;
+  QUESTIONS.forEach((q,i)=>{
+    if(q.group!==lastGroup){ navlist.append(H("li",{class:"group-label","aria-hidden":"true",text:q.group})); lastGroup=q.group; }
+    const st=statusText(q.id);
+    navlist.append(H("li",null,H("a",{href:"#"+q.id, id:"nav-"+q.id},
+      H("span",{class:"qn","aria-hidden":"true",text:String(i+1)}),
+      H("span",{class:"qtxt"},
+        H("span",{class:"sr-only",text:"Question "+(i+1)+": "}),
+        document.createTextNode(q.short),
+        H("span",{class:"qstat "+st.c, text:st.t})))));
+  });
+  navlist.append(H("li",{class:"group-label","aria-hidden":"true",text:"Finish"}));
+  navlist.append(H("li",null,H("a",{href:"#summary",id:"nav-summary"},
+    H("span",{class:"qn","aria-hidden":"true",text:"★"}), H("span",{class:"qtxt",text:"Results card"}))));
+  markCurrent();
+}
+function refreshNavStatus(id){
+  const a=document.getElementById("nav-"+id); if(!a) return;
+  const st=statusText(id); const el=a.querySelector(".qstat");
+  el.className="qstat "+st.c; el.textContent=st.t;
+}
+function markCurrent(){
+  navlist.querySelectorAll("a").forEach(a=>a.removeAttribute("aria-current"));
+  if(current){ const a=document.getElementById("nav-"+current); if(a) a.setAttribute("aria-current","page"); }
+}
+function updateTeamLine(){
+  teamline.innerHTML="";
+  if(!team.names[0]){ teamline.hidden=true; return; }
+  teamline.hidden=false;
+  teamline.append(document.createTextNode("Working on this: "+namesText()), H("a",{href:"#start",text:"Change names"}));
+}
+function pager(i){
+  const p=H("nav",{class:"pager","aria-label":"Question pages"});
+  if(i>0) p.append(H("a",{href:"#"+QUESTIONS[i-1].id, text:"Previous question"}));
+  if(i<QUESTIONS.length-1) p.append(H("a",{class:"next",href:"#"+QUESTIONS[i+1].id, text:"Next question"}));
+  else p.append(H("a",{class:"next",href:"#summary", text:"See your results card"}));
+  return p;
+}
+function qHeader(q,i){
+  const tagText={light:"Light wave",sound:"Sound wave",mech:"Mechanical wave"}[q.tag];
+  return [
+    H("div",{class:"qhead"}, H("span",{class:"count",text:"Question "+(i+1)+" of "+QUESTIONS.length}), H("span",{class:"pts",text:PTS+" points"}), H("span",{class:"tag "+q.tag,text:tagText})),
+    H("h2",{class:"qtitle",tabindex:"-1",id:q.id+"-h",text:q.title}),
+    H("p",{class:"intro",text:q.intro||""})
+  ];
+}
+function setFeedback(box, kind, head, body){
+  box.className="feedback "+kind; box.innerHTML="";
+  box.append(H("strong",{text:head}));
+  if(body) box.append(document.createTextNode(body));
+}
+
+/* ---------------- Attempts ---------------- */
+function attempts(q){
+  const st=state[q.id];
+  const info=H("p",{class:"tries"});
+  const reveal=H("div",{class:"reveal",hidden:"",tabindex:"-1"});
+  function render(){
+    info.innerHTML="";
+    const pips=H("span",{class:"pips","aria-hidden":"true"});
+    for(let n=0;n<MAX_TRIES;n++) pips.append(H("span",{class:"pip"+(n<st.tries?" used":"")}));
+    let txt;
+    if(st.locked) txt= st.success? "Solved on attempt "+st.tries+" of "+MAX_TRIES+"." : "All "+MAX_TRIES+" attempts used.";
+    else txt="Attempts left: "+(MAX_TRIES-st.tries)+" of "+MAX_TRIES;
+    info.append(pips, document.createTextNode(txt));
+  }
+  render();
+  return {
+    info, reveal,
+    get locked(){ return st.locked; },
+    get left(){ return MAX_TRIES-st.tries; },
+    record(success, earned){
+      st.tries++; st.earned=earned;
+      if(success || st.tries>=MAX_TRIES){ st.locked=true; st.success=success; }
+      st.status=1; render(); save(); refreshNavStatus(q.id);
+      return st.locked;
+    },
+    show(nodes){
+      reveal.innerHTML="";
+      reveal.append(H("h3",{text:"Answer and explanation"}));
+      nodes.forEach(n=>reveal.append(typeof n==="string"? H("p",{text:n}) : n));
+      reveal.hidden=false;
+    }
+  };
+}
+function retryText(att){ return " You have "+triesWord(att.left)+" left."; }
+const LAST=" That was your last attempt. Read the answer and explanation below.";
+
+/* ---------------- Shared plotting ---------------- */
+function plotFrame(o){
+  const X=x=>o.l+(x/o.xMax)*(o.r-o.l);
+  const Y=y=>(o.t+o.b)/2-(y/o.yMax)*((o.b-o.t)/2);
+  const iX=px=>(px-o.l)/(o.r-o.l)*o.xMax;
+  const iY=py=>((o.t+o.b)/2-py)/((o.b-o.t)/2)*o.yMax;
+  return {X,Y,iX,iY};
+}
+function dataTable(q, fn, step, capText, yDec){
+  const tbl=H("table");
+  tbl.append(H("caption",{text:capText}));
+  const thead=H("thead",null,H("tr",null,H("th",{scope:"col",text:q.xName}),H("th",{scope:"col",text:q.yName})));
+  const tb=H("tbody");
+  const n=Math.round(q.xMax/step);
+  for(let i=0;i<=n;i++){
+    const x=i*step; let y=fn(x); if(Math.abs(y)<1e-9) y=0;
+    tb.append(H("tr",null,H("td",{text:trimNum(x)}),H("td",{text:y.toFixed(yDec)})));
+  }
+  tbl.append(thead,tb);
+  return tbl;
+}
+function gridPlot(svg,q,o,P){
+  const nx=Math.round(q.xMax/q.xStep), ny=Math.round(q.yMax/q.yStep);
+  for(let n=0;n<=nx;n++){
+    const x=n*q.xStep, px=P.X(x);
+    S("line",{x1:px,x2:px,y1:o.t,y2:o.b,style:"stroke:var(--grid)","stroke-width":1.2},svg);
+    if(n%q.xLabelEvery===0){ const tx=S("text",{x:px,y:o.b+22,"text-anchor":"middle","font-size":15},svg); tx.textContent=trimNum(Number(x.toFixed(4))); }
+  }
+  for(let n=-ny;n<=ny;n++){
+    const y=n*q.yStep, py=P.Y(y);
+    S("line",{x1:o.l,x2:o.r,y1:py,y2:py,style:"stroke:"+(n===0?"var(--axis)":"var(--grid)"),"stroke-width":n===0?2:1.2},svg);
+    if(n%q.yLabelEvery===0){ const ty=S("text",{x:o.l-8,y:py+5,"text-anchor":"end","font-size":15},svg); ty.textContent=trimNum(Number(y.toFixed(4))); }
+  }
+  S("rect",{x:o.l,y:o.t,width:o.r-o.l,height:o.b-o.t,fill:"none",style:"stroke:var(--axis)","stroke-width":1.5},svg);
+  const xl=S("text",{x:(o.l+o.r)/2,y:o.b+54,"text-anchor":"middle","font-size":17,style:"fill:var(--ink)"},svg); xl.textContent=q.xName;
+  const yl=S("text",{x:-((o.t+o.b)/2),y:22,transform:"rotate(-90)","text-anchor":"middle","font-size":17,style:"fill:var(--ink)"},svg); yl.textContent=q.yName;
+}
+
+/* ---------------- Type: draw an arrow ---------------- */
+function buildArrowQ(q,i){
+  const sec=H("section",{class:"card","aria-labelledby":q.id+"-h"});
+  const [head,h2,intro]=qHeader(q,i);
+  sec.append(head,h2,intro);
+  const att=attempts(q);
+  sec.append(H("p",{class:"help",html:
+    "To draw: press on the graph and drag, then let go. The wave pauses while you draw. "+
+    "To use a keyboard: choose <strong>Add arrow</strong>, then use the arrow keys to move the selected end. Hold <kbd>Shift</kbd> for small steps and press <kbd>Tab</kbd> to switch ends."}));
+
+  const W=820,Hh=360, o={l:70,r:800,t:24,b:316,xMax:q.xMax,yMax:q.yMax};
+  const P=plotFrame(o);
+  const fig=H("div",{class:"figure"});
+  const svg=S("svg",{viewBox:`0 0 ${W} ${Hh}`,class:"drawzone",role:"group","aria-labelledby":q.id+"-figlabel","aria-describedby":q.id+"-figdesc"});
+  const figLabel=H("p",{class:"sr-only",id:q.id+"-figlabel",text:"Drawing area: animated wave graph"});
+  const figDesc=H("p",{class:"sr-only",id:q.id+"-figdesc",text:"An animated graph of a wave moving to the right across a dashed middle line. Horizontal axis: "+q.xName+". Vertical axis: "+q.yName+". Pause the wave and open the data table below the graph to read values from the current frame."});
+  const mk=q.id+"-ah";
+  const defs=S("defs",null,svg);
+  [[mk,"var(--mark)"],[mk+"ok","var(--ok)"]].forEach(([id,col])=>{
+    const m=S("marker",{id,viewBox:"0 0 10 10",refX:"8.5",refY:"5",markerWidth:"7",markerHeight:"7",orient:"auto-start-reverse",markerUnits:"strokeWidth"},defs);
+    S("path",{d:"M0,0 L10,5 L0,10 z",style:"fill:"+col},m);
+  });
+  S("rect",{x:0,y:0,width:W,height:Hh,fill:"transparent"},svg);
+  S("rect",{x:o.l,y:o.t,width:o.r-o.l,height:o.b-o.t,fill:"none",style:"stroke:var(--grid)","stroke-width":1.5},svg);
+  S("line",{x1:o.l,x2:o.r,y1:P.Y(0),y2:P.Y(0),style:"stroke:var(--axis)","stroke-width":1.5,"stroke-dasharray":"6 6"},svg);
+  S("line",{x1:o.l,x2:o.l,y1:o.t,y2:o.b,style:"stroke:var(--axis)","stroke-width":1.5},svg);
+  const yl=S("text",{x:-((o.t+o.b)/2),y:26,transform:"rotate(-90)","text-anchor":"middle","font-size":17},svg); yl.textContent=q.yName.replace(/\s*\(.*\)/,"");
+  const xl=S("text",{x:(o.l+o.r)/2,y:o.b+32,"text-anchor":"middle","font-size":17},svg); xl.textContent=q.xName.replace(/\s*\(.*\)/,"")+"  →  direction of travel";
+  const path=S("path",{fill:"none","stroke-width":3.5,"stroke-linejoin":"round"},svg); path.style.stroke="var("+q.color+")";
+  const ghost=S("g",{visibility:"hidden"},svg);
+  const gLine=S("line",{style:"stroke:var(--ok)","stroke-width":3,"stroke-dasharray":"8 5","marker-start":`url(#${mk}ok)`,"marker-end":`url(#${mk}ok)`},ghost);
+  const gText=S("text",{"font-size":16,"font-weight":700,style:"fill:var(--ok)"},ghost);
+  const arrowG=S("g",{visibility:"hidden"},svg);
+  const aLine=S("line",{style:"stroke:var(--mark)","stroke-width":3.5,"marker-start":`url(#${mk})`,"marker-end":`url(#${mk})`,"pointer-events":"none"},arrowG);
+  function mkHandle(which){
+    const h=S("circle",{r:13,tabindex:"0",role:"button","aria-roledescription":"movable point","pointer-events":"all",style:"fill:transparent;stroke:var(--mark);cursor:grab","stroke-width":2,"stroke-dasharray":"3 3"},arrowG);
+    h.dataset.which=which; return h;
+  }
+  const h1=mkHandle("start"), h2h=mkHandle("end");
+  const cap=H("p",{class:"figcap",text:"The dashed line is the rest position (zero). Your arrow is drawn in pink."});
+  fig.append(svg, cap);
+  sec.append(figLabel, figDesc, fig);
+
+  const playBtn=H("button",{type:"button"});
+  const addBtn=H("button",{type:"button",text:"Add arrow"});
+  const clearBtn=H("button",{type:"button",text:"Clear arrow"});
+  const checkBtn=H("button",{type:"button",class:"primary",text:"Check my arrow"});
+  sec.append(H("div",{class:"controls"},playBtn,addBtn,clearBtn,checkBtn), att.info);
+  const fb=H("div",{class:"feedback",role:"status","aria-live":"polite"});
+  sec.append(fb, att.reveal);
+
+  const det=H("details",{class:"data"});
+  det.append(H("summary",{text:"Show the current frame as a data table"}));
+  const tw=H("div",{class:"tablewrap",tabindex:"0","aria-label":"Data table, scrollable"});
+  det.append(tw);
+  det.addEventListener("toggle",()=>{ if(det.open){ setPlaying(false); renderTable(); } });
+  sec.append(det, pager(i));
+
+  const k=TAU/q.lambda, lam=q.lambda;
+  let t=0, playing=!reduceMotion, arrow=null, drag=null, ghostOn=false;
+  const fn=x=>q.A*Math.sin(k*x - TAU*t/q.period);
+  function renderTable(){ tw.innerHTML=""; tw.append(dataTable(q, fn, q.lambda/8, "Wave values at the paused moment. Pausing again later gives a new table.", q.yDec)); }
+  function placeGhost(){
+    const phase=TAU*t/q.period;
+    let xc=((Math.PI/2+phase)/k)%lam; if(xc<0) xc+=lam;
+    if(q.kind==="amplitude"){
+      if(xc<q.xMax*0.05) xc+=lam;
+      gLine.setAttribute("x1",P.X(xc)); gLine.setAttribute("x2",P.X(xc)); gLine.setAttribute("y1",P.Y(0)); gLine.setAttribute("y2",P.Y(q.A));
+      gText.setAttribute("x",P.X(xc)+12); gText.setAttribute("y",P.Y(q.A/2)); gText.textContent="amplitude";
+    } else {
+      if(xc+lam>q.xMax) xc-=lam; if(xc<0) xc+=lam;
+      const yy=q.A*1.12;
+      gLine.setAttribute("x1",P.X(xc)); gLine.setAttribute("x2",P.X(xc+lam)); gLine.setAttribute("y1",P.Y(yy)); gLine.setAttribute("y2",P.Y(yy));
+      gText.setAttribute("x",P.X(xc+lam/2)-40); gText.setAttribute("y",P.Y(yy)-10); gText.textContent="wavelength";
+    }
+  }
+  function drawWave(){
+    let d=""; const N=300;
+    for(let n=0;n<=N;n++){ const x=q.xMax*n/N; d+=(n?"L":"M")+P.X(x).toFixed(1)+","+P.Y(fn(x)).toFixed(1); }
+    path.setAttribute("d",d);
+    if(ghostOn) placeGhost();
+  }
+  function setPlaying(p){
+    playing=p; playBtn.textContent=p?"Pause wave":"Play wave"; playBtn.setAttribute("aria-pressed", String(!p));
+    if(!p && det.open) renderTable();
+  }
+  const fmtX=v=>v.toFixed(q.xDec)+" "+q.xUnit, fmtY=v=>v.toFixed(q.yDec)+" "+q.yUnit;
+  function drawArrow(){
+    if(!arrow){ arrowG.setAttribute("visibility","hidden"); return; }
+    arrowG.setAttribute("visibility","visible");
+    const ax1=P.X(arrow.x1), ay1=P.Y(arrow.y1), ax2=P.X(arrow.x2), ay2=P.Y(arrow.y2);
+    aLine.setAttribute("x1",ax1); aLine.setAttribute("y1",ay1); aLine.setAttribute("x2",ax2); aLine.setAttribute("y2",ay2);
+    h1.setAttribute("cx",ax1); h1.setAttribute("cy",ay1); h2h.setAttribute("cx",ax2); h2h.setAttribute("cy",ay2);
+    h1.setAttribute("aria-label","Arrow start point: position "+fmtX(arrow.x1)+", value "+fmtY(arrow.y1)+(att.locked?"":". Use arrow keys to move."));
+    h2h.setAttribute("aria-label","Arrow end point: position "+fmtX(arrow.x2)+", value "+fmtY(arrow.y2)+(att.locked?"":". Use arrow keys to move."));
+  }
+  function svgPoint(evt){
+    const pt=svg.createSVGPoint(); pt.x=evt.clientX; pt.y=evt.clientY;
+    const p=pt.matrixTransform(svg.getScreenCTM().inverse());
+    return { x:clamp(P.iX(p.x),0,q.xMax), y:clamp(P.iY(p.y),-q.yMax,q.yMax) };
+  }
+  svg.addEventListener("pointerdown",e=>{
+    if(att.locked || e.button!==0) return;
+    e.preventDefault(); setPlaying(false);
+    const p=svgPoint(e), tgt=e.target;
+    if(tgt===h1||tgt===h2h){ drag=tgt.dataset.which; }
+    else { arrow={x1:p.x,y1:p.y,x2:p.x,y2:p.y}; drag="end"; fb.className="feedback"; fb.textContent=""; }
+    svg.setPointerCapture(e.pointerId); drawArrow();
+  });
+  svg.addEventListener("pointermove",e=>{
+    if(!drag||!arrow) return;
+    const p=svgPoint(e);
+    if(drag==="start"){ arrow.x1=p.x; arrow.y1=p.y; } else { arrow.x2=p.x; arrow.y2=p.y; }
+    drawArrow();
+  });
+  function endDrag(){
+    if(!drag) return; drag=null;
+    if(arrow){
+      const len=Math.hypot(P.X(arrow.x2)-P.X(arrow.x1), P.Y(arrow.y2)-P.Y(arrow.y1));
+      if(len<10){ arrow=null; drawArrow(); announce("Arrow too short. Press and drag to draw it."); return; }
+      announce("Arrow drawn from position "+fmtX(arrow.x1)+", value "+fmtY(arrow.y1)+" to position "+fmtX(arrow.x2)+", value "+fmtY(arrow.y2)+".");
+    }
+  }
+  svg.addEventListener("pointerup",endDrag);
+  svg.addEventListener("pointercancel",endDrag);
+  [h1,h2h].forEach(h=>h.addEventListener("keydown",e=>{
+    if(!arrow || att.locked) return;
+    const big=!e.shiftKey;
+    const dx=(big? q.xMax/80 : q.xMax/400), dy=(big? q.yMax/30 : q.yMax/150);
+    let mx=0,my=0;
+    if(e.key==="ArrowLeft") mx=-dx; else if(e.key==="ArrowRight") mx=dx;
+    else if(e.key==="ArrowUp") my=dy; else if(e.key==="ArrowDown") my=-dy; else return;
+    e.preventDefault(); setPlaying(false);
+    if(h.dataset.which==="start"){ arrow.x1=clamp(arrow.x1+mx,0,q.xMax); arrow.y1=clamp(arrow.y1+my,-q.yMax,q.yMax); }
+    else { arrow.x2=clamp(arrow.x2+mx,0,q.xMax); arrow.y2=clamp(arrow.y2+my,-q.yMax,q.yMax); }
+    drawArrow();
+    const which=h.dataset.which, X=which==="start"?arrow.x1:arrow.x2, Y=which==="start"?arrow.y1:arrow.y2;
+    announce((which==="start"?"Start":"End")+": position "+fmtX(X)+", value "+fmtY(Y), 250);
+  }));
+  playBtn.addEventListener("click",()=>setPlaying(!playing));
+  addBtn.addEventListener("click",()=>{
+    setPlaying(false);
+    const xm=q.xMax*0.45;
+    arrow={x1:xm,y1:q.yMax*0.2,x2:xm+q.xMax*0.12,y2:q.yMax*0.55};
+    drawArrow(); h1.focus();
+    announce("Arrow added. Start point selected. Use arrow keys to move it, then Tab to the end point.");
+  });
+  clearBtn.addEventListener("click",()=>{ arrow=null; drawArrow(); fb.className="feedback"; fb.textContent=""; announce("Arrow cleared."); });
+
+  function lock(){
+    [addBtn,clearBtn,checkBtn].forEach(b=>b.disabled=true);
+    svg.classList.remove("drawzone");
+    setPlaying(false); ghostOn=true; ghost.setAttribute("visibility","visible"); placeGhost();
+    cap.textContent="The dashed line is the rest position (zero). Your arrow is pink; the correct arrow is green and dashed.";
+    att.show([q.explain]);
+  }
+  checkBtn.addEventListener("click",()=>{
+    if(att.locked) return;
+    if(!arrow){ setFeedback(fb,"bad","No arrow yet.","Press and drag on the graph, or choose Add arrow, to draw one. This didn’t use an attempt."); return; }
+    const A=q.A;
+    const dx=Math.abs(arrow.x2-arrow.x1), dy=Math.abs(arrow.y2-arrow.y1);
+    let ok=false, msg="";
+    if(q.kind==="amplitude"){
+      const lo=Math.min(Math.abs(arrow.y1),Math.abs(arrow.y2)), hi=Math.max(Math.abs(arrow.y1),Math.abs(arrow.y2));
+      const oppSides = Math.sign(arrow.y1)!==Math.sign(arrow.y2);
+      if(dx>0.07*lam) msg="Amplitude is a vertical distance. Draw your arrow straight up or down.";
+      else if(oppSides && near(dy,2*A,0.15)) msg="You measured from a crest down to a trough. That is twice the amplitude.";
+      else if(lo>0.14*A) msg="Start one end of the arrow on the rest position, the dashed middle line.";
+      else if(Math.abs(hi-A)>0.14*A) msg=hi<A?"Your arrow stops short of the crest.":"Your arrow goes past the wave.";
+      else { ok=true; msg="The amplitude goes from the rest position to a crest."; }
+    } else {
+      if(dy>0.16*A) msg="Wavelength is a distance along the direction the wave travels. Draw your arrow horizontally.";
+      else if(near(dx,lam/2,0.12)) msg="That’s only half a wavelength.";
+      else if(near(dx,2*lam,0.08)) msg="That arrow spans two wavelengths.";
+      else if(near(dx,lam,0.07)){ ok=true; msg="One wavelength is one full cycle, such as crest to crest."; }
+      else msg="Your arrow is "+fmtX(dx)+" long. Make it span exactly one full cycle of the wave.";
+    }
+    const locked=att.record(ok, ok?1:0);
+    if(ok) setFeedback(fb,"ok","✓ Correct.",msg);
+    else setFeedback(fb,"bad","✗ Not quite.", msg+(locked?LAST:retryText(att)));
+    if(locked) lock();
+  });
+
+  setPlaying(playing); drawWave();
+  if(att.locked){ lock(); }
+  return { el:sec, focusEl:h2, tick(dt){ if(playing){ t+=dt; drawWave(); } } };
+}
+
+/* ---------------- Type: read the graph ---------------- */
+function buildReadQ(q,i){
+  const sec=H("section",{class:"card","aria-labelledby":q.id+"-h"});
+  const [head,h2,intro]=qHeader(q,i);
+  sec.append(head,h2,intro);
+  const att=attempts(q);
+  sec.append(H("p",{class:"given"},document.createTextNode("Wave speed: "+q.vText)));
+  const W=820,Hh=400, o={l:84,r:800,t:20,b:330,xMax:q.xMax,yMax:q.yMax};
+  const P=plotFrame(o);
+  const fig=H("div",{class:"figure"});
+  const svg=S("svg",{viewBox:`0 0 ${W} ${Hh}`,role:"img","aria-labelledby":q.id+"-gl"});
+  const gl=H("p",{class:"sr-only",id:q.id+"-gl",text:"Graph of a wave snapshot. Horizontal axis: "+q.xName+", from 0 to "+trimNum(q.xMax)+". Vertical axis: "+q.yName+", from "+trimNum(-q.yMax)+" to "+trimNum(q.yMax)+". The same values are in the data table below the graph."});
+  gridPlot(svg,q,o,P);
+  let d=""; const N=500;
+  for(let n=0;n<=N;n++){ const x=q.xMax*n/N; d+=(n?"L":"M")+P.X(x).toFixed(1)+","+P.Y(q.fn(x)).toFixed(1); }
+  const path=S("path",{d,fill:"none","stroke-width":3.5,"stroke-linejoin":"round"},svg); path.style.stroke="var("+q.color+")";
+  fig.append(svg);
+  sec.append(gl,fig);
+  const det=H("details",{class:"data"});
+  det.append(H("summary",{text:"Show the graph as a data table"}));
+  const tw=H("div",{class:"tablewrap",tabindex:"0","aria-label":"Data table, scrollable"});
+  tw.append(dataTable(q,q.fn,q.xStep,"Values read from the graph at each vertical grid line.",Math.max(0,Math.ceil(-Math.log10(q.yStep))+1)));
+  det.append(tw); sec.append(det);
+
+  sec.append(H("p",{class:"help",html:"Type numbers only; the unit is shown next to each box. For powers of ten, type <kbd>2.5e9</kbd> or <kbd>2.5x10^9</kbd>. Answers within 3% count as correct. Each check of all four boxes uses one attempt."}));
+  const fields=H("div",{class:"fields"});
+  const inputs={};
+  q.fields.forEach(f=>{
+    const id=q.id+"-"+f.key, uid=id+"-u", rid=id+"-r";
+    const inp=H("input",{type:"text",id,inputmode:"decimal",autocomplete:"off",spellcheck:"false","aria-describedby":uid+" "+rid});
+    const res=H("div",{class:"fres",id:rid});
+    const wrap=H("div",{class:"field"},
+      H("label",{for:id,text:f.label}),
+      H("div",{class:"inrow"}, inp, H("span",{class:"unit",id:uid},H("span",{class:"sr-only",text:"in "}),document.createTextNode(f.unit))),
+      res);
+    inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); check(); } });
+    inputs[f.key]={inp,res,wrap,f};
+    fields.append(wrap);
+  });
+  sec.append(fields);
+  const checkBtn=H("button",{type:"button",class:"primary",text:"Check my answers"});
+  const hintBtn=H("button",{type:"button","aria-expanded":"false","aria-controls":q.id+"-hint",text:"Show a hint"});
+  const hint=H("div",{class:"feedback part",id:q.id+"-hint",hidden:""});
+  hint.append(H("strong",{text:"Hint"}), document.createTextNode("Amplitude: rest line to a crest. Wavelength: crest to the next crest. Then f = v ÷ λ (with λ in meters) and T = 1 ÷ f."));
+  hintBtn.addEventListener("click",()=>{ const open=hint.hidden; hint.hidden=!open; hintBtn.setAttribute("aria-expanded",String(open)); hintBtn.textContent=open?"Hide the hint":"Show a hint"; });
+  sec.append(H("div",{class:"controls"},checkBtn,hintBtn), att.info, hint);
+  const fb=H("div",{class:"feedback",role:"status","aria-live":"polite"});
+  sec.append(fb, att.reveal, pager(i));
+
+  const fA=q.fields[0], fL=q.fields[1], fF=q.fields[2], fT=q.fields[3];
+  const lamM=fL.ans*fL.toMeters;
+  function lock(){
+    checkBtn.disabled=true;
+    for(const k in inputs) inputs[k].inp.disabled=true;
+    const tbl=H("table",null,
+      H("caption",{text:"Correct values"}),
+      H("thead",null,H("tr",null,H("th",{scope:"col",text:"Quantity"}),H("th",{scope:"col",text:"Value"}))),
+      H("tbody",null, ...q.fields.map(f=>H("tr",null,H("td",{style:"text-align:left",text:f.label}),H("td",{text:nice(f.ans)+" "+f.unit})))));
+    att.show([
+      H("div",{class:"tablewrap",style:"max-width:360px;margin-bottom:8px"},tbl),
+      "Amplitude: the height of a crest above the zero line is "+nice(fA.ans)+" "+fA.unit+".",
+      "Wavelength: the distance from one crest to the next crest is "+nice(fL.ans)+" "+fL.unit+(fL.toMeters!==1?", which is "+nice(lamM)+" m":"")+".",
+      "Frequency: f = v ÷ λ = "+nice(q.v)+" m/s ÷ "+nice(lamM)+" m = "+nice(fF.ans)+" Hz.",
+      "Period: T = 1 ÷ f = 1 ÷ "+nice(fF.ans)+" Hz = "+nice(fT.ans)+" s."
+    ]);
+  }
+  const tol=0.03;
+  function check(){
+    if(att.locked) return;
+    const val={}; let anyEmpty=false;
+    for(const k in inputs){ val[k]=parseNum(inputs[k].inp.value); if(inputs[k].inp.value.trim()==="") anyEmpty=true; }
+    if(anyEmpty){ setFeedback(fb,"bad","Fill in all four boxes first.","This didn’t use an attempt."); return; }
+    const lamUserM=isFinite(val.lambda)? val.lambda*fL.toMeters : NaN;
+    const fUser=val.f;
+    let nOK=0;
+    for(const k in inputs){
+      const {inp,res,wrap,f}=inputs[k]; const v=val[k];
+      let ok=false, msg="";
+      if(!isFinite(v)) msg="That isn’t a number. Example formats: 0.25, 2.5e9, 2.5x10^9.";
+      else if(near(v,f.ans,tol)){ ok=true; msg="Correct."; }
+      else if(k==="A"){
+        msg= near(v,2*f.ans,tol) ? "That’s the crest-to-trough height. Measure from the zero line instead." : "Read how high a crest rises above the zero line.";
+      } else if(k==="lambda"){
+        if(near(v,f.ans/2,tol)) msg="That’s half a wavelength (crest to trough). Measure crest to the next crest.";
+        else if(near(v,2*f.ans,tol)) msg="That spans two wavelengths. Measure from one crest to the very next crest.";
+        else if(f.toMeters!==1 && near(v,f.ans*f.toMeters,tol)) msg="Enter this one in "+f.unit+", the unit shown next to the box.";
+        else msg="Find two neighboring crests and read the distance between them.";
+      } else if(k==="f"){
+        if(fL.toMeters!==1 && near(v,q.v/fL.ans,tol)) msg="You divided by the wavelength in "+fL.unit+". Convert it to meters first.";
+        else if(near(v,lamM/q.v,tol)) msg="That’s λ ÷ v, which gives the period. Frequency is f = v ÷ λ.";
+        else if(near(v,q.v*lamM,tol)) msg="Divide instead of multiplying: f = v ÷ λ.";
+        else if(isFinite(lamUserM) && lamUserM>0 && near(v,q.v/lamUserM,tol)) msg="Your method is right, but it uses your wavelength. Fix the wavelength first.";
+        else msg="Use f = v ÷ λ, with the speed given and the wavelength in meters.";
+      } else if(k==="T"){
+        if(near(v,1/f.ans,tol)) msg="That’s the frequency. The period is T = 1 ÷ f.";
+        else if(isFinite(fUser) && fUser>0 && near(v,1/fUser,tol)) msg="Your method is right, but it uses your frequency. Fix the frequency first.";
+        else msg="Use T = 1 ÷ f (or T = λ ÷ v, with λ in meters).";
+      }
+      res.className="fres "+(ok?"ok":"bad");
+      res.textContent=(ok?"✓ ":"✗ ")+msg;
+      wrap.classList.toggle("is-ok",ok); wrap.classList.toggle("is-bad",!ok);
+      inp.setAttribute("aria-invalid", String(!ok));
+      if(ok) nOK++;
+    }
+    const success=nOK===4;
+    const locked=att.record(success, nOK);
+    if(success) setFeedback(fb,"ok","✓ All four are correct.","Well done. See the worked solution below.");
+    else setFeedback(fb, nOK>0?"part":"bad", nOK+" of 4 correct.", locked? LAST.trim() : "Read the note under each box marked ✗ and fix it."+retryText(att));
+    if(locked) lock();
+  }
+  checkBtn.addEventListener("click",check);
+  if(att.locked) lock();
+  return { el:sec, focusEl:h2, tick(){} };
+}
+
+/* ---------------- Type: transverse or longitudinal ---------------- */
+function travelArrow(svg, x1, x2, y, label){
+  const id="ta"+Math.random().toString(36).slice(2,7);
+  const defs=S("defs",null,svg);
+  const m=S("marker",{id,viewBox:"0 0 10 10",refX:"8",refY:"5",markerWidth:"6",markerHeight:"6",orient:"auto"},defs);
+  S("path",{d:"M0,0 L10,5 L0,10 z",style:"fill:var(--ink)"},m);
+  S("line",{x1,x2,y1:y,y2:y,style:"stroke:var(--ink)","stroke-width":2.5,"marker-end":`url(#${id})`},svg);
+  const t=S("text",{x:x1-10,y:y+5,"text-anchor":"end","font-size":16,style:"fill:var(--ink)"},svg); t.textContent=label;
+}
+function buildSlinky(svg){
+  svg.setAttribute("viewBox","0 0 820 230");
+  travelArrow(svg, 470, 640, 24, "The wave travels this way");
+  const coils=[]; const N=58, x0s=[]; const mark=29;
+  S("line",{x1:30,x2:790,y1:118,y2:118,style:"stroke:var(--grid)","stroke-width":2},svg);
+  for(let n=0;n<N;n++){
+    const x0=50+n*12.6; x0s.push(x0);
+    const e=S("ellipse",{cx:x0,cy:118,rx:4,ry:44,fill:"none","stroke-width":n===mark?5:2},svg);
+    e.style.stroke = n===mark?"var(--mark)":"var(--ink-2)";
+    coils.push(e);
+  }
+  const xm=x0s[mark];
+  S("path",{d:`M${xm-7},${190} L${xm+7},${190} L${xm},${178} z`,style:"fill:var(--mark)"},svg);
+  const lt=S("text",{x:xm,y:212,"text-anchor":"middle","font-size":15,style:"fill:var(--ink)"},svg); lt.textContent="rest spot of the marked coil";
+  return t=>{ for(let n=0;n<N;n++){ const s=15*Math.sin(TAU*(x0s[n]/250 - t/2.4)); coils[n].setAttribute("cx",(x0s[n]+s).toFixed(2)); } };
+}
+function buildFork(svg){
+  svg.setAttribute("viewBox","0 0 820 260");
+  travelArrow(svg, 520, 690, 244, "Sound travels this way");
+  S("rect",{x:66,y:170,width:12,height:70,rx:3,style:"fill:var(--axis)"},svg);
+  S("path",{d:"M48 150 Q72 186 96 150",fill:"none","stroke-width":12,style:"stroke:var(--axis)","stroke-linecap":"round"},svg);
+  const pL=S("rect",{x:42,y:30,width:12,height:122,rx:4,style:"fill:var(--axis)"},svg);
+  const pR=S("rect",{x:90,y:30,width:12,height:122,rx:4,style:"fill:var(--axis)"},svg);
+  const ft=S("text",{x:72,y:20,"text-anchor":"middle","font-size":15,style:"fill:var(--ink)"},svg); ft.textContent="tuning fork";
+  const dots=[]; const cols=40, rows=12, mc=18, mr=6;
+  for(let c=0;c<cols;c++) for(let r=0;r<rows;r++){
+    const x0=150+c*16, y0=26+r*17;
+    const isM=(c===mc&&r===mr);
+    const d=S("circle",{cx:x0,cy:y0,r:isM?6.5:3},svg);
+    d.style.fill=isM?"var(--mark)":"var(--ink-2)";
+    if(isM){ d.setAttribute("stroke-width","2.5"); d.style.stroke="var(--surface)"; }
+    dots.push({d,x0,isM});
+  }
+  const mx=150+mc*16, my=26+mr*17;
+  S("line",{x1:mx,x2:mx,y1:my-14,y2:my+14,style:"stroke:var(--mark)","stroke-width":1.5,"stroke-dasharray":"3 3"},svg);
+  svg.appendChild(dots.find(o=>o.isM).d);
+  return t=>{
+    const w=TAU*t/1.8, s=3*Math.sin(w);
+    pL.setAttribute("x",(42-s).toFixed(2)); pR.setAttribute("x",(90+s).toFixed(2));
+    for(const o of dots){ const dx=10*Math.sin(TAU*(o.x0-110)/170 - w + Math.PI); o.d.setAttribute("cx",(o.x0+dx).toFixed(2)); }
+  };
+}
+function buildString(svg){
+  svg.setAttribute("viewBox","0 0 820 240");
+  travelArrow(svg, 470, 640, 24, "The wave travels this way");
+  const yc=130, xs=70, xe=790, k=TAU/300;
+  const path=S("path",{fill:"none","stroke-width":3,style:"stroke:var(--ink-2)"},svg);
+  const hand=S("rect",{x:34,y:yc-16,width:30,height:32,rx:9,style:"fill:var(--axis)"},svg);
+  const ht=S("text",{x:49,y:yc+64,"text-anchor":"middle","font-size":14,style:"fill:var(--ink)"},svg); ht.textContent="hand";
+  const beads=[]; const mxIdx=12;
+  for(let n=0;n<26;n++){ const x0=xs+12+n*28; const isM=n===mxIdx; const b=S("circle",{cx:x0,cy:yc,r:isM?8:4.5},svg); b.style.fill=isM?"var(--mark)":"var(--ink-2)"; beads.push({b,x0}); }
+  const mxx=beads[mxIdx].x0;
+  const guide=S("line",{x1:mxx,x2:mxx,y1:yc-62,y2:yc+62,style:"stroke:var(--mark)","stroke-width":1.5,"stroke-dasharray":"4 4"},svg);
+  svg.insertBefore(guide,path);
+  svg.appendChild(beads[mxIdx].b);
+  return t=>{
+    const w=TAU*t/2.4;
+    const y=x=>yc - 44*Math.sin(-k*(x-xs) + w);
+    let d=""; for(let x=xs;x<=xe;x+=5){ d+=(x===xs?"M":"L")+x+","+y(x).toFixed(1); }
+    path.setAttribute("d",d);
+    hand.setAttribute("y",(y(xs)-16).toFixed(1));
+    for(const o of beads) o.b.setAttribute("cy",y(o.x0).toFixed(1));
+  };
+}
+function radioGroup(q, legend, opts){
+  const fs=H("fieldset",{class:"choices"});
+  fs.append(H("legend",{text:legend}));
+  opts.forEach(o=>{
+    const id=q.id+"-"+o.value;
+    fs.append(H("label",{class:"choice"+(o.cls?" "+o.cls:""),for:id}, H("input",{type:"radio",name:q.id+"-c",id,value:o.value}), ...o.content));
+  });
+  return fs;
+}
+function buildKindQ(q,i){
+  const tried=new Set();
+  const sec=H("section",{class:"card","aria-labelledby":q.id+"-h"});
+  const [head,h2,intro]=qHeader(q,i);
+  sec.append(head,h2,intro);
+  const att=attempts(q);
+  const fig=H("div",{class:"figure"});
+  const svg=S("svg",{role:"img","aria-labelledby":q.id+"-ad"});
+  const ad=H("p",{class:"sr-only",id:q.id+"-ad",text:q.desc});
+  const draw=(q.anim==="slinky"?buildSlinky:q.anim==="fork"?buildFork:buildString)(svg);
+  fig.append(svg); sec.append(ad,fig);
+  const playBtn=H("button",{type:"button"});
+  const stepBtn=H("button",{type:"button",text:"Step forward"});
+  sec.append(H("div",{class:"controls"},playBtn,stepBtn));
+  const fs=radioGroup(q,"Is this wave transverse or longitudinal?",[
+    {value:"transverse", content:[H("span",null,document.createTextNode("Transverse"),H("span",{class:"sub",text:"Particles move perpendicular to the direction the wave travels."}))]},
+    {value:"longitudinal", content:[H("span",null,document.createTextNode("Longitudinal"),H("span",{class:"sub",text:"Particles move parallel to the direction the wave travels."}))]}
+  ]);
+  sec.append(fs);
+  const checkBtn=H("button",{type:"button",class:"primary",text:"Check my answer"});
+  sec.append(H("div",{class:"controls"},checkBtn), att.info);
+  const fb=H("div",{class:"feedback",role:"status","aria-live":"polite"});
+  sec.append(fb, att.reveal, pager(i));
+  const cap=q.answer[0].toUpperCase()+q.answer.slice(1);
+  function lock(){
+    checkBtn.disabled=true; fs.querySelectorAll("input").forEach(x=>x.disabled=true);
+    att.show([H("p",{class:"ans",text:"Answer: "+cap+"."}), q.right]);
+  }
+  checkBtn.addEventListener("click",()=>{
+    if(att.locked) return;
+    const sel=fs.querySelector("input:checked");
+    if(!sel){ setFeedback(fb,"bad","Choose an answer first.","This didn’t use an attempt."); return; }
+    if(tried.has(sel.value)){ setFeedback(fb,"bad","You already tried that answer.","Choose a different answer. This didn’t use an attempt."); return; }
+    const ok=sel.value===q.answer; if(!ok) tried.add(sel.value);
+    const locked=att.record(ok, ok?1:0);
+    if(ok) setFeedback(fb,"ok","✓ Correct.","See the explanation below.");
+    else setFeedback(fb,"bad","✗ Not quite.", locked? LAST.trim() : q.wrong+retryText(att));
+    if(locked) lock();
+  });
+  let t=0.35, playing=!reduceMotion;
+  function setPlaying(p){ playing=p; playBtn.textContent=p?"Pause animation":"Play animation"; playBtn.setAttribute("aria-pressed",String(!p)); }
+  playBtn.addEventListener("click",()=>setPlaying(!playing));
+  stepBtn.addEventListener("click",()=>{ setPlaying(false); t+=0.15; draw(t); });
+  setPlaying(playing); draw(t);
+  if(att.locked) lock();
+  return { el:sec, focusEl:h2, tick(dt){ if(playing){ t+=dt; draw(t); } } };
+}
+
+/* ---------------- Type: true or false ---------------- */
+function buildTFQ(q,i){
+  const tried=new Set();
+  const sec=H("section",{class:"card","aria-labelledby":q.id+"-h"});
+  const [head,h2]=qHeader(q,i);
+  sec.append(head,h2,H("p",{class:"intro",text:"Decide whether this statement is true or false."}),H("blockquote",{class:"statement",id:q.id+"-st",text:q.statement}));
+  const att=attempts(q);
+  const fs=radioGroup(q,"This statement is:",[{value:"true",content:[H("span",{text:"True"})]},{value:"false",content:[H("span",{text:"False"})]}]);
+  fs.setAttribute("aria-describedby",q.id+"-st");
+  sec.append(fs);
+  const checkBtn=H("button",{type:"button",class:"primary",text:"Check my answer"});
+  sec.append(H("div",{class:"controls"},checkBtn), att.info);
+  const fb=H("div",{class:"feedback",role:"status","aria-live":"polite"});
+  sec.append(fb, att.reveal, pager(i));
+  function lock(){
+    checkBtn.disabled=true; fs.querySelectorAll("input").forEach(x=>x.disabled=true);
+    att.show([H("p",{class:"ans",text:"Answer: "+(q.answer?"True":"False")+"."}), q.explain]);
+  }
+  checkBtn.addEventListener("click",()=>{
+    if(att.locked) return;
+    const sel=fs.querySelector("input:checked");
+    if(!sel){ setFeedback(fb,"bad","Choose True or False first.","This didn’t use an attempt."); return; }
+    if(tried.has(sel.value)){ setFeedback(fb,"bad","You already tried that answer.","Choose a different answer. This didn’t use an attempt."); return; }
+    const ok=(sel.value==="true")===q.answer; if(!ok) tried.add(sel.value);
+    const locked=att.record(ok, ok?1:0);
+    if(ok) setFeedback(fb,"ok","✓ Correct.","See the explanation below.");
+    else setFeedback(fb,"bad","✗ Not quite.", locked? LAST.trim() : "Think it through again."+retryText(att));
+    if(locked) lock();
+  });
+  if(att.locked) lock();
+  return { el:sec, focusEl:h2, tick(){} };
+}
+
+/* ---------------- Type: which student is right? ---------------- */
+function buildWhoQ(q,i){
+  const tried=new Set();
+  const sec=H("section",{class:"card","aria-labelledby":q.id+"-h"});
+  const [head,h2,intro]=qHeader(q,i);
+  sec.append(head,h2,intro);
+  const att=attempts(q);
+  const fs=radioGroup(q,"Which student is correct?", q.students.map((s,n)=>({value:"s"+n, cls:"student", content:[
+    H("span",{class:"avatar","aria-hidden":"true",text:s.name[0]}),
+    H("span",null,H("span",{class:"sname",text:s.name+" says:"}),H("span",{class:"quote",text:"“"+s.says+"”"}))]})));
+  sec.append(fs);
+  const checkBtn=H("button",{type:"button",class:"primary",text:"Check my answer"});
+  sec.append(H("div",{class:"controls"},checkBtn), att.info);
+  const fb=H("div",{class:"feedback",role:"status","aria-live":"polite"});
+  sec.append(fb, att.reveal, pager(i));
+  const right=q.students.find(s=>s.correct);
+  function lock(){
+    checkBtn.disabled=true; fs.querySelectorAll("input").forEach(x=>x.disabled=true);
+    const ul=H("ul",{class:"whylist"});
+    q.students.forEach(s=>ul.append(H("li",null,H("strong",{text:(s.correct?"✓ ":"✗ ")+s.name+": "}),document.createTextNode(s.why))));
+    att.show([H("p",{class:"ans",text:"Answer: "+right.name+" is correct."}), "Here is what each student got right or wrong:", ul]);
+  }
+  checkBtn.addEventListener("click",()=>{
+    if(att.locked) return;
+    const sel=fs.querySelector("input:checked");
+    if(!sel){ setFeedback(fb,"bad","Choose a student first.","This didn’t use an attempt."); return; }
+    if(tried.has(sel.value)){ setFeedback(fb,"bad","You already tried that student.","Choose a different student. This didn’t use an attempt."); return; }
+    const s=q.students[+sel.value.slice(1)]; if(!s.correct) tried.add(sel.value);
+    const locked=att.record(s.correct, s.correct?1:0);
+    if(s.correct) setFeedback(fb,"ok","✓ Correct.","See the explanation below.");
+    else setFeedback(fb,"bad","✗ Not quite.", locked? LAST.trim() : s.why+retryText(att));
+    if(locked) lock();
+  });
+  if(att.locked) lock();
+  return { el:sec, focusEl:h2, tick(){} };
+}
+
+/* ---------------- Type: ranking ---------------- */
+function buildRankQ(q,i){
+  const sec=H("section",{class:"card","aria-labelledby":q.id+"-h"});
+  const [head,h2,intro]=qHeader(q,i);
+  sec.append(head,h2,intro);
+  const att=attempts(q);
+  let order=q.start.slice(), checked=false;
+  const n=order.length;
+  sec.append(H("p",{class:"rank-end"},H("span",{"aria-hidden":"true",text:"▲ "}),document.createTextNode("Top: "+q.topLabel)));
+  const ol=H("ol",{class:"ranklist","aria-label":"Ranking from "+q.topLabel.toLowerCase()+" to "+q.bottomLabel.toLowerCase()});
+  sec.append(ol, H("p",{class:"rank-end"},H("span",{"aria-hidden":"true",text:"▼ "}),document.createTextNode("Bottom: "+q.bottomLabel)));
+  function render(focusKey, focusDir){
+    ol.innerHTML="";
+    order.forEach((key,pos)=>{
+      const it=q.items[key];
+      const up=H("button",{type:"button",class:"mv","aria-label":"Move "+it.label+" up",text:"▲ Up"});
+      const dn=H("button",{type:"button",class:"mv","aria-label":"Move "+it.label+" down",text:"▼ Down"});
+      if(pos===0||att.locked) up.disabled=true;
+      if(pos===n-1||att.locked) dn.disabled=true;
+      up.addEventListener("click",()=>move(key,-1));
+      dn.addEventListener("click",()=>move(key,1));
+      let mark=null, cls="";
+      if(checked){ const ok=q.correct[pos]===key; cls=ok?" is-ok":" is-bad"; mark=H("span",{class:"rmark "+(ok?"ok":"bad"),text:ok?"✓ Right place":"✗ Wrong place"}); }
+      ol.append(H("li",{class:"rankitem"+cls},
+        H("span",{class:"rpos","aria-hidden":"true",text:String(pos+1)}),
+        H("span",{class:"rbody"},H("span",{class:"rlabel",text:it.label}), it.detail?H("span",{class:"rdetail",text:it.detail}):null, mark),
+        H("span",{class:"rbtns"},up,dn)));
+      if(key===focusKey){ let b=focusDir<0?up:dn; if(b.disabled) b=focusDir<0?dn:up; setTimeout(()=>b.focus(),0); }
+    });
+  }
+  function move(key,dir){
+    const p=order.indexOf(key), np=p+dir;
+    if(np<0||np>=n||att.locked) return;
+    order.splice(p,1); order.splice(np,0,key);
+    checked=false; fb.className="feedback"; fb.textContent="";
+    render(key,dir);
+    announce(q.items[key].label+" moved to position "+(np+1)+" of "+n+".");
+  }
+  const checkBtn=H("button",{type:"button",class:"primary",text:"Check my order"});
+  const resetBtn=H("button",{type:"button",text:"Reset the order"});
+  sec.append(H("div",{class:"controls"},checkBtn,resetBtn), att.info);
+  const fb=H("div",{class:"feedback",role:"status","aria-live":"polite"});
+  sec.append(fb, att.reveal, pager(i));
+  function lock(){
+    checkBtn.disabled=true; resetBtn.disabled=true; render();
+    const ol2=H("ol"); q.correct.forEach(k=>ol2.append(H("li",{text:q.items[k].label+(q.items[k].detail?" ("+q.items[k].detail+")":"")})));
+    att.show([H("p",{class:"ans",text:"Correct order, from "+q.topLabel.toLowerCase()+" to "+q.bottomLabel.toLowerCase()+":"}), ol2, q.explain]);
+  }
+  checkBtn.addEventListener("click",()=>{
+    if(att.locked) return;
+    const right=order.filter((k,p)=>q.correct[p]===k).length;
+    const ok=right===n;
+    const locked=att.record(ok, ok?1:0);
+    checked=true; render();
+    if(ok) setFeedback(fb,"ok","✓ Correct order.","See the explanation below.");
+    else setFeedback(fb,right>0?"part":"bad",right+" of "+n+" are in the right place.", locked? LAST.trim() : "Items marked ✗ need to move."+retryText(att));
+    if(locked) lock();
+  });
+  resetBtn.addEventListener("click",()=>{ order=q.start.slice(); checked=false; render(); fb.className="feedback"; fb.textContent=""; announce("Order reset."); });
+  render();
+  if(att.locked) lock();
+  return { el:sec, focusEl:h2, tick(){} };
+}
+
+/* ---------------- Type: complete the sentence ---------------- */
+function buildFillQ(q,i){
+  const sec=H("section",{class:"card","aria-labelledby":q.id+"-h"});
+  const [head,h2,intro]=qHeader(q,i);
+  sec.append(head,h2,intro);
+  const att=attempts(q);
+  const sentence=H("p",{class:"fill-sentence"});
+  const blanks=[]; let b=0;
+  const total=q.parts.filter(p=>typeof p!=="string").length;
+  q.parts.forEach(p=>{
+    if(typeof p==="string"){ sentence.append(document.createTextNode(p)); return; }
+    b++;
+    const sel=H("select",{id:q.id+"-b"+b,"aria-label":"Blank "+b+" of "+total});
+    sel.append(H("option",{value:"",text:"choose…"}));
+    p.opts.forEach((o,k)=>sel.append(H("option",{value:String(k),text:o})));
+    const mark=H("span",{class:"bmark","aria-hidden":"true"});
+    const wrap=H("span",{class:"blank"},H("span",{class:"bnum","aria-hidden":"true",text:String(b)}),sel,mark);
+    sel.addEventListener("change",()=>{ wrap.classList.remove("is-ok","is-bad"); mark.textContent=""; sel.removeAttribute("aria-invalid"); });
+    blanks.push({sel,wrap,mark,p});
+    sentence.append(wrap);
+  });
+  sec.append(H("div",{class:"fill-box"},sentence));
+  const checkBtn=H("button",{type:"button",class:"primary",text:"Check my answers"});
+  sec.append(H("div",{class:"controls"},checkBtn), att.info);
+  const fb=H("div",{class:"feedback",role:"status","aria-live":"polite"});
+  sec.append(fb, att.reveal, pager(i));
+  function lock(){
+    checkBtn.disabled=true; blanks.forEach(bl=>bl.sel.disabled=true);
+    const full=H("p");
+    q.parts.forEach(p=>{ if(typeof p==="string") full.append(document.createTextNode(p)); else full.append(H("strong",{text:p.opts[p.ans]})); });
+    att.show([H("p",{class:"ans",text:"Complete sentence:"}), full, q.explain]);
+  }
+  checkBtn.addEventListener("click",()=>{
+    if(att.locked) return;
+    if(blanks.some(bl=>bl.sel.value==="")){ setFeedback(fb,"bad","Choose a word for every blank first.","This didn’t use an attempt."); return; }
+    let right=0; const wrongList=[];
+    blanks.forEach((bl,k)=>{
+      const ok=+bl.sel.value===bl.p.ans;
+      bl.wrap.classList.remove("is-ok","is-bad"); bl.wrap.classList.add(ok?"is-ok":"is-bad");
+      bl.mark.textContent=ok?"✓":"✗";
+      bl.sel.setAttribute("aria-invalid",String(!ok));
+      bl.sel.setAttribute("aria-label","Blank "+(k+1)+" of "+total+(ok?", correct":", incorrect"));
+      if(ok) right++; else wrongList.push(k+1);
+    });
+    const success=right===total;
+    const locked=att.record(success, right);
+    if(success) setFeedback(fb,"ok","✓ All "+total+" blanks are correct.","See the explanation below.");
+    else setFeedback(fb,right>0?"part":"bad",right+" of "+total+" correct.", locked? LAST.trim() : "Blank"+(wrongList.length>1?"s ":" ")+wrongList.join(", ")+(wrongList.length>1?" are":" is")+" not right yet."+retryText(att));
+    if(locked) lock();
+  });
+  if(att.locked) lock();
+  return { el:sec, focusEl:h2, tick(){} };
+}
+
+/* ---------------- Type: match the wave ---------------- */
+function buildMatchQ(q,i){
+  const sec=H("section",{class:"card","aria-labelledby":q.id+"-h"});
+  const [head,h2,intro]=qHeader(q,i);
+  sec.append(head,h2,intro);
+  const att=attempts(q);
+  sec.append(H("p",{class:"given"},document.createTextNode("Speed of sound: "+q.v+" m/s")));
+  const W=820,Hh=400,o={l:84,r:800,t:20,b:330,xMax:q.xMax,yMax:q.yMax};
+  const P=plotFrame(o);
+  const lamT=q.v/q.targetF;
+  const crests=[]; for(let x=lamT/4;x<=q.xMax+1e-9;x+=lamT) crests.push(trimNum(Number(x.toFixed(3))));
+  const fig=H("div",{class:"figure"});
+  const svg=S("svg",{viewBox:`0 0 ${W} ${Hh}`,role:"img","aria-labelledby":q.id+"-gl"});
+  const gl=H("p",{class:"sr-only",id:q.id+"-gl",text:"Graph with a grid. Horizontal axis: "+q.xName+", from 0 to "+q.xMax+". Vertical axis: "+q.yName+", from "+(-q.yMax)+" to "+q.yMax+". The dashed target wave starts at zero and rises to crests of "+q.targetA+" mm at positions "+crests.join(", ")+" m. Your wave is drawn on the same grid; its settings are read out on the sliders."});
+  gridPlot(svg,q,o,P);
+  function wavePath(A,f){ const lam=q.v/f; let d=""; const N=600; for(let n=0;n<=N;n++){ const x=q.xMax*n/N; d+=(n?"L":"M")+P.X(x).toFixed(1)+","+P.Y(A*Math.sin(TAU*x/lam)).toFixed(1);} return d; }
+  S("path",{d:wavePath(q.targetA,q.targetF),fill:"none","stroke-width":5,"stroke-dasharray":"10 7",style:"stroke:var(--ink-2)"},svg);
+  const mine=S("path",{fill:"none","stroke-width":3.5,"stroke-linejoin":"round",style:"stroke:var(--sound)"},svg);
+  fig.append(svg, H("p",{class:"figcap",text:"Dashed gray: target sound. Solid orange: your sound."}));
+  sec.append(gl,fig);
+  function slider(id,label,min,max,step,val,fmt){
+    const inp=H("input",{type:"range",id,min:String(min),max:String(max),step:String(step),value:String(val)});
+    const out=H("output",{for:id,class:"sval"});
+    const wrap=H("div",{class:"slider"},H("label",{for:id},document.createTextNode(label+" "),out),inp);
+    const upd=()=>{ const v=+inp.value; out.textContent=fmt(v); inp.setAttribute("aria-valuetext",fmt(v)); };
+    upd(); inp.addEventListener("input",()=>{ upd(); draw(); if(!att.locked){ fb.className="feedback"; fb.textContent=""; } });
+    return {wrap,inp};
+  }
+  const sA=slider(q.id+"-a","Amplitude:",q.aMin,q.aMax,q.aStep,q.startA,v=>v.toFixed(2)+" mm");
+  const sF=slider(q.id+"-f","Frequency:",q.fMin,q.fMax,q.fStep,q.startF,v=>v+" Hz");
+  sec.append(H("div",{class:"sliders"},sA.wrap,sF.wrap));
+  sec.append(H("p",{class:"help",text:"Tip: with a keyboard, select a slider and use the arrow keys. Each press moves one step (0.05 mm or 10 Hz). Each check uses one attempt, so adjust carefully before checking."}));
+  function draw(){ mine.setAttribute("d",wavePath(+sA.inp.value,+sF.inp.value)); }
+  draw();
+  let actx=null;
+  const hearBtn=H("button",{type:"button",text:"Hear my sound (1 second)"});
+  hearBtn.addEventListener("click",()=>{
+    try{
+      actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+      const osc=actx.createOscillator(), g=actx.createGain(), now=actx.currentTime;
+      osc.type="sine"; osc.frequency.value=+sF.inp.value;
+      const peak=0.04+0.2*(+sA.inp.value/q.aMax);
+      g.gain.setValueAtTime(0,now); g.gain.linearRampToValueAtTime(peak,now+0.05); g.gain.setValueAtTime(peak,now+0.9); g.gain.linearRampToValueAtTime(0,now+1);
+      osc.connect(g).connect(actx.destination); osc.start(now); osc.stop(now+1.05);
+    }catch(e){ announce("Sound playback isn’t available in this browser."); }
+  });
+  const checkBtn=H("button",{type:"button",class:"primary",text:"Check my match"});
+  sec.append(H("div",{class:"controls"},checkBtn,hearBtn), att.info);
+  sec.append(H("p",{class:"help",text:"The sound button is optional: higher frequency sounds higher in pitch, and bigger amplitude sounds louder. Use headphones or low volume in class."}));
+  const fb=H("div",{class:"feedback",role:"status","aria-live":"polite"});
+  sec.append(fb, att.reveal, pager(i));
+  function lock(){
+    checkBtn.disabled=true; sA.inp.disabled=true; sF.inp.disabled=true;
+    att.show([
+      H("p",{class:"ans",text:"Target settings: amplitude "+q.targetA+" mm and frequency "+q.targetF+" Hz."}),
+      "Amplitude: the target’s crests rise "+q.targetA+" mm above the zero line.",
+      "Wavelength: crests repeat every "+trimNum(lamT)+" m on the grid, so λ = "+trimNum(lamT)+" m.",
+      "Frequency: f = v ÷ λ = "+q.v+" m/s ÷ "+trimNum(lamT)+" m = "+q.targetF+" Hz. Raising the frequency would make the wavelength shorter, and lowering it would make the wavelength longer."
+    ]);
+  }
+  checkBtn.addEventListener("click",()=>{
+    if(att.locked) return;
+    const A=+sA.inp.value, f=+sF.inp.value;
+    const aOK=Math.abs(A-q.targetA)<1e-6, fOK=f===q.targetF;
+    const parts=[];
+    parts.push(aOK? "✓ Amplitude matches." : "✗ Amplitude: your crests are too "+(A>q.targetA?"tall.":"short."));
+    parts.push(fOK? "✓ Frequency matches." : "✗ Frequency: your wavelength is too "+(f>q.targetF?"short, so the frequency is too high.":"long, so the frequency is too low."));
+    const earned=(aOK?1:0)+(fOK?1:0), success=earned===2;
+    const locked=att.record(success, earned);
+    if(success) setFeedback(fb,"ok","✓ Perfect match.","See the explanation below.");
+    else setFeedback(fb, earned?"part":"bad", earned+" of 2 correct.", parts.join(" ")+(locked?LAST:retryText(att)));
+    if(locked) lock();
+  });
+  if(att.locked) lock();
+  return { el:sec, focusEl:h2, tick(){} };
+}
+
+/* ---------------- Start screen ---------------- */
+function buildStart(){
+  const sec=H("section",{class:"card start","aria-labelledby":"start-h"});
+  const h2=H("h2",{class:"qtitle",id:"start-h",tabindex:"-1",text:"Before you begin"});
+  sec.append(h2, H("p",{class:"intro",text:"Type your name. If you are working with a partner, type both names. Your names will appear on your results card at the end of the activity."}));
+  const form=H("form",{novalidate:""});
+  const n1=H("input",{type:"text",id:"name1",autocomplete:"name",maxlength:"40","aria-describedby":"name1-err",value:team.names[0]});
+  const err=H("p",{class:"err",id:"name1-err","aria-live":"polite"});
+  const n2=H("input",{type:"text",id:"name2",maxlength:"40",value:team.names[1]});
+  form.append(
+    H("div",{class:"namefield"},H("label",{for:"name1",text:"Student 1 name"}),n1,err),
+    H("div",{class:"namefield"},H("label",{for:"name2"},document.createTextNode("Student 2 name "),H("span",{class:"opt",text:"(leave blank if working alone)"})),n2),
+    H("button",{type:"submit",class:"primary",text:team.names[0]?"Save names and continue":"Start the activity"}));
+  form.addEventListener("submit",e=>{
+    e.preventDefault();
+    const a=n1.value.trim(), b=n2.value.trim();
+    if(!a){ err.textContent="Enter at least one name to start."; n1.setAttribute("aria-invalid","true"); n1.focus(); return; }
+    n1.removeAttribute("aria-invalid"); err.textContent="";
+    team.names=[a,b]; save(); updateTeamLine();
+    const firstOpen=QUESTIONS.find(q=>!state[q.id].locked);
+    const target="#"+(firstOpen?firstOpen.id:"summary");
+    if(location.hash===target) route(false); else location.hash=target;
+  });
+  sec.append(form);
+  sec.append(H("ul",{class:"rules"},
+    H("li",{text:QUESTIONS.length+" questions, each worth "+PTS+" points ("+(QUESTIONS.length*PTS)+" points in total)."}),
+    H("li",{text:"You get "+MAX_TRIES+" attempts on each question."}),
+    H("li",{text:"The answer and its explanation appear once you get the question right or after your third attempt."}),
+    H("li",{text:"Your progress is saved in this browser, so you can come back to it on the same device."})));
+  return { el:sec, focusEl:n1, title:"Before you begin", tick(){} };
+}
+
+/* ---------------- Results card ---------------- */
+function buildSummary(){
+  const wrap=H("div");
+  let earned=0, solved=0, first=0, done=0;
+  const max=QUESTIONS.length*PTS;
+  const todo=[];
+  QUESTIONS.forEach((q,i)=>{ const s=state[q.id]; earned+=PTS*s.earned/s.max; if(s.locked) done++; else todo.push({q,i}); if(s.success){ solved++; if(s.tries===1) first++; } });
+  const complete=todo.length===0;
+  const pct=earned/max;
+  const card=H("section",{class:"card celebrate","aria-labelledby":"sum-h"});
+  if(complete){
+    const conf=H("div",{class:"confetti","aria-hidden":"true"});
+    const cols=["var(--wave)","var(--sound)","var(--mark)","var(--ok)"];
+    for(let n=0;n<36;n++){ const c=H("i"); c.style.left=(Math.random()*100)+"%"; c.style.background=cols[n%4]; c.style.animationDelay=(Math.random()*0.9).toFixed(2)+"s"; conf.append(c); }
+    card.append(conf);
+  }
+  const who=namesText();
+  const h2=H("h2",{id:"sum-h",tabindex:"-1",text: complete? "Well done, "+who+"!" : "Keep going, "+who+"!"});
+  let msg;
+  if(!complete) msg="You have finished "+done+" of "+QUESTIONS.length+" questions. Finish the rest to complete your card.";
+  else if(pct>=0.9) msg="Outstanding work. You clearly understand how light and sound waves behave.";
+  else if(pct>=0.75) msg="Great work. Look back at the explanations for any question you missed.";
+  else if(pct>=0.5) msg="Good effort. Review the explanations, especially for the questions you didn’t solve.";
+  else msg="You made it through the whole activity. Go back over the explanations and try a similar problem set again.";
+  const today=new Date().toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});
+  card.append(
+    H("p",{class:"kicker",text: complete? "PHY 1020, Activity 19: Waves, light and sound, complete" : "PHY 1020, Activity 19: Waves, light and sound, in progress"}),
+    h2,
+    S("svg",{class:"cwave",viewBox:"0 0 520 34","aria-hidden":"true",focusable:"false"}),
+    H("p",{class:"bigscore",text:fmtPts(earned)}),
+    H("p",{class:"outof",text:"out of "+max+" points"}),
+    H("p",{class:"msg",text:msg}),
+    H("div",{class:"stats"},
+      H("div",{class:"stat"},H("b",{text:solved+" of "+QUESTIONS.length}),H("span",{text:"questions solved"})),
+      H("div",{class:"stat"},H("b",{text:String(first)}),H("span",{text:"solved on the first attempt"}))),
+    H("p",{class:"date",text:today}));
+  const cw=card.querySelector(".cwave");
+  S("path",{d:"M4 17 C 30 -3, 56 -3, 82 17 S 134 37, 160 17 S 212 -3, 238 17 S 290 37, 316 17",style:"stroke:var(--wave)"},cw);
+  S("path",{d:"M316 17 C 326 7, 336 7, 346 17 S 366 27, 376 17 S 396 7, 406 17 S 426 27, 436 17 S 456 7, 466 17 S 486 27, 496 17 S 510 9, 516 17",style:"stroke:var(--sound)"},cw);
+  if(!complete){
+    const ul=H("ul");
+    todo.forEach(({q,i})=>ul.append(H("li",null,H("a",{href:"#"+q.id,text:"Question "+(i+1)+": "+q.short}))));
+    card.append(H("div",{class:"todo"},H("p",{class:"ans",text:"Still to finish:"}),ul));
+  } else {
+    card.append(H("p",{class:"help",style:"margin:12px auto 0",text:"Take a screenshot of this card to show your instructor."}));
+  }
+  wrap.append(card);
+
+  const det=H("section",{class:"card","aria-labelledby":"det-h"});
+  const tb=H("tbody");
+  QUESTIONS.forEach((q,i)=>{
+    const s=state[q.id];
+    const stTxt= s.locked ? (s.success? "Solved on attempt "+s.tries : "Answer shown after "+MAX_TRIES+" attempts") : (s.tries? triesWord(MAX_TRIES-s.tries)+" left" : "Not answered");
+    tb.append(H("tr",null, H("td",null,H("a",{href:"#"+q.id,text:(i+1)+". "+q.short})), H("td",{text:stTxt}), H("td",{text:fmtPts(PTS*s.earned/s.max)+" / "+PTS})));
+  });
+  const tbl=H("table",{class:"summary-table"},
+    H("caption",{text:"Points for each question. Questions with several parts give partial credit: each part earns an equal share of the 5 points."}),
+    H("thead",null,H("tr",null,H("th",{scope:"col",text:"Question"}),H("th",{scope:"col",text:"Status"}),H("th",{scope:"col",text:"Points"}))),
+    tb);
+  const reset=H("button",{type:"button",text:"Start over with new names"});
+  reset.addEventListener("click",()=>{
+    if(!confirm("This clears all answers, attempts and names on this device. Start over?")) return;
+    freshState(); team.names=["",""];
+    try{ localStorage.removeItem(STORE); }catch(e){}
+    for(const k in views) delete views[k];
+    buildNav(); updateTeamLine();
+    if(location.hash==="#start") route(false); else location.hash="#start";
+  });
+  det.append(H("h2",{class:"qtitle",id:"det-h",text:"Question by question"}), H("div",{class:"tablewrap",style:"max-height:none"},tbl), H("div",{class:"controls",style:"margin-top:16px"},reset));
+  wrap.append(det);
+  return { el:wrap, focusEl:h2, tick(){} };
+}
+
+/* ---------------- Router + loop ---------------- */
+let active=null;
+const builders={arrow:buildArrowQ, read:buildReadQ, kind:buildKindQ, tf:buildTFQ, who:buildWhoQ, rank:buildRankQ, fill:buildFillQ, match:buildMatchQ};
+function route(initial){
+  const h=(location.hash||"").slice(1);
+  let id = (h==="summary"||h==="start") ? h : (QUESTIONS.some(q=>q.id===h)? h : null);
+  if(!team.names[0]) id="start";
+  else if(!id) id=QUESTIONS[0].id;
+  current=id;
+  let v;
+  if(id==="start") v=buildStart();
+  else if(id==="summary") v=buildSummary();
+  else {
+    if(!views[id]){ const i=QUESTIONS.findIndex(q=>q.id===id), q=QUESTIONS[i]; views[id]=builders[q.type](q,i); }
+    v=views[id];
+  }
+  stage.replaceChildren(v.el);
+  active=v; markCurrent();
+  document.title=(v.title||v.focusEl.textContent)+" — Waves practice";
+  if(!initial || id==="start"){ v.focusEl.focus({preventScroll:true}); if(!initial) v.el.scrollIntoView({block:"start"}); }
+}
+window.addEventListener("hashchange",()=>route(false));
+buildNav(); updateTeamLine(); route(true);
+
+let last=performance.now();
+function loop(now){
+  const dt=Math.min(0.05,(now-last)/1000); last=now;
+  if(active && !document.hidden) active.tick(dt);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+})();
+
+</script>
+</body>
+</html>
