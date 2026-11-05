@@ -1,0 +1,2184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Echoes in Physics and Medicine: a three-part activity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF1F4; --surface:#FFFFFF; --ink:#16232F; --muted:#46525F; --line:#C3CCD4;
+  --accent:#0A6680; --accent-ink:#FFFFFF; --soft:#DFE7ED; --bezel:#1E2A33;
+  --warn-bg:#FCE8D4; --warn-ink:#7A3300; --ok-bg:#DDEFE3; --ok-ink:#145A2C;
+  --refl:#B4410E; --trans:#0A6680; --gold:#B07A0A;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121A21; --surface:#1B252E; --ink:#E6ECF1; --muted:#AEBBC6; --line:#3A4855;
+    --accent:#66C8E2; --accent-ink:#0B1A21; --soft:#24313C; --bezel:#0C1217;
+    --warn-bg:#4A2A12; --warn-ink:#FFD3AE; --ok-bg:#163826; --ok-ink:#B9EBC9;
+    --refl:#F2A060; --trans:#66C8E2; --gold:#F2C46A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121A21; --surface:#1B252E; --ink:#E6ECF1; --muted:#AEBBC6; --line:#3A4855;
+  --accent:#66C8E2; --accent-ink:#0B1A21; --soft:#24313C; --bezel:#0C1217;
+  --warn-bg:#4A2A12; --warn-ink:#FFD3AE; --ok-bg:#163826; --ok-ink:#B9EBC9;
+  --refl:#F2A060; --trans:#66C8E2; --gold:#F2C46A;
+  color-scheme:dark;
+}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  font-size:1.0625rem;line-height:1.55}
+.skip{position:absolute;left:-9999px;top:0;background:var(--accent);color:var(--accent-ink);padding:.6rem 1rem;z-index:50;border-radius:0 0 6px 0}
+.skip:focus{left:0}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.wrap{max-width:1220px;margin:0 auto;padding:1.5rem clamp(1rem,3vw,2rem) 3rem}
+
+/* page header and stepper */
+.top h1{font-size:clamp(2rem,4.4vw,2.9rem);line-height:1.08;margin:0 0 .4rem;letter-spacing:-.015em}
+.top p{margin:0;max-width:74ch;color:var(--muted);font-size:1.15rem}
+.stepbar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);margin:1.2rem calc(-1 * clamp(1rem,3vw,2rem)) 0;padding:.6rem clamp(1rem,3vw,2rem)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem}
+@media (max-width:900px){.steps{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:560px){.steps{grid-template-columns:1fr 1fr}}
+.steps button{font:inherit;width:100%;min-height:52px;text-align:left;padding:.35rem .75rem;border-radius:10px;cursor:pointer;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);display:flex;flex-direction:column;line-height:1.25}
+.steps button[aria-current="step"]{border:2px solid var(--accent);box-shadow:inset 0 -4px 0 var(--accent)}
+.steps .n{font-weight:700}
+.steps .prog{font-size:.88rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.part{padding-top:1.4rem}
+.part .parttitle{font-size:clamp(1.7rem,3.6vw,2.3rem);line-height:1.1;margin:0 0 .4rem;letter-spacing:-.01em}
+.partnav{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.75rem;margin-top:2rem;padding-top:1.2rem;border-top:2px solid var(--line)}
+.partnav .primary{margin-left:auto}
+
+/* finish */
+.finish h2{font-size:clamp(1.7rem,3.6vw,2.3rem);line-height:1.1;margin:0 0 .4rem}
+.finish > p{color:var(--muted);max-width:72ch;margin:0 0 1rem}
+.fbtn{font:inherit;font-weight:700;min-height:44px;padding:.5rem 1rem;border-radius:8px;cursor:pointer;border:2px solid var(--accent);background:var(--surface);color:var(--ink)}
+.fbtn.primary{background:var(--accent);color:var(--accent-ink)}
+.signin{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1rem 1.2rem;max-width:640px}
+.signin fieldset{border:0;margin:0;padding:0}
+.signin legend{font-weight:700;font-size:1.15rem;margin-bottom:.6rem;padding:0}
+.namerow{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:.6rem;margin-bottom:.6rem}
+.namerow label{font-weight:700;min-width:4.5rem}
+.signin input{font:inherit;min-height:44px;padding:.35rem .6rem;border:2px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);width:100%}
+.signin input:focus-visible{border-color:var(--accent)}
+.signin input[aria-invalid="true"]{border-color:var(--warn-ink)}
+.optional{display:grid;gap:.3rem;margin-top:.8rem}
+.optional label{font-weight:700}
+.err{color:var(--warn-ink);background:var(--warn-bg);border-radius:8px;padding:.4rem .7rem;margin:.8rem 0 0}
+.err:empty{display:none}
+.row-btns{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
+.progress-list{margin:.8rem 0 0;padding-left:1.2rem;color:var(--muted)}
+
+/* celebration card */
+.cardwrap{position:relative;margin-top:1.5rem;max-width:760px}
+.card{position:relative;overflow:hidden;background:var(--surface);color:var(--ink);border-radius:18px;padding:2rem clamp(1.2rem,4vw,2.6rem) 1.8rem;
+  border:3px solid var(--accent);box-shadow:0 0 0 8px var(--soft), 0 0 0 11px var(--accent)}
+.card:focus{outline:none}
+.card:focus-visible{outline:3px solid var(--accent);outline-offset:14px}
+.card .waves{position:absolute;right:-60px;top:-60px;width:300px;height:300px;opacity:.9;pointer-events:none}
+.card .kicker{text-transform:uppercase;letter-spacing:.14em;font-weight:700;font-size:.9rem;color:var(--accent);margin:0}
+.card h3{font-size:clamp(2.2rem,6vw,3.4rem);line-height:1;margin:.3rem 0 .8rem;letter-spacing:-.02em}
+.card .names{font-size:clamp(1.3rem,3vw,1.7rem);font-weight:700;margin:0;max-width:24ch;position:relative}
+.card .for{margin:.5rem 0 1rem;color:var(--muted);max-width:52ch;position:relative}
+.card ul{list-style:none;margin:0;padding:0;display:grid;gap:.5rem;position:relative}
+.card li{display:flex;gap:.7rem;align-items:baseline;background:var(--soft);border-radius:10px;padding:.5rem .8rem}
+.card li .ic{font-weight:700;color:var(--ok-ink);flex:none;width:1.4rem;text-align:center}
+.card li .ic.partial{color:var(--gold)}
+.card .meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem;margin-top:1.2rem;padding-top:.8rem;border-top:1px dashed var(--line);color:var(--muted);font-size:.95rem;position:relative}
+#confetti{position:absolute;inset:-40px -20px auto;height:420px;width:calc(100% + 40px);pointer-events:none;z-index:2}
+
+
+/* intro */
+.intro .lede{color:var(--muted);max-width:74ch;margin:0 0 1rem;font-size:1.1rem}
+.intro h3{font-size:1.4rem;margin:2rem 0 .6rem}
+.intro h4{font-size:1.1rem;margin:0 0 .4rem}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}
+@media (max-width:760px){.trio{grid-template-columns:1fr}}
+.eqcard{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--accent);border-radius:12px;padding:.8rem 1rem}
+.eqcard .big{font-size:1.9rem;font-weight:700;margin:0 0 .2rem;letter-spacing:.02em}
+.eqcard p{margin:0}
+.tri-row{display:grid;grid-template-columns:200px 1fr;gap:1.4rem;align-items:center;margin-top:1rem}
+@media (max-width:640px){.tri-row{grid-template-columns:1fr}.tri{max-width:200px}}
+.tri{width:100%;height:auto}
+.tri text{font-family:"Atkinson Hyperlegible",system-ui,sans-serif}
+.tips{margin:0;padding-left:1.2rem;display:grid;gap:.5rem;max-width:70ch}
+.examples{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem}
+@media (max-width:760px){.examples{grid-template-columns:1fr}}
+.ex{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.9rem 1.1rem}
+.ex p{margin:.3rem 0}
+.ex.wide{margin-top:1rem;max-width:760px;border-left:6px solid var(--accent)}
+.work{font-variant-numeric:tabular-nums;background:var(--soft);border-radius:8px;padding:.5rem .7rem;line-height:1.7}
+.note{color:var(--muted);font-size:.95rem}
+.tables{display:grid;grid-template-columns:1fr;gap:1rem;max-width:860px}
+@media (max-width:900px){.tables{grid-template-columns:1fr}}
+.intro .table-scroll{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.7rem .9rem}
+.intro table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+.intro caption{text-align:left;font-weight:700;padding-bottom:.4rem;font-size:1.1rem}
+.intro th,.intro td{text-align:left;padding:.45rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}
+.intro thead th{background:var(--soft)}
+.intro tbody th{font-weight:700}
+.tables th,.tables td{white-space:nowrap}
+.howto{margin-top:1rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.8rem 1.1rem}
+.howto p{margin:0 0 .3rem}
+.howto ul{margin:0;padding-left:1.2rem;font-variant-numeric:tabular-nums}
+.sci{display:grid;grid-template-columns:1.4fr 1fr;gap:1rem;align-items:start}
+@media (max-width:900px){.sci{grid-template-columns:1fr}}
+.rules{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.8rem 1.1rem}
+.rules p{margin:.2rem 0 .8rem;font-variant-numeric:tabular-nums;line-height:1.7}
+.practice{padding-left:1.4rem;max-width:72ch}
+.practice li{margin-bottom:.8rem}
+.practice summary{cursor:pointer;color:var(--accent);font-weight:700;min-height:32px;display:inline-flex;align-items:center}
+.practice details p{margin:.3rem 0 0;padding-left:.8rem;border-left:3px solid var(--line)}
+.intro .partnav{justify-content:flex-end}
+
+/* Echolocation Lab */
+.lab-echo .wrap{max-width:1220px;margin:0 auto;padding:1.5rem clamp(1rem,3vw,2rem) 3rem}
+.lab-echo header h2{font-size:clamp(1.9rem,4vw,2.6rem);line-height:1.1;margin:0 0 .4rem;letter-spacing:-.01em}
+.lab-echo header p{margin:0;max-width:72ch;color:var(--muted);font-size:1.125rem}
+.lab-echo .rounds{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;margin-top:1.4rem;border:0;padding:0}
+@media (max-width:980px){.lab-echo .rounds{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:620px){.lab-echo .rounds{grid-template-columns:1fr 1fr}}
+.lab-echo .rounds legend{font-weight:700;margin-bottom:.5rem;padding:0}
+.lab-echo .rounds label{display:flex;align-items:center;gap:.5rem;min-height:52px;padding:.4rem .7rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);cursor:pointer}
+.lab-echo .rounds input{accent-color:var(--accent);width:1.1rem;height:1.1rem;flex:none}
+.lab-echo .rounds label:has(input:checked){border:2px solid var(--accent)}
+.lab-echo .rounds .done{margin-left:auto;font-size:.85rem;color:var(--ok-ink);background:var(--ok-bg);border-radius:999px;padding:0 .5rem;font-weight:700}
+.lab-echo .task{margin-top:1rem;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:12px;padding:.9rem 1.2rem}
+.lab-echo .task h3{margin:0 0 .3rem;font-size:1.3rem}
+.lab-echo .task p{margin:.3rem 0;max-width:82ch}
+.lab-echo figure{margin:1.2rem 0 0}
+.lab-echo figcaption{font-weight:700;margin-bottom:.4rem}
+.lab-echo figcaption span{display:block;font-weight:400;color:var(--muted);font-size:.95rem}
+.lab-echo canvas{display:block;width:100%;height:auto}
+.lab-echo .frame{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.5rem}
+.lab-echo .screen{background:var(--bezel);border-radius:14px;padding:.5rem;box-shadow:inset 0 0 0 2px #2F3E49}
+.lab-echo #timeline{cursor:crosshair;touch-action:pan-y}
+.lab-echo .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:1.2rem;align-items:start}
+@media (max-width:900px){.lab-echo .grid2{grid-template-columns:1fr}}
+.lab-echo .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.9rem 1.1rem;margin-top:1rem}
+.lab-echo .btns{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.6rem}
+.lab-echo button{font:inherit;font-weight:700;min-height:44px;padding:.5rem 1rem;border-radius:8px;cursor:pointer;
+  border:2px solid var(--accent);background:var(--surface);color:var(--ink)}
+.lab-echo button.primary{background:var(--accent);color:var(--accent-ink)}
+.lab-echo button:disabled{opacity:.45;cursor:not-allowed}
+.lab-echo .row{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem}
+.lab-echo output{font-weight:700;font-variant-numeric:tabular-nums;font-size:1.15rem}
+.lab-echo input[type=range]{width:100%;min-height:44px;accent-color:var(--accent)}
+.lab-echo .hint{font-size:.92rem;color:var(--muted);margin:.2rem 0 0}
+.lab-echo fieldset.freq{border:0;padding:0;margin:.8rem 0 0}
+.lab-echo fieldset.freq legend{font-weight:700;padding:0;margin-bottom:.4rem}
+.lab-echo .radios{display:grid;grid-template-columns:repeat(5,1fr);gap:.35rem}
+@media (max-width:480px){.lab-echo .radios{grid-template-columns:repeat(3,1fr)}}
+.lab-echo .radios label{display:flex;align-items:center;justify-content:center;gap:.3rem;min-height:44px;border:1px solid var(--line);border-radius:8px;cursor:pointer;font-size:.95rem;white-space:nowrap}
+.lab-echo .radios input{accent-color:var(--accent)}
+.lab-echo .radios label:has(input:checked){border:2px solid var(--accent);font-weight:700}
+.lab-echo .table-scroll{overflow-x:auto}
+.lab-echo table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+.lab-echo caption{text-align:left;font-weight:700;padding-bottom:.4rem;font-size:1.1rem}
+.lab-echo th,.lab-echo td{text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}
+.lab-echo th{background:var(--soft)}
+.lab-echo td:nth-child(2){white-space:nowrap}
+.lab-echo td input{font:inherit;width:6.5rem;min-height:44px;padding:.3rem .5rem;border:2px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.lab-echo td input:focus-visible{border-color:var(--accent)}
+.lab-echo .unit{margin-left:.35rem;color:var(--muted)}
+.lab-echo .res{min-width:14rem}
+.lab-echo .ok{color:var(--ok-ink);background:var(--ok-bg);border-radius:8px;padding:.3rem .6rem;display:block}
+.lab-echo .no{color:var(--warn-ink);background:var(--warn-bg);border-radius:8px;padding:.3rem .6rem;display:block}
+.lab-echo .sol{display:block;margin-top:.3rem;color:var(--muted);font-size:.95rem}
+.lab-echo .summary{margin:.6rem 0 0;font-weight:700}
+.lab-echo .below{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem}
+@media (max-width:880px){.lab-echo .below{grid-template-columns:1fr}}
+.lab-echo .below section{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1rem 1.2rem}
+.lab-echo .below h3{font-size:1.2rem;margin:0 0 .4rem}
+.lab-echo .eq{font-size:1.1rem;margin:.8rem 0 .2rem;font-weight:700}
+.lab-echo .eq + p{margin-top:0;color:var(--muted)}
+.lab-echo .foot{margin-top:1.5rem;color:var(--muted);font-size:.92rem}
+/* Pulse-Echo Depth Finder */
+.lab-depth .wrap{max-width:1220px;margin:0 auto;padding:1.5rem clamp(1rem,3vw,2rem) 3rem}
+.lab-depth header h2{font-size:clamp(1.9rem,4vw,2.6rem);line-height:1.1;margin:0 0 .4rem;letter-spacing:-.01em}
+.lab-depth header p{margin:0;max-width:70ch;color:var(--muted);font-size:1.125rem}
+.lab-depth .rounds{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-top:1.4rem;border:0;padding:0}
+@media (max-width:700px){.lab-depth .rounds{grid-template-columns:1fr 1fr}}
+.lab-depth .rounds legend{font-weight:700;margin-bottom:.5rem;padding:0}
+.lab-depth .rounds label{display:flex;align-items:center;gap:.5rem;min-height:52px;padding:.4rem .7rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);cursor:pointer}
+.lab-depth .rounds input{accent-color:var(--accent);width:1.1rem;height:1.1rem;flex:none}
+.lab-depth .rounds label:has(input:checked){border:2px solid var(--accent)}
+.lab-depth .rounds .done{margin-left:auto;font-size:.9rem;color:var(--ok-ink);background:var(--ok-bg);border-radius:999px;padding:0 .5rem;font-weight:700}
+.lab-depth .task{margin-top:1rem;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:12px;padding:.9rem 1.2rem}
+.lab-depth .task h3{margin:0 0 .3rem;font-size:1.3rem}
+.lab-depth .task p{margin:.3rem 0;max-width:80ch}
+.lab-depth .task table{margin-top:.5rem}
+.lab-depth .stage{display:grid;grid-template-columns:minmax(220px,280px) minmax(0,1fr);gap:1.5rem;align-items:start;margin-top:1.2rem}
+@media (max-width:820px){.lab-depth .stage{grid-template-columns:1fr}
+.lab-depth .colfig{max-width:320px;margin:0 auto;width:100%}}
+.lab-depth figure{margin:0}
+.lab-depth figcaption{font-weight:700;margin-bottom:.4rem}
+.lab-depth figcaption span{display:block;font-weight:400;color:var(--muted);font-size:.95rem}
+.lab-depth canvas{display:block;width:100%;height:auto}
+.lab-depth .frame{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.5rem}
+.lab-depth .screen{background:var(--bezel);border-radius:14px;padding:.5rem;box-shadow:inset 0 0 0 2px #2F3E49}
+.lab-depth #timeline{cursor:crosshair;touch-action:pan-y}
+.lab-depth .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.9rem 1.1rem;margin-top:1rem}
+.lab-depth .btns{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.6rem}
+.lab-depth button{font:inherit;font-weight:700;min-height:44px;padding:.5rem 1rem;border-radius:8px;cursor:pointer;
+  border:2px solid var(--accent);background:var(--surface);color:var(--ink)}
+.lab-depth button.primary{background:var(--accent);color:var(--accent-ink)}
+.lab-depth button:disabled{opacity:.45;cursor:not-allowed}
+.lab-depth .row{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem}
+.lab-depth output{font-weight:700;font-variant-numeric:tabular-nums;font-size:1.15rem}
+.lab-depth input[type=range]{width:100%;min-height:44px;accent-color:var(--accent)}
+.lab-depth .hint{font-size:.92rem;color:var(--muted);margin:.2rem 0 0}
+.lab-depth .table-scroll{overflow-x:auto}
+.lab-depth table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+.lab-depth caption{text-align:left;font-weight:700;padding-bottom:.4rem;font-size:1.1rem}
+.lab-depth th,.lab-depth td{text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}
+.lab-depth th{background:var(--soft)}
+.lab-depth td:nth-child(2){white-space:nowrap}
+.lab-depth td input{font:inherit;width:7rem;min-height:44px;padding:.3rem .5rem;border:2px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.lab-depth td input:focus-visible{border-color:var(--accent)}
+.lab-depth .unit{margin-left:.35rem;color:var(--muted)}
+.lab-depth .res{min-width:16rem}
+.lab-depth .ok{color:var(--ok-ink);background:var(--ok-bg);border-radius:8px;padding:.3rem .6rem;display:block}
+.lab-depth .no{color:var(--warn-ink);background:var(--warn-bg);border-radius:8px;padding:.3rem .6rem;display:block}
+.lab-depth .sol{display:block;margin-top:.3rem;color:var(--muted);font-size:.95rem}
+.lab-depth .summary{margin:.6rem 0 0;font-weight:700}
+.lab-depth .below{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem}
+@media (max-width:880px){.lab-depth .below{grid-template-columns:1fr}}
+.lab-depth .below section{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1rem 1.2rem}
+.lab-depth .below h3{font-size:1.2rem;margin:0 0 .4rem}
+.lab-depth .eq{font-size:1.1rem;margin:.8rem 0 .2rem;font-weight:700}
+.lab-depth .eq + p{margin-top:0;color:var(--muted)}
+.lab-depth .foot{margin-top:1.5rem;color:var(--muted);font-size:.92rem}
+/* Why do we need gel? */
+.lab-gel .wrap{max-width:1220px;margin:0 auto;padding:1.5rem clamp(1rem,3vw,2rem) 3rem}
+.lab-gel header h2{font-size:clamp(1.9rem,4vw,2.6rem);line-height:1.1;margin:0 0 .4rem;letter-spacing:-.01em}
+.lab-gel header p{margin:0;max-width:72ch;color:var(--muted);font-size:1.125rem}
+.lab-gel h3.part{font-size:1.45rem;margin:2.2rem 0 .3rem}
+.lab-gel h3.part + p{margin:0 0 .8rem;color:var(--muted);max-width:75ch}
+.lab-gel .picker{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;border:0;padding:0;margin:0}
+@media (max-width:860px){.lab-gel .picker{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:520px){.lab-gel .picker{grid-template-columns:1fr 1fr}}
+.lab-gel .picker legend{font-weight:700;margin-bottom:.5rem;padding:0}
+.lab-gel .picker label{display:flex;align-items:center;gap:.5rem;min-height:52px;padding:.4rem .7rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);cursor:pointer}
+.lab-gel .picker input{accent-color:var(--accent);width:1.1rem;height:1.1rem;flex:none}
+.lab-gel .picker label:has(input:checked){border:2px solid var(--accent);font-weight:700}
+.lab-gel .stage{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:1rem;margin-top:1rem;align-items:start}
+@media (max-width:820px){.lab-gel .stage{grid-template-columns:1fr}}
+.lab-gel figure{margin:0}
+.lab-gel figcaption{font-weight:700;margin-bottom:.4rem}
+.lab-gel figcaption span{display:block;font-weight:400;color:var(--muted);font-size:.95rem}
+.lab-gel canvas{display:block;width:100%;height:auto}
+.lab-gel .frame{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.5rem}
+.lab-gel .screen{background:var(--bezel);border-radius:14px;padding:.5rem;box-shadow:inset 0 0 0 2px #2F3E49}
+.lab-gel .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.9rem 1.1rem;margin-top:1rem}
+.lab-gel .panel h4{margin:0 0 .4rem;font-size:1.15rem}
+.lab-gel .verdict{border-left:6px solid var(--accent)}
+.lab-gel .verdict p{margin:.3rem 0;max-width:80ch}
+.lab-gel .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.6rem;margin-top:.6rem}
+.lab-gel .stat{background:var(--soft);border-radius:10px;padding:.5rem .8rem}
+.lab-gel .stat b{display:block;font-size:1.35rem;font-variant-numeric:tabular-nums}
+.lab-gel .stat span{font-size:.92rem;color:var(--muted)}
+.lab-gel .check{display:flex;align-items:center;gap:.6rem;min-height:44px;cursor:pointer;margin-top:.4rem}
+.lab-gel .check input{width:1.25rem;height:1.25rem;accent-color:var(--accent)}
+.lab-gel .explorer{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:1.2rem;align-items:start}
+@media (max-width:820px){.lab-gel .explorer{grid-template-columns:1fr}}
+.lab-gel .sel{display:grid;gap:.3rem;margin-bottom:.7rem}
+.lab-gel .sel label{font-weight:700}
+.lab-gel select,.lab-gel input[type=text]{font:inherit;min-height:44px;padding:.3rem .5rem;border:2px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.lab-gel select{width:100%}
+.lab-gel select:focus-visible,.lab-gel input[type=text]:focus-visible{border-color:var(--accent)}
+.lab-gel .btns{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.6rem}
+.lab-gel button{font:inherit;font-weight:700;min-height:44px;padding:.5rem 1rem;border-radius:8px;cursor:pointer;
+  border:2px solid var(--accent);background:var(--surface);color:var(--ink)}
+.lab-gel button.primary{background:var(--accent);color:var(--accent-ink)}
+.lab-gel button.small{min-height:40px;padding:.3rem .7rem;font-size:.95rem}
+.lab-gel button:disabled{opacity:.45;cursor:not-allowed}
+.lab-gel .calc{font-variant-numeric:tabular-nums;margin:.3rem 0}
+.lab-gel .bar{display:flex;height:44px;border-radius:8px;overflow:hidden;border:2px solid var(--ink);margin:.6rem 0 .3rem}
+.lab-gel .bar div{display:flex;align-items:center;justify-content:center;font-weight:700;white-space:nowrap;overflow:hidden;font-size:.95rem}
+.lab-gel .bar .r{background:repeating-linear-gradient(135deg,#F6C9A8 0 8px,#F0B58C 8px 16px);color:#4A1E00}
+.lab-gel .bar .t{background:#BFE3EE;color:#08313D}
+.lab-gel .legendline{display:flex;flex-wrap:wrap;gap:1rem;font-size:.95rem;color:var(--muted)}
+.lab-gel .sw{display:inline-block;width:1.1rem;height:1.1rem;border:2px solid var(--ink);border-radius:3px;vertical-align:-3px;margin-right:.35rem}
+.lab-gel .sw.r{background:repeating-linear-gradient(135deg,#F6C9A8 0 4px,#F0B58C 4px 8px)}
+.lab-gel .sw.t{background:#BFE3EE}
+.lab-gel .table-scroll{overflow-x:auto}
+.lab-gel table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+.lab-gel caption{text-align:left;font-weight:700;padding-bottom:.4rem;font-size:1.1rem}
+.lab-gel th,.lab-gel td{text-align:left;padding:.45rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}
+.lab-gel th{background:var(--soft)}
+.lab-gel td:nth-child(2){white-space:nowrap}
+.lab-gel td input[type=text]{width:7rem}
+.lab-gel .unit{margin-left:.35rem;color:var(--muted)}
+.lab-gel .res{min-width:14rem}
+.lab-gel .ok{color:var(--ok-ink);background:var(--ok-bg);border-radius:8px;padding:.3rem .6rem;display:block}
+.lab-gel .no{color:var(--warn-ink);background:var(--warn-bg);border-radius:8px;padding:.3rem .6rem;display:block}
+.lab-gel .sol{display:block;margin-top:.3rem;color:var(--muted);font-size:.95rem}
+.lab-gel .summary{margin:.6rem 0 0;font-weight:700}
+.lab-gel .below{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem}
+@media (max-width:880px){.lab-gel .below{grid-template-columns:1fr}}
+.lab-gel .below section{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1rem 1.2rem}
+.lab-gel .below h3{font-size:1.2rem;margin:0 0 .4rem}
+.lab-gel .eq{font-size:1.1rem;margin:.8rem 0 .2rem;font-weight:700}
+.lab-gel .eq + p{margin-top:0;color:var(--muted)}
+.lab-gel .foot{margin-top:1.5rem;color:var(--muted);font-size:.92rem}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the activity</a>
+<div class="wrap">
+<header class="top">
+  <h1>Echoes in Physics and Medicine</h1>
+  <p>Start with a short refresher on distance, speed and time, then work through three linked activities. First, hunt like a bat and a dolphin using echoes. Next, use the same idea to find hidden structures inside a patient. Finally, discover why every ultrasound scan starts with gel. Sign your names at the end to earn your completion card.</p>
+</header>
+  <nav class="stepbar" aria-label="Activity parts">
+    <ol class="steps">
+      <li><button type="button" data-go="0" aria-current="step"><span class="n">Start here</span><span class="prog">Distance, speed, time</span></button></li>
+      <li><button type="button" data-go="1"><span class="n">Part 1: Echolocation</span><span class="prog" id="prog1"></span></button></li>
+      <li><button type="button" data-go="2"><span class="n">Part 2: Depth finder</span><span class="prog" id="prog2"></span></button></li>
+      <li><button type="button" data-go="3"><span class="n">Part 3: Why gel?</span><span class="prog" id="prog3"></span></button></li>
+      <li><button type="button" data-go="4"><span class="n">Finish</span><span class="prog" id="prog4">Sign your work</span></button></li>
+    </ol>
+  </nav>
+
+<main id="main" tabindex="-1">
+<section class="part intro" id="part-0" aria-labelledby="introTitle">
+  <h2 class="parttitle" id="introTitle" tabindex="-1">Start here: distance, speed and time</h2>
+  <p class="lede">Every activity in this lesson rests on one simple relationship. Spend a few minutes here first: the units and the tidy notation will save you from most of the mistakes people make later.</p>
+
+  <h3>1. One relationship, three ways to write it</h3>
+  <div class="trio">
+    <div class="eqcard"><p class="big">v = d ÷ t</p><p>Speed is the distance covered divided by the time taken.</p></div>
+    <div class="eqcard"><p class="big">d = v × t</p><p>Distance is speed multiplied by time.</p></div>
+    <div class="eqcard"><p class="big">t = d ÷ v</p><p>Time is distance divided by speed.</p></div>
+  </div>
+  <div class="tri-row">
+    <svg viewBox="0 0 220 180" class="tri" role="img" aria-labelledby="triTitle">
+      <title id="triTitle">Memory triangle: d on top, v and t side by side underneath. Cover the quantity you want: d equals v times t, v equals d over t, t equals d over v.</title>
+      <path d="M110 10 L210 170 L10 170 Z" fill="var(--soft)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
+      <line x1="48" y1="108" x2="172" y2="108" stroke="var(--ink)" stroke-width="3"/>
+      <line x1="110" y1="108" x2="110" y2="170" stroke="var(--ink)" stroke-width="3"/>
+      <text x="110" y="82" text-anchor="middle" font-size="34" font-weight="700" fill="var(--ink)">d</text>
+      <text x="74" y="152" text-anchor="middle" font-size="34" font-weight="700" fill="var(--ink)">v</text>
+      <text x="146" y="152" text-anchor="middle" font-size="34" font-weight="700" fill="var(--ink)">t</text>
+    </svg>
+    <ul class="tips">
+      <li><strong>Memory triangle.</strong> Cover the quantity you want. What is left shows the formula: side by side means multiply, one above the other means divide.</li>
+      <li><strong>Convert first.</strong> Put everything in meters and seconds before you calculate. Then the answer comes out in meters, seconds or m/s automatically.</li>
+      <li><strong>Echoes go there and back.</strong> When you time an echo, the sound has covered the distance twice, so the distance to the target is d = v t ÷ 2.</li>
+      <li><strong>Sanity check.</strong> Ask whether the answer is sensible: a bat’s moth is a few meters away, an organ is a few centimeters deep.</li>
+    </ul>
+  </div>
+
+  <h3>2. Worked examples</h3>
+  <div class="examples">
+    <article class="ex" aria-labelledby="ex1">
+      <h4 id="ex1">Example A: a walk to class</h4>
+      <p>You walk at 1.5 m/s for 2 minutes. How far do you go?</p>
+      <p class="work">t = 2 min = 120 s<br>d = v × t = 1.5 m/s × 120 s = <strong>180 m</strong></p>
+      <p class="note">Minutes were converted to seconds first.</p>
+    </article>
+    <article class="ex" aria-labelledby="ex2">
+      <h4 id="ex2">Example B: thunder</h4>
+      <p>You hear thunder 3.0 s after the flash. Sound travels at 343 m/s in air. How far away was the lightning?</p>
+      <p class="work">d = v × t = 343 m/s × 3.0 s = <strong>1029 m ≈ 1.0 km</strong></p>
+      <p class="note">The light arrives almost instantly, so the 3.0 s is the sound’s one-way trip.</p>
+    </article>
+    <article class="ex" aria-labelledby="ex3">
+      <h4 id="ex3">Example C: an echo from a cliff</h4>
+      <p>You clap and hear the echo from a cliff 0.50 s later. How far away is the cliff?</p>
+      <p class="work">Sound travels there and back: 343 m/s × 0.50 s = 171.5 m<br>d = 171.5 m ÷ 2 = <strong>86 m</strong></p>
+      <p class="note">This is exactly what a bat does in Part 1.</p>
+    </article>
+    <article class="ex" aria-labelledby="ex4">
+      <h4 id="ex4">Example D: an echo inside the body</h4>
+      <p>An ultrasound echo returns 65 µs after the pulse. Sound travels at 1540 m/s in soft tissue. How deep is the boundary?</p>
+      <p class="work">t = 65 µs = 65 × 10⁻⁶ s<br>d = v t ÷ 2 = 1540 m/s × 65 × 10⁻⁶ s ÷ 2 = 0.050 m = <strong>5.0 cm</strong></p>
+      <p class="note">Microseconds were converted to seconds first. This is Part 2.</p>
+    </article>
+  </div>
+
+  <h3>3. Unit conversions</h3>
+  <div class="tables">
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="lenCap">
+      <table>
+        <caption id="lenCap">Length</caption>
+        <thead><tr><th scope="col">Unit</th><th scope="col">In meters</th><th scope="col">Scientific notation</th><th scope="col">Also equals</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">1 meter (m)</th><td>1 m</td><td>10⁰ m</td><td>100 cm = 1000 mm</td></tr>
+          <tr><th scope="row">1 centimeter (cm)</th><td>0.01 m</td><td>10⁻² m</td><td>10 mm</td></tr>
+          <tr><th scope="row">1 millimeter (mm)</th><td>0.001 m</td><td>10⁻³ m</td><td>0.1 cm</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="timeCap">
+      <table>
+        <caption id="timeCap">Time</caption>
+        <thead><tr><th scope="col">Unit</th><th scope="col">In seconds</th><th scope="col">Scientific notation</th><th scope="col">Also equals</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">1 second (s)</th><td>1 s</td><td>10⁰ s</td><td>1000 ms = 1 000 000 µs</td></tr>
+          <tr><th scope="row">1 millisecond (ms)</th><td>0.001 s</td><td>10⁻³ s</td><td>1000 µs</td></tr>
+          <tr><th scope="row">1 microsecond (µs)</th><td>0.000 001 s</td><td>10⁻⁶ s</td><td>0.001 ms</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="howto">
+    <p><strong>Going to a smaller unit, multiply. Going to a bigger unit, divide.</strong></p>
+    <ul>
+      <li>4.2 cm to millimeters: 4.2 × 10 = 42 mm</li>
+      <li>350 mm to meters: 350 ÷ 1000 = 0.35 m</li>
+      <li>12 ms to seconds: 12 ÷ 1000 = 0.012 s = 1.2 × 10⁻² s</li>
+      <li>0.25 ms to microseconds: 0.25 × 1000 = 250 µs</li>
+    </ul>
+  </div>
+
+  <h3>4. Scientific notation keeps things tidy</h3>
+  <p class="lede">Ultrasound mixes very large and very small numbers. Writing them as <strong>a × 10ⁿ</strong>, with a between 1 and 10, makes them easy to read and easy to calculate with.</p>
+  <div class="sci">
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="sciCap">
+      <table>
+        <caption id="sciCap">Writing numbers in scientific notation</caption>
+        <thead><tr><th scope="col">Ordinary number</th><th scope="col">Scientific notation</th><th scope="col">How</th></tr></thead>
+        <tbody>
+          <tr><td>1540 m/s</td><td>1.54 × 10³ m/s</td><td>Decimal point moves 3 places left: exponent +3</td></tr>
+          <tr><td>343 m/s</td><td>3.43 × 10² m/s</td><td>Moves 2 places left: exponent +2</td></tr>
+          <tr><td>0.05 m</td><td>5 × 10⁻² m</td><td>Moves 2 places right: exponent −2</td></tr>
+          <tr><td>0.000 065 s</td><td>6.5 × 10⁻⁵ s</td><td>Moves 5 places right: exponent −5</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rules">
+      <p><strong>Multiplying:</strong> multiply the front numbers, <em>add</em> the exponents.<br>(2 × 10³) × (3 × 10⁻⁵) = 6 × 10⁻²</p>
+      <p><strong>Dividing:</strong> divide the front numbers, <em>subtract</em> the exponents.<br>(8 × 10⁻²) ÷ (2 × 10³) = 4 × 10⁻⁵</p>
+    </div>
+  </div>
+  <article class="ex wide" aria-labelledby="ex5">
+    <h4 id="ex5">Example D again, the tidy way</h4>
+    <p class="work">d = v t ÷ 2<br>
+      = (1.54 × 10³ m/s) × (6.5 × 10⁻⁵ s) ÷ 2<br>
+      = (1.54 × 6.5) × 10<sup>3 + (−5)</sup> m ÷ 2<br>
+      = 10.0 × 10⁻² m ÷ 2<br>
+      = 5.0 × 10⁻² m = <strong>5.0 cm</strong></p>
+    <p class="note">No long strings of zeros, and the exponent tells you the size at a glance: 10⁻² m is centimeters.</p>
+  </article>
+
+  <h3>5. Quick check before you start</h3>
+  <p class="lede">Try each one, then open the answer.</p>
+  <ol class="practice">
+    <li>Write 0.003 s in milliseconds and in scientific notation.
+      <details><summary>Show answer</summary><p>0.003 s = 3 ms = 3 × 10⁻³ s.</p></details></li>
+    <li>How far does sound in air (343 m/s) travel in 20 ms?
+      <details><summary>Show answer</summary><p>d = 343 m/s × 20 × 10⁻³ s = 6.86 m.</p></details></li>
+    <li>A bat hears an echo 20 ms after calling. How far away is the moth?
+      <details><summary>Show answer</summary><p>Half of the round trip: 6.86 m ÷ 2 ≈ 3.4 m.</p></details></li>
+    <li>How long does sound in tissue (1540 m/s) take to travel 3.0 cm?
+      <details><summary>Show answer</summary><p>t = d ÷ v = 3.0 × 10⁻² m ÷ 1.54 × 10³ m/s ≈ 1.9 × 10⁻⁵ s = 19 µs.</p></details></li>
+  </ol>
+
+  <nav class="partnav" aria-label="Introduction navigation"><button type="button" class="fbtn primary" data-go="1">Start Part 1: Echolocation</button></nav>
+</section>
+
+<section class="part lab-echo" id="part-1" aria-labelledby="p1-title" hidden>
+
+<header>
+  <h2 class="parttitle" id="p1-title" tabindex="-1">Part 1: Echolocation Lab</h2>
+  <p>A bat hunting at night can’t see its prey, so it listens. It sends out a high-pitched call and times the echoes. Do what the bat does: fire a call, measure when each echo returns, and work out where everything is. Medical ultrasound works on exactly the same principle.</p>
+</header>
+
+<fieldset class="rounds">
+  <legend>Choose a round</legend>
+  <label><input type="radio" name="p1-round" value="0" checked> <span>1. Find the moth</span><span class="done" id="p1-done0" hidden>Solved</span></label>
+  <label><input type="radio" name="p1-round" value="1"> <span>2. Moth, tree or cliff?</span><span class="done" id="p1-done1" hidden>Solved</span></label>
+  <label><input type="radio" name="p1-round" value="2"> <span>3. Predict the echo</span><span class="done" id="p1-done2" hidden>Solved</span></label>
+  <label><input type="radio" name="p1-round" value="3"> <span>4. Tiny prey</span><span class="done" id="p1-done3" hidden>Solved</span></label>
+  <label><input type="radio" name="p1-round" value="4"> <span>5. Dolphin sonar</span><span class="done" id="p1-done4" hidden>Solved</span></label>
+</fieldset>
+
+<section class="task" id="p1-task" tabindex="-1" aria-labelledby="p1-taskTitle">
+  <h3 id="p1-taskTitle">Round 1</h3>
+  <div id="p1-taskText"></div>
+</section>
+
+<figure>
+  <figcaption id="p1-sceneCap">The night scene<span>Side view. The ruler shows distance from the bat in meters.</span></figcaption>
+  <div class="frame"><canvas id="p1-scene" width="900" height="360" role="img" aria-label="Scene"></canvas></div>
+  <div class="btns">
+    <button type="button" id="p1-reveal" aria-pressed="false" disabled>Turn on the lights</button>
+    <button type="button" id="p1-newCase">New hunt</button>
+  </div>
+  <p class="hint" id="p1-revealHint">Check your answers first to see what is really out there.</p>
+</figure>
+
+<figure>
+      <figcaption>Echo display<span>What the bat hears: echo strength against time after the call. Measure to the center of each echo.</span></figcaption>
+      <div class="screen"><canvas id="p1-timeline" width="900" height="280" role="img" aria-label="Echo display"></canvas></div>
+    </figure>
+
+<div class="grid2">
+  <div>
+    <div class="panel" aria-label="Calling and measuring">
+      <div class="btns" style="margin-top:0">
+        <button class="primary" type="button" id="p1-fire">Send a call</button>
+        <button type="button" id="p1-prevEcho" disabled>Previous echo</button>
+        <button type="button" id="p1-nextEcho" disabled>Next echo</button>
+      </div>
+      <p class="hint" id="p1-fireHint"></p>
+      <fieldset class="freq" id="p1-freqBox" hidden>
+        <legend>Call frequency</legend>
+        <div class="radios">
+          <label><input type="radio" name="p1-freq" value="20"> 20 kHz</label>
+          <label><input type="radio" name="p1-freq" value="40" checked> 40 kHz</label>
+          <label><input type="radio" name="p1-freq" value="60"> 60 kHz</label>
+          <label><input type="radio" name="p1-freq" value="80"> 80 kHz</label>
+          <label><input type="radio" name="p1-freq" value="100"> 100 kHz</label>
+        </div>
+      </fieldset>
+      <div class="row" style="margin-top:.6rem"><label for="p1-cursor">Time cursor</label><output id="p1-cursorOut" for="p1-cursor">0.0 ms</output></div>
+      <input type="range" id="p1-cursor" min="0" max="80" step="0.1" value="0" aria-describedby="p1-cursorHint">
+      <p class="hint" id="p1-cursorHint">Drag the slider or click the echo display. The echo buttons snap the cursor to the center of each echo.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="table-scroll">
+      <table>
+        <caption>Your answers</caption>
+        <thead><tr><th scope="col">Question</th><th scope="col">Your answer</th><th scope="col" class="res">Result</th></tr></thead>
+        <tbody id="p1-answers"></tbody>
+      </table>
+    </div>
+    <div class="btns">
+      <button class="primary" type="button" id="p1-check">Check answers</button>
+      <button type="button" id="p1-showSol" disabled>Show worked solutions</button>
+    </div>
+    <p class="summary" id="p1-summary" aria-live="polite"></p>
+  </div>
+</div>
+
+<div class="below">
+  <section aria-labelledby="p1-physTitle">
+    <h3 id="p1-physTitle">The physics behind it</h3>
+    <p class="eq">d = v t ÷ 2</p>
+    <p>The call travels out to the target and the echo travels back, so the sound covers twice the distance in the measured time.</p>
+    <p class="eq">v<sub>air</sub> = 343 m/s, v<sub>water</sub> ≈ 1500 m/s</p>
+    <p>Speeds at about 20 °C. Remember to convert milliseconds to seconds: 1 ms = 0.001 s. In air, 1 m of distance takes about 5.8 ms round trip.</p>
+    <p class="eq">λ = v ÷ f</p>
+    <p>A target much smaller than the wavelength barely reflects sound. Higher frequencies have shorter wavelengths, so they reveal smaller things.</p>
+  </section>
+  <section aria-labelledby="p1-linkTitle">
+    <h3 id="p1-linkTitle">From bats to the clinic</h3>
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="p1-cmpCap">
+      <table>
+        <caption id="p1-cmpCap">Three echo-ranging systems compared</caption>
+        <thead><tr><th scope="col"></th><th scope="col">Bat</th><th scope="col">Dolphin</th><th scope="col">Medical scanner</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Medium</th><td>Air</td><td>Seawater</td><td>Soft tissue</td></tr>
+          <tr><th scope="row">Speed of sound</th><td>343 m/s</td><td>≈ 1500 m/s</td><td>1540 m/s</td></tr>
+          <tr><th scope="row">Typical frequency</th><td>20–100 kHz</td><td>40–130 kHz</td><td>2–15 MHz</td></tr>
+          <tr><th scope="row">Wavelength</th><td>3–17 mm</td><td>1–4 mm</td><td>0.1–0.8 mm</td></tr>
+          <tr><th scope="row">Typical range</th><td>a few meters</td><td>tens of meters</td><td>a few centimeters</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>All three are ultrasound: frequencies above the roughly 20 kHz limit of human hearing. The scanner uses millions of hertz to get sub-millimeter wavelengths, which is how it resolves fine detail inside the body.</p>
+  </section>
+</div>
+<p class="foot">Values are simplified for teaching. Answers within about 2% count as correct; you can type decimals with a point or a comma. The gnat is drawn larger than life so you can see it.</p>
+
+<div class="sr-only" aria-live="polite" id="p1-live"></div>
+
+<nav class="partnav" aria-label="Part 1 navigation"><button type="button" class="ghost" data-go="0">Back to the introduction</button><button type="button" class="primary" data-go="2">Continue to Part 2: Pulse-Echo Depth Finder</button></nav>
+
+</section>
+
+<section class="part lab-depth" id="part-2" aria-labelledby="p2-title" hidden>
+
+<header>
+  <h2 class="parttitle" id="p2-title" tabindex="-1">Part 2: Pulse-Echo Depth Finder</h2>
+  <p>The patient’s anatomy is hidden. Fire a pulse, measure when each echo returns, and work out how deep each boundary is. Check your answers to reveal what’s inside.</p>
+</header>
+
+<fieldset class="rounds" id="p2-roundPicker">
+  <legend>Choose a round</legend>
+  <label><input type="radio" name="p2-round" value="0" checked> <span>1. One echo</span><span class="done" id="p2-done0" hidden>Solved</span></label>
+  <label><input type="radio" name="p2-round" value="1"> <span>2. Three echoes</span><span class="done" id="p2-done1" hidden>Solved</span></label>
+  <label><input type="radio" name="p2-round" value="2"> <span>3. Predict the time</span><span class="done" id="p2-done2" hidden>Solved</span></label>
+  <label><input type="radio" name="p2-round" value="3"> <span>4. The speed trap</span><span class="done" id="p2-done3" hidden>Solved</span></label>
+</fieldset>
+
+<section class="task" id="p2-task" tabindex="-1" aria-labelledby="p2-taskTitle">
+  <h3 id="p2-taskTitle">Round 1</h3>
+  <div id="p2-taskText"></div>
+</section>
+
+<main class="stage">
+  <figure class="colfig">
+    <figcaption>The patient<span>A column of tissue 15 cm deep, probe on top</span></figcaption>
+    <div class="frame"><canvas id="p2-column" width="300" height="580" role="img" aria-label="Patient"></canvas></div>
+    <div class="btns">
+      <button type="button" id="p2-reveal" aria-pressed="false" disabled>Reveal the anatomy</button>
+      <button type="button" id="p2-newCase">New patient</button>
+    </div>
+    <p class="hint" id="p2-revealHint">Check your answers first to unlock the reveal.</p>
+  </figure>
+
+  <div>
+    <figure>
+      <figcaption>Echo display<span>Echo strength against time after the pulse is sent. Measure to the center of each echo.</span></figcaption>
+      <div class="screen"><canvas id="p2-timeline" width="900" height="280" role="img" aria-label="Echo display"></canvas></div>
+    </figure>
+    <div class="panel" aria-label="Firing and measuring">
+      <div class="btns" style="margin-top:0">
+        <button class="primary" type="button" id="p2-fire">Fire pulse</button>
+        <button type="button" id="p2-prevEcho" disabled>Previous echo</button>
+        <button type="button" id="p2-nextEcho" disabled>Next echo</button>
+      </div>
+      <p class="hint" id="p2-fireHint"></p>
+      <div class="row" style="margin-top:.6rem"><label for="p2-cursor">Time cursor</label><output id="p2-cursorOut" for="p2-cursor">0.0 µs</output></div>
+      <input type="range" id="p2-cursor" min="0" max="200" step="0.1" value="0" aria-describedby="p2-cursorHint">
+      <p class="hint" id="p2-cursorHint">Drag the slider or click the echo display to place the cursor. The echo buttons snap it to the center of each echo.</p>
+    </div>
+
+    <div class="panel">
+      <div class="table-scroll">
+        <table>
+          <caption>Your answers</caption>
+          <thead><tr><th scope="col">Question</th><th scope="col">Your answer</th><th scope="col" class="res">Result</th></tr></thead>
+          <tbody id="p2-answers"></tbody>
+        </table>
+      </div>
+      <div class="btns">
+        <button class="primary" type="button" id="p2-check">Check answers</button>
+        <button type="button" id="p2-showSol" disabled>Show worked solutions</button>
+      </div>
+      <p class="summary" id="p2-summary" aria-live="polite"></p>
+    </div>
+  </div>
+</main>
+
+<div class="below">
+  <section aria-labelledby="p2-physTitle">
+    <h3 id="p2-physTitle">The physics behind it</h3>
+    <p class="eq">d = v t ÷ 2</p>
+    <p>The pulse travels down to the boundary and the echo travels back up, so the sound covers twice the depth in the measured time t.</p>
+    <p class="eq">v = 1540 m/s = 0.154 cm/µs</p>
+    <p>The average speed of sound in soft tissue. Every scanner assumes this speed when it converts echo time into depth. Handy conversion: 1 cm of depth takes about 13 µs round trip.</p>
+    <p class="eq">Layer thickness = v<sub>layer</sub> × Δt ÷ 2</p>
+    <p>When layers have different speeds, work down one layer at a time using the time spent in each layer, then add the thicknesses.</p>
+  </section>
+  <section aria-labelledby="p2-whyTitle">
+    <h3 id="p2-whyTitle">Why it matters clinically</h3>
+    <p>Depth measurements guide biopsy needles, size organs and tumors, and track fetal growth. The scanner never measures depth directly: it measures time and assumes a speed.</p>
+    <p>When sound travels through tissue slower than 1540 m/s, such as a thick layer of fat, echoes arrive late and the scanner draws structures deeper than they are. Faster tissue does the opposite. This is called a speed propagation error, and it can shift or bend structures on the image.</p>
+  </section>
+</div>
+<p class="foot">Values are simplified for teaching. Answers within about 2% count as correct; you can type decimals with a point or a comma.</p>
+
+<div class="sr-only" aria-live="polite" id="p2-live"></div>
+
+<nav class="partnav" aria-label="Part 2 navigation"><button type="button" class="ghost" data-go="1">Back to Part 1</button><button type="button" class="primary" data-go="3">Continue to Part 3: Why do we need gel?</button></nav>
+
+</section>
+
+<section class="part lab-gel" id="part-3" aria-labelledby="p3-title" hidden>
+
+<header>
+  <h2 class="parttitle" id="p3-title" tabindex="-1">Part 3: Why do we need gel?</h2>
+  <p>Ultrasound only passes smoothly from one material to another when their acoustic impedances match. Air and skin are about as mismatched as two materials can be. Try the probe with different coupling materials, then explore any boundary you like.</p>
+</header>
+
+<h3 class="part" id="p3-part1">3a. Put the probe on the skin</h3>
+<p>Choose what sits between the probe and the skin. Watch how much sound gets in, how much echo makes it back, and what the screen would show.</p>
+
+<fieldset class="picker">
+  <legend>Coupling between probe and skin</legend>
+  <label><input type="radio" name="p3-coup" value="air" checked> Nothing (air gap)</label>
+  <label><input type="radio" name="p3-coup" value="water"> Water</label>
+  <label><input type="radio" name="p3-coup" value="oil"> Mineral oil</label>
+  <label><input type="radio" name="p3-coup" value="gel"> Ultrasound gel</label>
+  <label><input type="radio" name="p3-coup" value="bubbles"> Gel with air bubbles</label>
+</fieldset>
+
+<div class="stage">
+  <figure>
+    <figcaption>At the skin<span>Side view, layers not to scale. Solid arrows carry sound down; dashed arrows carry reflections up. Arrow width shows intensity.</span></figcaption>
+    <div class="frame"><canvas id="p3-scene" width="900" height="460" role="img" aria-label="Probe on skin"></canvas></div>
+    <label class="check"><input type="checkbox" id="p3-calm"> Reduce motion</label>
+  </figure>
+  <figure>
+    <figcaption>What the screen shows<span>The same patient, imaged through this coupling</span></figcaption>
+    <div class="screen"><canvas id="p3-preview" width="360" height="460" role="img" aria-label="Ultrasound image preview"></canvas></div>
+  </figure>
+</div>
+
+<div class="panel verdict" aria-live="polite">
+  <h4 id="p3-vTitle">Air gap</h4>
+  <div id="p3-vText"></div>
+  <div class="stats" id="p3-stats"></div>
+</div>
+
+<h3 class="part" id="p3-part2">3b. Boundary explorer</h3>
+<p>Pick any two materials. The reflected fraction depends only on how different their impedances are, not on which side the sound comes from.</p>
+
+<div class="explorer">
+  <div class="panel" style="margin-top:0">
+    <div class="sel"><label for="p3-matA">Sound travels from</label><select id="p3-matA"></select></div>
+    <div class="sel"><label for="p3-matB">into</label><select id="p3-matB"></select></div>
+    <p style="margin:.4rem 0 .2rem;font-weight:700">Try these boundaries</p>
+    <div class="btns" style="margin-top:0">
+      <button class="small" type="button" data-p="air,skin">Air to skin</button>
+      <button class="small" type="button" data-p="gel,skin">Gel to skin</button>
+      <button class="small" type="button" data-p="fat,muscle">Fat to muscle</button>
+      <button class="small" type="button" data-p="soft,bone">Tissue to bone</button>
+      <button class="small" type="button" data-p="soft,lung">Tissue to lung</button>
+      <button class="small" type="button" data-p="pzt,soft">Crystal to tissue</button>
+    </div>
+    <button class="small" type="button" id="p3-swap" style="margin-top:.6rem">Swap the two materials</button>
+  </div>
+  <div class="panel" style="margin-top:0" aria-live="polite" id="p3-explOut"></div>
+</div>
+
+<div class="panel table-scroll" tabindex="0" role="region" aria-labelledby="p3-matCap">
+  <table>
+    <caption id="p3-matCap">Material values used in this lab</caption>
+    <thead><tr><th scope="col">Material</th><th scope="col">Density ρ (kg/m³)</th><th scope="col">Speed v (m/s)</th><th scope="col">Impedance Z = ρv (MRayl)</th></tr></thead>
+    <tbody id="p3-matRows"></tbody>
+  </table>
+</div>
+
+<h3 class="part" id="p3-part3">3c. Check your understanding</h3>
+<p>Use the material table above. 1 MRayl = 10⁶ Rayl = 10⁶ kg/(m²·s).</p>
+<div class="panel" style="margin-top:0">
+  <div class="table-scroll">
+    <table>
+      <caption>Questions</caption>
+      <thead><tr><th scope="col">Question</th><th scope="col">Your answer</th><th scope="col" class="res">Result</th></tr></thead>
+      <tbody id="p3-answers"></tbody>
+    </table>
+  </div>
+  <div class="btns">
+    <button class="primary" type="button" id="p3-checkBtn">Check answers</button>
+    <button type="button" id="p3-showSol" disabled>Show worked solutions</button>
+  </div>
+  <p class="summary" id="p3-summary" aria-live="polite"></p>
+</div>
+
+<div class="below">
+  <section aria-labelledby="p3-physTitle">
+    <h3 id="p3-physTitle">The physics behind it</h3>
+    <p class="eq">Z = ρ v</p>
+    <p>Acoustic impedance: how hard a material is to set vibrating. Units: Rayl, or kg/(m²·s).</p>
+    <p class="eq">R = ((Z₂ − Z₁) ÷ (Z₂ + Z₁))², T = 1 − R</p>
+    <p>Fraction of intensity reflected (R) and transmitted (T) at a boundary, for sound hitting it straight on.</p>
+    <p class="eq">Round trip = T × T</p>
+    <p>An echo from inside the body crosses the skin boundary twice, once going in and once coming out.</p>
+    <p class="eq">Loss in dB = 10 log₁₀(fraction)</p>
+    <p>A fraction of one millionth is −60 dB.</p>
+  </section>
+  <section aria-labelledby="p3-whyTitle">
+    <h3 id="p3-whyTitle">So why gel, and not just water?</h3>
+    <p>Acoustically, any liquid with an impedance near tissue’s would do: water and oil both let almost all the sound through. Gel wins for practical reasons. It is thick enough to stay where it is put and fill every gap on curved or hairy skin, it doesn’t run off or evaporate during an exam, it is water-based and gentle on skin, and it won’t damage the probe’s lens the way oils and lotions can.</p>
+    <p>The same idea is built into the probe itself. The piezoelectric crystal’s impedance (about 30 MRayl) is far above tissue’s, so a matching layer with an in-between impedance sits on the probe face. The ideal value is the geometric mean of the two: Z = √(Z₁ Z₂).</p>
+  </section>
+</div>
+<p class="foot">Values are simplified for teaching and assume sound hits each boundary straight on. The scene treats the coupling layer as one boundary with the skin; a real air gap is even worse, because sound must also leave the probe into the air. Answers within a small tolerance count as correct; you can type decimals with a point or a comma.</p>
+
+<div class="sr-only" aria-live="polite" id="p3-live"></div>
+
+<nav class="partnav" aria-label="Part 3 navigation"><button type="button" class="ghost" data-go="2">Back to Part 2</button><button type="button" class="primary" data-go="4">Finish and sign your work</button></nav>
+
+</section>
+
+<section class="part finish" id="part-4" aria-labelledby="finishTitle" hidden>
+  <h2 id="finishTitle" tabindex="-1">Finish: sign your work</h2>
+  <p>Enter the name of everyone who worked on this activity, then celebrate. Your completion card lists how much of each part you solved.</p>
+
+  <div class="signin" id="signin">
+    <fieldset>
+      <legend>Who completed this activity?</legend>
+      <div id="nameRows"></div>
+      <button type="button" class="fbtn" id="addName">Add another name</button>
+    </fieldset>
+    <div class="optional">
+      <label for="section">Class or section <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+      <input id="section" type="text" autocomplete="off">
+    </div>
+    <p class="err" id="nameErr" role="alert"></p>
+    <h3 style="font-size:1.05rem;margin:1rem 0 0">Your progress so far</h3>
+    <ul class="progress-list" id="progList"></ul>
+    <div class="row-btns">
+      <button type="button" class="fbtn primary" id="celebrate">Celebrate!</button>
+      <button type="button" class="fbtn" data-go="3">Back to Part 3</button>
+    </div>
+  </div>
+
+  <div class="cardwrap" id="cardwrap" hidden>
+    <canvas id="confetti" aria-hidden="true"></canvas>
+    <article class="card" id="card" tabindex="-1" aria-labelledby="cardTitle">
+      <svg class="waves" viewBox="0 0 300 300" aria-hidden="true">
+        <g fill="none" stroke="var(--accent)" stroke-linecap="round">
+          <path d="M 300 60 A 120 120 0 0 0 180 180" stroke-width="6" opacity=".55"/>
+          <path d="M 300 20 A 160 160 0 0 0 140 180" stroke-width="5" opacity=".38"/>
+          <path d="M 300 -20 A 200 200 0 0 0 100 180" stroke-width="4" opacity=".24"/>
+          <path d="M 300 -60 A 240 240 0 0 0 60 180" stroke-width="3" opacity=".14"/>
+        </g>
+        <circle cx="236" cy="124" r="10" fill="var(--accent)"/>
+      </svg>
+      <p class="kicker">Completion card</p>
+      <h3 id="cardTitle">Echo experts!</h3>
+      <p class="names" id="cardNames"></p>
+      <p class="for" id="cardFor">completed <strong>Echoes in Physics and Medicine</strong>: echolocation, pulse-echo depth finding and acoustic impedance.</p>
+      <ul id="cardList"></ul>
+      <div class="meta"><span id="cardSection"></span><span id="cardDate"></span></div>
+    </article>
+    <div class="row-btns">
+      <button type="button" class="fbtn" id="editNames">Edit names</button>
+      <button type="button" class="fbtn" id="again">Celebrate again</button>
+    </div>
+    <p style="color:var(--muted);font-size:.95rem">Take a screenshot of the card to hand in or share.</p>
+  </div>
+</section>
+</main>
+</div>
+
+<div class="sr-only" aria-live="polite" id="pageLive"></div>
+
+<script>
+// ===== Echolocation Lab =====
+
+(function(){
+"use strict";
+const $ = id => document.getElementById("p1-" + id);
+const rnd = (a, b, step) => Math.round((a + Math.random()*(b - a)) / step) * step;
+const f1 = x => x.toFixed(1), f2 = x => x.toFixed(2);
+const GNAT_MM = 4;
+
+function gnatAmp(fk){ const lam = 343 / fk; return 0.9 * Math.min(1, Math.pow(GNAT_MM / lam, 4)); }
+const FREQS = [20, 40, 60, 80, 100];
+const gnatVisible = fk => gnatAmp(fk) >= 0.12;
+const fMin = () => FREQS.find(gnatVisible);
+
+const ROUNDS = [
+  {title:"Round 1: find the moth", v:343, water:false, Dmax:12, TMAX:80, tick:5, lab:10,
+   make(){ return {targets:[{kind:"moth", name:"Moth", d:rnd(2, 11, 0.1)}]}; },
+   text:c => `<p>A moth is fluttering somewhere ahead in the dark. Send a call, measure when the echo comes back, and find how far away the moth is. Sound travels at 343 m/s in air.</p>`,
+   rows:c => [{kind:"dist", t:"moth", label:"Distance to the moth"}]},
+  {title:"Round 2: moth, tree or cliff?", v:343, water:false, Dmax:13, TMAX:80, tick:5, lab:10,
+   make(){
+     const tree = rnd(3, 7, 0.1), cliff = rnd(10, 12.5, 0.1);
+     let moth; do { moth = rnd(1.5, 9.5, 0.1); } while (Math.abs(moth - tree) < 1.2);
+     return {targets:[{kind:"moth", name:"Moth", d:moth}, {kind:"tree", name:"Tree", d:tree}, {kind:"cliff", name:"Cliff", d:cliff}]};
+   },
+   text:c => `<p>Three things are out there: a moth, a tree trunk and a cliff. Find the distance of each echo. Then decide which echo is the moth: a small, soft target sends back the weakest echo. Sound travels at 343 m/s.</p>`,
+   rows:c => [
+     {kind:"distN", n:0, label:"Distance of echo 1"},
+     {kind:"distN", n:1, label:"Distance of echo 2"},
+     {kind:"distN", n:2, label:"Distance of echo 3"},
+     {kind:"which", label:"Which echo is the moth? (1, 2 or 3)"}]},
+  {title:"Round 3: predict the echo", v:343, water:false, Dmax:13, TMAX:80, tick:5, lab:10,
+   make(){ return {targets:[{kind:"moth", name:"Moth", d:rnd(2, 10, 0.1)}, {kind:"cliff", name:"Cliff", d:12.6}]}; },
+   text:c => `<p>Work backwards. The bat’s last call located the moth <strong>${f1(c.targets[0].d)} m</strong> away. Predict how many milliseconds the moth’s echo will take to return, then send a call to test your prediction. The moth’s echo will arrive first.</p>`,
+   rows:c => [{kind:"time", t:"moth", label:`Echo time from a moth ${f1(c.targets[0].d)} m away`}],
+   predictFirst:true},
+  {title:"Round 4: tiny prey", v:343, water:false, Dmax:6.5, TMAX:40, tick:2, lab:5, freq:true,
+   make(){ return {targets:[{kind:"gnat", name:"Gnat", d:rnd(1.2, 3.5, 0.1)}, {kind:"tree", name:"Tree", d:rnd(4.6, 6.1, 0.1)}]}; },
+   text:c => `<p>A gnat only ${GNAT_MM} mm long is hiding in front of a tree. A target much smaller than the wavelength of the call hardly reflects at all. Try different call frequencies to find the lowest one that gets a clear echo from the gnat, then measure its distance.</p>`,
+   rows:c => [
+     {kind:"minfreq", label:"Lowest call frequency that detects the gnat"},
+     {kind:"lambda", label:"Wavelength of that call in air"},
+     {kind:"dist", t:"gnat", label:"Distance to the gnat"}]},
+  {title:"Round 5: dolphin sonar", v:1500, water:true, Dmax:45, TMAX:60, tick:5, lab:10,
+   make(){ const fish = rnd(5, 24, 0.5); return {targets:[{kind:"fish", name:"Fish", d:fish}, {kind:"reef", name:"Reef", d:rnd(fish + 6, 42, 0.5)}]}; },
+   text:c => `<p>Dolphins echolocate too, with clicks underwater, where sound travels at about 1500 m/s. Find the distance to the fish (echo 1) and the reef (echo 2). Then work out how far away a bat’s target would be if its echo took the same time to return in air.</p>`,
+   rows:c => [
+     {kind:"dist", t:"fish", label:"Distance to the fish (echo 1)"},
+     {kind:"dist", t:"reef", label:"Distance to the reef (echo 2)"},
+     {kind:"equiv", label:"Same echo time as the fish, but a bat in air: target distance"}]}
+];
+
+const st = {round:0, R:null, c:null, rows:[], fired:false, firing:false, tau:0, checked:false, revealed:false, predicted:null, cursor:0, showSol:false, freq:40, firedFreqs:new Set(), solved:[0,0,0,0,0].map(() => false)};
+
+function echoes(){
+  const R = st.R, out = [];
+  for (const T of st.c.targets){
+    const t = 2 * T.d / R.v * 1000;
+    const spread = R.water ? 1/(1 + 0.012*T.d) : 1/(1 + 0.05*T.d);
+    let A = {moth:0.32, tree:0.8, cliff:1.0, fish:0.5, reef:0.95}[T.kind];
+    if (T.kind === "gnat") A = gnatAmp(st.freq) * 0.9; else A *= spread;
+    out.push({T, t, A, visible:A >= 0.1});
+  }
+  out.sort((a, b) => a.t - b.t);
+  return out;
+}
+const visEchoes = () => echoes().filter(e => e.visible);
+const echoOf = kind => echoes().find(e => e.T.kind === kind);
+
+/* ---------- answers ---------- */
+function expected(r){
+  const v = st.R.v;
+  if (r.kind === "dist") return echoOf(r.t).T.d;
+  if (r.kind === "distN") return echoes()[r.n].T.d;
+  if (r.kind === "which") return echoes().findIndex(e => e.T.kind === "moth") + 1;
+  if (r.kind === "time") return echoOf(r.t).t;
+  if (r.kind === "minfreq") return fMin();
+  if (r.kind === "lambda") return 343 / fMin();
+  if (r.kind === "equiv") return 343 * echoOf("fish").t / 1000 / 2;
+}
+function rowTime(r){
+  if (r.kind === "dist") return echoOf(r.t).t;
+  if (r.kind === "distN") return echoes()[r.n].t;
+  if (r.kind === "equiv") return echoOf("fish").t;
+  return null;
+}
+function solution(r){
+  const v = st.R.v, e = expected(r), t = rowTime(r);
+  if (r.kind === "dist" || r.kind === "distN")
+    return `d = v t ÷ 2 = ${v} m/s × ${(t/1000).toFixed(4)} s ÷ 2 = ${f2(e)} m`;
+  if (r.kind === "equiv")
+    return `d = 343 m/s × ${(t/1000).toFixed(4)} s ÷ 2 = ${f2(e)} m. Sound is about 4.4 times slower in air, so the same echo time means a target 4.4 times closer.`;
+  if (r.kind === "time"){
+    const d = echoOf("moth").T.d;
+    return `t = 2d ÷ v = 2 × ${f1(d)} m ÷ 343 m/s = ${(e/1000).toFixed(4)} s = ${f1(e)} ms`;
+  }
+  if (r.kind === "which"){
+    const names = echoes().map((x, i) => `echo ${i+1} ${x.T.name.toLowerCase()}`);
+    return `The moth is echo ${e}, the weakest one. Order by distance: ${names.join(", ")}.`;
+  }
+  if (r.kind === "minfreq"){
+    const f = fMin(), lower = FREQS[FREQS.indexOf(f) - 1];
+    return `At ${f} kHz the wavelength is ${f1(343/f)} mm, close to the gnat’s ${GNAT_MM} mm, so it reflects. At ${lower} kHz the wavelength is ${f1(343/lower)} mm, too long for such a small target.`;
+  }
+  if (r.kind === "lambda"){
+    const f = fMin();
+    return `λ = v ÷ f = 343 m/s ÷ ${f*1000} Hz = ${(343/(f*1000)).toFixed(5)} m = ${f2(343/f)} mm`;
+  }
+}
+const near = (a, e, tol) => Math.abs(a - e) <= tol;
+function judge(r, a){
+  const e = expected(r), v = st.R.v;
+  if (r.kind === "which") return a === e ? {ok:true, msg:"Correct. The small moth sends back the weakest echo."} : {ok:false, msg:"Not yet. Compare the heights of the echoes: which target is smallest and softest?"};
+  if (r.kind === "minfreq"){
+    if (a === e) return {ok:true, msg:"Correct."};
+    if (!FREQS.includes(a)) return {ok:false, msg:"Choose one of the call frequencies: 20, 40, 60, 80 or 100 kHz."};
+    if (a > e) return {ok:false, msg:"The gnat does reflect at that frequency, but try lower ones too."};
+    return {ok:false, msg:"At that frequency there is no clear echo from the gnat. Its wavelength is too long."};
+  }
+  const tolD = Math.max(st.R.water ? 0.25 : 0.05, 0.02*e);
+  if (r.kind === "time"){
+    const tol = Math.max(0.2, 0.02*e);
+    if (near(a, e, tol)) return {ok:true, msg:"Correct."};
+    if (near(a, e/2, tol)) return {ok:false, msg:"That is the one-way time. The echo has to fly back too, so double it."};
+    if (near(a, e/1000, 0.002)) return {ok:false, msg:"That is in seconds. The display reads in milliseconds: multiply by 1000."};
+    return {ok:false, msg:"Not yet. Use t = 2d ÷ v, then convert seconds to milliseconds."};
+  }
+  if (r.kind === "lambda"){
+    const tol = Math.max(0.05, 0.02*e);
+    if (near(a, e, tol)) return {ok:true, msg:"Correct."};
+    if (near(a, e/1000, 0.0001)) return {ok:false, msg:"That is in meters. Convert to millimeters (× 1000)."};
+    if (FREQS.some(f => near(a, 343/f, tol))) return {ok:false, msg:"Right method, but use the lowest frequency that detects the gnat."};
+    return {ok:false, msg:"Not yet. Use λ = v ÷ f with f in hertz (1 kHz = 1000 Hz)."};
+  }
+  if (near(a, e, tolD)) return {ok:true, msg:"Correct."};
+  if (near(a, 2*e, 2*tolD)) return {ok:false, msg:"That is the round-trip distance. The sound goes out and back, so divide by 2."};
+  if (near(a, e*1000, 1000*tolD)) return {ok:false, msg:"Check your units: convert milliseconds to seconds (1 ms = 0.001 s) before multiplying by the speed."};
+  if (near(a, e*1540/v, tolD*1540/v)) return {ok:false, msg:"That uses 1540 m/s, the speed in body tissue. Use the speed of sound in this medium."};
+  if (!st.R.water && r.kind !== "equiv" && near(a, e*1500/343, tolD*5)) return {ok:false, msg:"That uses the speed in water. The bat is flying in air: 343 m/s."};
+  if (st.R.water && r.kind !== "equiv" && near(a, e*343/1500, tolD)) return {ok:false, msg:"That uses the speed in air. The dolphin is in water: about 1500 m/s."};
+  if (r.kind === "equiv" && near(a, expected({kind:"dist", t:"fish"}), tolD)) return {ok:false, msg:"That is the dolphin’s distance. Use the same echo time with the speed of sound in air."};
+  return {ok:false, msg:"Not yet. Measure the echo time at its center, convert to seconds, then use d = v t ÷ 2."};
+}
+
+/* ---------- scene ---------- */
+const sc = $("scene"), sx = sc.getContext("2d");
+const BX = 70, Y0 = 150, GROUND = 290, RIGHT = 870;
+const xOf = d => BX + d / st.R.Dmax * (RIGHT - BX);
+
+function drawBat(x, y){
+  sx.save(); sx.translate(x, y); sx.fillStyle = "#D4DCE3"; sx.strokeStyle = "#0B1620"; sx.lineWidth = 1.5;
+  sx.beginPath();
+  sx.moveTo(-4, -4);
+  sx.quadraticCurveTo(-22, -26, -42, -14); sx.quadraticCurveTo(-36, -6, -40, 2); sx.quadraticCurveTo(-30, -2, -26, 6); sx.quadraticCurveTo(-16, 0, -6, 6);
+  sx.lineTo(6, 6);
+  sx.quadraticCurveTo(16, 0, 26, 6); sx.quadraticCurveTo(30, -2, 40, 2); sx.quadraticCurveTo(36, -6, 42, -14); sx.quadraticCurveTo(22, -26, 4, -4);
+  sx.closePath(); sx.fill(); sx.stroke();
+  sx.beginPath(); sx.ellipse(0, 2, 7, 10, 0, 0, 2*Math.PI); sx.fill(); sx.stroke();
+  sx.beginPath(); sx.moveTo(8, -6); sx.lineTo(13, -16); sx.lineTo(14, -4); sx.closePath(); sx.fill(); sx.stroke();
+  sx.beginPath(); sx.ellipse(10, -2, 7, 5, 0, 0, 2*Math.PI); sx.fill(); sx.stroke();
+  sx.fillStyle = "#0B1620"; sx.beginPath(); sx.arc(13, -3, 1.5, 0, 2*Math.PI); sx.fill();
+  sx.restore();
+}
+function drawDolphin(x, y){
+  sx.save(); sx.translate(x, y); sx.fillStyle = "#C3D3DE"; sx.strokeStyle = "#0B1620"; sx.lineWidth = 1.5;
+  sx.beginPath();
+  sx.moveTo(44, 4); sx.lineTo(30, 1);
+  sx.quadraticCurveTo(26, -12, 8, -12); sx.quadraticCurveTo(-24, -10, -40, -1);
+  sx.lineTo(-54, -12); sx.lineTo(-49, 2); sx.lineTo(-55, 14); sx.lineTo(-40, 5);
+  sx.quadraticCurveTo(-16, 13, 12, 9); sx.quadraticCurveTo(28, 8, 44, 4); sx.closePath(); sx.fill(); sx.stroke();
+  sx.beginPath(); sx.moveTo(-4, -11); sx.quadraticCurveTo(-8, -22, -16, -26); sx.quadraticCurveTo(-12, -14, -16, -9); sx.closePath(); sx.fill(); sx.stroke();
+  sx.beginPath(); sx.moveTo(6, 7); sx.lineTo(-2, 18); sx.lineTo(12, 9); sx.closePath(); sx.fill(); sx.stroke();
+  sx.fillStyle = "#0B1620"; sx.beginPath(); sx.arc(18, -4, 1.7, 0, 2*Math.PI); sx.fill();
+  sx.restore();
+}
+function drawTarget(T){
+  const x = xOf(T.d);
+  sx.save(); sx.strokeStyle = "#0B1620"; sx.lineWidth = 1.5;
+  if (T.kind === "moth"){
+    sx.fillStyle = "#E8D9A6";
+    sx.beginPath(); sx.ellipse(x - 6, Y0 - 4, 8, 11, -0.5, 0, 2*Math.PI); sx.fill(); sx.stroke();
+    sx.beginPath(); sx.ellipse(x + 6, Y0 - 4, 8, 11, 0.5, 0, 2*Math.PI); sx.fill(); sx.stroke();
+    sx.fillStyle = "#6B5A3A"; sx.beginPath(); sx.ellipse(x, Y0, 2.5, 9, 0, 0, 2*Math.PI); sx.fill();
+  } else if (T.kind === "gnat"){
+    sx.fillStyle = "#F1F4F7";
+    sx.beginPath(); sx.ellipse(x - 4, Y0 - 4, 5, 3, -0.6, 0, 2*Math.PI); sx.fill(); sx.stroke();
+    sx.beginPath(); sx.ellipse(x + 4, Y0 - 4, 5, 3, 0.6, 0, 2*Math.PI); sx.fill(); sx.stroke();
+    sx.fillStyle = "#2B2B2B"; sx.beginPath(); sx.arc(x, Y0, 2.5, 0, 2*Math.PI); sx.fill();
+  } else if (T.kind === "tree"){
+    sx.fillStyle = "#6E4B30"; sx.fillRect(x - 12, Y0 - 90, 24, GROUND - Y0 + 90); sx.strokeRect(x - 12, Y0 - 90, 24, GROUND - Y0 + 90);
+    sx.fillStyle = "#3F6B45"; sx.beginPath(); sx.arc(x, Y0 - 100, 48, 0, 2*Math.PI); sx.fill(); sx.stroke();
+  } else if (T.kind === "cliff" || T.kind === "reef"){
+    sx.fillStyle = T.kind === "cliff" ? "#8A8F96" : "#B9876B";
+    sx.beginPath();
+    if (T.kind === "cliff"){
+      sx.moveTo(x, 0); sx.lineTo(x - 8, 60); sx.lineTo(x + 4, 110); sx.lineTo(x - 6, 170); sx.lineTo(x + 2, 230); sx.lineTo(x - 4, GROUND);
+      sx.lineTo(900, GROUND); sx.lineTo(900, 0);
+    } else {
+      sx.moveTo(x - 10, GROUND); sx.lineTo(x - 4, Y0 + 30); sx.lineTo(x + 6, Y0 - 20); sx.lineTo(x + 30, Y0 - 50); sx.lineTo(x + 60, Y0 - 10); sx.lineTo(x + 90, GROUND);
+    }
+    sx.closePath(); sx.fill(); sx.stroke();
+  } else if (T.kind === "fish"){
+    sx.fillStyle = "#F2B45A";
+    sx.beginPath(); sx.ellipse(x, Y0, 14, 7, 0, 0, 2*Math.PI); sx.fill(); sx.stroke();
+    sx.beginPath(); sx.moveTo(x + 12, Y0); sx.lineTo(x + 24, Y0 - 8); sx.lineTo(x + 24, Y0 + 8); sx.closePath(); sx.fill(); sx.stroke();
+  }
+  sx.restore();
+}
+function label(t, x, y, align){
+  sx.font = "700 18px 'Atkinson Hyperlegible', system-ui, sans-serif";
+  sx.textAlign = align || "center"; sx.textBaseline = "middle"; sx.lineJoin = "round";
+  sx.lineWidth = 5; sx.strokeStyle = "rgba(10,18,28,.9)"; sx.strokeText(t, x, y);
+  sx.fillStyle = "#FFFFFF"; sx.fillText(t, x, y);
+}
+function drawScene(){
+  const R = st.R;
+  const g = sx.createLinearGradient(0, 0, 0, GROUND);
+  if (R.water){ g.addColorStop(0, "#0E4C6E"); g.addColorStop(1, "#082C42"); }
+  else { g.addColorStop(0, "#0D1729"); g.addColorStop(1, "#1F3148"); }
+  sx.fillStyle = g; sx.fillRect(0, 0, 900, GROUND);
+  if (!R.water){ sx.fillStyle = "#E9EEF2"; sx.beginPath(); sx.arc(820, 40, 18, 0, 2*Math.PI); sx.fill(); }
+  sx.fillStyle = R.water ? "#C9B48E" : "#24331F"; sx.fillRect(0, GROUND - 10, 900, 10);
+  if (st.revealed){
+    const ts = [...st.c.targets].sort((a, b) => b.d - a.d);
+    ts.forEach(drawTarget);
+    for (const T of st.c.targets){
+      const x = xOf(T.d);
+      const ly = T.kind === "tree" ? GROUND - 30 : T.kind === "cliff" ? GROUND - 30 : T.kind === "reef" ? GROUND - 30 : Y0 + 34;
+      label(`${T.name}: ${f2(T.d)} m`, Math.min(x, 800), ly, T.kind === "cliff" ? "right" : "center");
+    }
+  } else {
+    sx.fillStyle = R.water ? "rgba(6,30,44,.55)" : "rgba(6,10,18,.45)";
+    sx.fillRect(BX + 60, 0, 900 - BX - 60, GROUND - 10);
+    label(R.water ? "Murky water: listen for echoes" : "Too dark to see: listen for echoes", 520, 60);
+    sx.font = "700 60px 'Atkinson Hyperlegible', system-ui, sans-serif"; sx.fillStyle = "rgba(255,255,255,.55)"; sx.textAlign = "center";
+    sx.fillText("?", 520, Y0 + 20);
+  }
+  // waves
+  if (st.firing){
+    sx.save(); sx.beginPath(); sx.rect(0, 0, 900, GROUND - 10); sx.clip();
+    const pxm = (RIGHT - BX) / R.Dmax, vmm = R.v / 1000; // m per ms
+    const ang = 0.42;
+    sx.lineWidth = 3;
+    for (let k = 0; k < 3; k++){
+      const r = (st.tau - k*R.TMAX/90) * vmm * pxm;
+      if (r > 4 && r < 900){ sx.strokeStyle = "#66C8E2"; sx.beginPath(); sx.arc(BX + 22, Y0, r, -ang, ang); sx.stroke(); }
+    }
+    for (const e of echoes()){
+      if (!e.visible) continue;
+      const tHit = e.t / 2;
+      sx.setLineDash([8,5]);
+      for (let k = 0; k < 3; k++){
+        const r = (st.tau - tHit - k*R.TMAX/90) * vmm * pxm;
+        if (r > 4 && r < e.T.d * pxm){
+          sx.strokeStyle = "#F2A030"; sx.beginPath(); sx.arc(xOf(e.T.d), Y0, r, Math.PI - ang, Math.PI + ang); sx.stroke();
+        }
+      }
+      sx.setLineDash([]);
+    }
+    sx.restore();
+  }
+  if (R.water) drawDolphin(BX - 18, Y0); else drawBat(BX, Y0);
+  // ruler
+  sx.fillStyle = "#E6ECF1"; sx.fillRect(0, GROUND, 900, 360 - GROUND);
+  sx.fillStyle = "#16232F"; sx.font = "400 15px 'Atkinson Hyperlegible', system-ui, sans-serif"; sx.textAlign = "center"; sx.textBaseline = "middle";
+  const step = R.Dmax > 20 ? 5 : 1, labStep = R.Dmax > 20 ? 10 : (R.Dmax > 8 ? 2 : 1);
+  for (let d = 0; d <= R.Dmax + 1e-9; d += step){
+    const x = xOf(d), big = Math.abs(d / labStep - Math.round(d / labStep)) < 1e-6;
+    sx.fillRect(x - 0.5, GROUND, 1.5, big ? 14 : 8);
+    if (big) sx.fillText(`${d} m`, Math.min(x, 875), GROUND + 32);
+  }
+  sx.textAlign = "left"; sx.fillText(R.water ? "Dolphin" : "Bat", 8, GROUND + 52);
+  sc.setAttribute("aria-label", st.revealed
+    ? `${R.water ? "Underwater scene with a dolphin" : "Night scene with a bat"} on the left. Revealed targets: ${st.c.targets.map(T => `${T.name.toLowerCase()} at ${f2(T.d)} meters`).join(", ")}.`
+    : `${R.water ? "Murky underwater scene with a dolphin" : "Dark night scene with a bat"} on the left. Everything ahead is hidden until you check your answers.`);
+}
+
+/* ---------- timeline ---------- */
+const tl = $("timeline"), tx = tl.getContext("2d");
+const TL = 60, TR = 20, TW = 900 - TL - TR, TH = 280, TB = 46, TT = 34;
+const xt = t => TL + t / st.R.TMAX * TW;
+const baseY = TT + (TH - TT - TB) * 0.62, amp = (TH - TT - TB) * 0.58;
+function signal(t, list){
+  const M = st.R.TMAX, w = M/240, per = M/200;
+  let s = 0.95 * Math.exp(-(((t - 2*w)/w)**2)) * Math.sin(2*Math.PI*t/per);
+  for (const e of list){ const u = t - e.t; if (Math.abs(u) < 5*w) s += e.A * Math.exp(-((u/w)**2)) * Math.cos(2*Math.PI*u/per); }
+  return s;
+}
+function drawTimeline(){
+  const R = st.R;
+  tx.clearRect(0, 0, 900, TH);
+  tx.fillStyle = "#000"; tx.fillRect(TL, TT - 8, TW, TH - TT - TB + 16);
+  tx.font = "400 13px 'Atkinson Hyperlegible', system-ui, sans-serif"; tx.textAlign = "center"; tx.textBaseline = "middle";
+  for (let t = 0; t <= R.TMAX + 1e-9; t += R.tick){
+    const x = xt(t), big = Math.abs(t % R.lab) < 1e-9;
+    tx.fillStyle = big ? "#3A4C5A" : "#1D2A33"; tx.fillRect(x, TT - 8, 1, TH - TT - TB + 16);
+    tx.fillStyle = "#AFC0CD"; tx.fillRect(x, TH - TB + 8, 1, big ? 8 : 4);
+    if (big) tx.fillText(`${t}`, x, TH - TB + 24);
+  }
+  tx.fillText("Time after the call (ms)", TL + TW/2, TH - 8);
+  tx.fillStyle = "#3A4C5A"; tx.fillRect(TL, baseY, TW, 1);
+  const shown = st.firing ? st.tau : st.fired ? R.TMAX : -1;
+  const list = echoes();
+  if (shown >= 0){
+    tx.strokeStyle = "#E8F1F6"; tx.lineWidth = 1.5; tx.beginPath();
+    for (let px = 0; px <= TW; px++){
+      const t = px / TW * R.TMAX; if (t > shown) break;
+      const y = baseY - signal(t, list) * amp;
+      px ? tx.lineTo(TL + px, y) : tx.moveTo(TL + px, y);
+    }
+    tx.stroke();
+    tx.fillStyle = "#AFC0CD"; tx.textAlign = "left"; tx.fillText("Call sent", TL + 6, TT + 4);
+    tx.textAlign = "center"; tx.font = "700 15px 'Atkinson Hyperlegible', system-ui, sans-serif";
+    list.filter(e => e.visible).forEach((e, i) => { if (e.t <= shown){ tx.fillStyle = "#F2C46A"; tx.fillText(`${i+1}`, xt(e.t) + 10, TT + 4); } });
+  }
+  if (st.predicted != null){
+    tx.setLineDash([5,4]); tx.strokeStyle = "#F2A030"; tx.lineWidth = 2;
+    tx.beginPath(); tx.moveTo(xt(st.predicted), TT - 8); tx.lineTo(xt(st.predicted), TH - TB + 8); tx.stroke(); tx.setLineDash([]);
+    tx.fillStyle = "#F2A030"; tx.textAlign = "left"; tx.font = "400 13px 'Atkinson Hyperlegible', system-ui, sans-serif";
+    tx.fillText("your prediction", xt(st.predicted) + 5, TH - TB - 6);
+  }
+  const x = xt(st.cursor);
+  tx.fillStyle = "#66C8E2"; tx.fillRect(x - 1, TT - 8, 2, TH - TT - TB + 16);
+  tx.beginPath(); tx.moveTo(x - 7, TT - 16); tx.lineTo(x + 7, TT - 16); tx.lineTo(x, TT - 7); tx.closePath(); tx.fill();
+  const vis = list.filter(e => e.visible), n = vis.length;
+  tl.setAttribute("aria-label", st.fired
+    ? `Echo display from 0 to ${R.TMAX} milliseconds. The call is sent at 0. ${n} clear echo${n === 1 ? " is" : "es are"} received${n ? `, labeled 1 to ${n}, with heights ${vis.map((e, i) => `${i+1}: ${e.A > 0.6 ? "strong" : e.A > 0.3 ? "medium" : "weak"}`).join(", ")}` : ""}. The time cursor is at ${f1(st.cursor)} milliseconds.`
+    : `Echo display from 0 to ${R.TMAX} milliseconds. No call sent yet.`);
+}
+
+/* ---------- answers UI ---------- */
+function unitOf(r){ return {dist:"m", distN:"m", equiv:"m", time:"ms", which:"", minfreq:"kHz", lambda:"mm"}[r.kind]; }
+const unitWords = {m:"meters", ms:"milliseconds", kHz:"kilohertz", mm:"millimeters", "":""};
+function buildAnswers(){
+  const tb = $("answers"); tb.innerHTML = "";
+  st.rows.forEach((r, i) => {
+    const u = unitOf(r), tr = document.createElement("tr");
+    tr.innerHTML = `<th scope="row" style="background:none;font-weight:400">${r.label}</th>
+      <td><input type="text" inputmode="decimal" id="p1-ans${i}" aria-describedby="p1-res${i}" autocomplete="off">${u ? `<span class="unit">${u}</span>` : ""}</td>
+      <td class="res" id="p1-res${i}"></td>`;
+    tb.appendChild(tr);
+    const inp = tr.querySelector("input");
+    inp.setAttribute("aria-label", r.label + (u ? `, in ${unitWords[u]}` : ""));
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") check(); });
+  });
+}
+const parseNum = s => { s = (s || "").trim().replace(",", "."); return s ? Number(s) : NaN; };
+function check(){
+  let good = 0, answered = 0;
+  st.rows.forEach((r, i) => {
+    const a = parseNum($("ans" + i).value), cell = $("res" + i);
+    if (isNaN(a)){ cell.innerHTML = `<span class="no">✗ Enter a number.</span>`; return; }
+    answered++;
+    const j = judge(r, a); if (j.ok) good++;
+    cell.innerHTML = `<span class="${j.ok ? "ok" : "no"}">${j.ok ? "✓" : "✗"} ${j.msg}</span>` + ((j.ok || st.showSol) ? `<span class="sol">${solution(r)}</span>` : "");
+  });
+  if (st.R.predictFirst && !isNaN(parseNum($("ans0").value))){
+    st.predicted = parseNum($("ans0").value);
+    $("fire").disabled = false;
+    if (!st.fired) $("fireHint").textContent = "Now send a call and see if the moth’s echo lands on your prediction.";
+    drawTimeline();
+  }
+  st.checked = true;
+  $("reveal").disabled = false; $("revealHint").textContent = ""; $("showSol").disabled = false;
+  let msg = `${good} of ${st.rows.length} correct.`;
+  if (good === st.rows.length){
+    st.solved[st.round] = true; $("done" + st.round).hidden = false;
+    msg += " Round solved. Turn on the lights, try a new hunt, or move to the next round.";
+  }
+  $("summary").textContent = msg;
+}
+
+/* ---------- setup ---------- */
+function setup(round){
+  st.round = round; st.R = ROUNDS[round];
+  st.c = st.R.make(); st.rows = st.R.rows(st.c);
+  Object.assign(st, {fired:false, firing:false, tau:0, checked:false, revealed:false, predicted:null, cursor:0, showSol:false});
+  $("taskTitle").textContent = st.R.title;
+  $("taskText").innerHTML = st.R.text(st.c);
+  $("sceneCap").firstChild.textContent = st.R.water ? "The underwater scene" : "The night scene";
+  $("sceneCap").querySelector("span").textContent = `Side view. The ruler shows distance from the ${st.R.water ? "dolphin" : "bat"} in meters.`;
+  const rv = $("reveal");
+  rv.disabled = true; rv.setAttribute("aria-pressed", "false"); rv.textContent = st.R.water ? "Clear the water" : "Turn on the lights";
+  $("revealHint").textContent = "Check your answers first to see what is really out there.";
+  $("showSol").disabled = true; $("summary").textContent = "";
+  $("freqBox").hidden = !st.R.freq;
+  $("fire").textContent = st.R.water ? "Send a click" : "Send a call";
+  $("fire").disabled = !!st.R.predictFirst;
+  $("fireHint").textContent = st.R.predictFirst ? "Enter and check your prediction first, then send a call to test it." : "";
+  $("prevEcho").disabled = $("nextEcho").disabled = true;
+  const cur = $("cursor"); cur.max = st.R.TMAX;
+  setCursor(0);
+  buildAnswers(); drawScene(); drawTimeline();
+}
+
+/* ---------- firing ---------- */
+const live = $("live");
+function say(m){ live.textContent = ""; setTimeout(() => live.textContent = m, 30); }
+const calm = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function finishFire(){
+  st.firing = false; st.fired = true;
+  const vis = visEchoes();
+  $("prevEcho").disabled = $("nextEcho").disabled = vis.length === 0;
+  $("fire").disabled = false; $("fire").textContent = st.R.water ? "Send another click" : "Send another call";
+  drawScene(); drawTimeline();
+  let m = vis.length ? `${vis.length} clear echo${vis.length > 1 ? "es" : ""} received. Use Next echo to move the time cursor to each one.` : "No clear echoes received.";
+  if (st.R.freq) m = `At ${st.freq} kHz: ` + m;
+  if (st.predicted != null){
+    const e = echoOf("moth"), d = st.predicted - e.t;
+    m += Math.abs(d) <= Math.max(0.2, 0.02*e.t) ? " The moth’s echo arrived right at your prediction." : ` The moth’s echo arrived ${f1(Math.abs(d))} ms ${d > 0 ? "before" : "after"} your prediction.`;
+  }
+  $("fireHint").textContent = m; say(m);
+}
+function fire(){
+  if (st.firing) return;
+  $("fire").disabled = true;
+  if (calm()){ finishFire(); return; }
+  st.firing = true; st.tau = 0;
+  const end = st.R.TMAX, dur = 3200, t0 = performance.now();
+  const step = now => {
+    st.tau = (now - t0) / dur * end;
+    if (st.tau >= end){ finishFire(); return; }
+    drawScene(); drawTimeline(); requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+/* ---------- cursor ---------- */
+const cur = $("cursor");
+function setCursor(t){
+  st.cursor = Math.max(0, Math.min(st.R.TMAX, Math.round(t*10)/10));
+  cur.value = st.cursor;
+  $("cursorOut").textContent = `${f1(st.cursor)} ms`;
+  let vt = `${f1(st.cursor)} milliseconds`;
+  if (st.fired){ const i = visEchoes().findIndex(e => Math.abs(e.t - st.cursor) < st.R.TMAX/300); if (i >= 0) vt += `, on echo ${i+1}`; }
+  cur.setAttribute("aria-valuetext", vt);
+  drawTimeline();
+}
+function jump(dir){
+  const ts = visEchoes().map(e => e.t); if (!ts.length) return;
+  let target = dir > 0 ? ts.find(t => t > st.cursor + 0.06) : [...ts].reverse().find(t => t < st.cursor - 0.06);
+  if (target == null) target = dir > 0 ? ts[0] : ts[ts.length - 1];
+  setCursor(target);
+  const i = ts.indexOf(target), A = visEchoes()[i].A;
+  say(`Echo ${i+1}: ${f1(st.cursor)} milliseconds, ${A > 0.6 ? "strong" : A > 0.3 ? "medium" : "weak"}.`);
+}
+cur.addEventListener("input", () => setCursor(+cur.value));
+let drag = false;
+const fromEvt = e => { const r = tl.getBoundingClientRect(); return ((e.clientX - r.left)/r.width*900 - TL) / TW * st.R.TMAX; };
+tl.addEventListener("pointerdown", e => { drag = true; tl.setPointerCapture(e.pointerId); setCursor(fromEvt(e)); });
+tl.addEventListener("pointermove", e => { if (drag) setCursor(fromEvt(e)); });
+tl.addEventListener("pointerup", () => drag = false); tl.addEventListener("pointercancel", () => drag = false);
+
+/* ---------- wiring ---------- */
+$("fire").addEventListener("click", fire);
+$("nextEcho").addEventListener("click", () => jump(1));
+$("prevEcho").addEventListener("click", () => jump(-1));
+$("check").addEventListener("click", check);
+$("showSol").addEventListener("click", () => { st.showSol = true; check(); });
+$("newCase").addEventListener("click", () => { setup(st.round); say("New hunt. Everything is hidden again."); });
+$("reveal").addEventListener("click", e => {
+  st.revealed = !st.revealed;
+  e.currentTarget.setAttribute("aria-pressed", String(st.revealed));
+  e.currentTarget.textContent = st.revealed ? (st.R.water ? "Make it murky" : "Turn off the lights") : (st.R.water ? "Clear the water" : "Turn on the lights");
+  drawScene(); say(sc.getAttribute("aria-label"));
+});
+document.querySelectorAll('input[name="p1-freq"]').forEach(r => r.addEventListener("change", e => {
+  st.freq = +e.target.value;
+  st.fired = false; $("prevEcho").disabled = $("nextEcho").disabled = true;
+  $("fire").textContent = "Send a call";
+  $("fireHint").textContent = `Call frequency set to ${st.freq} kHz (wavelength ${f1(343/st.freq)} mm). Send a call to listen.`;
+  drawScene(); drawTimeline(); say($("fireHint").textContent);
+}));
+document.querySelectorAll('input[name="p1-round"]').forEach(r => r.addEventListener("change", e => { setup(+e.target.value); say(`${st.R.title} loaded.`); }));
+
+setup(0);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { drawScene(); drawTimeline(); });
+})();
+
+// ===== Pulse-Echo Depth Finder =====
+
+(function(){
+"use strict";
+const $ = id => document.getElementById("p2-" + id);
+const TMAX = 200, ZMAX = 15;
+const cmPerUs = v => v * 1e-4;
+const rnd = (a, b, step) => Math.round((a + Math.random()*(b - a)) / step) * step;
+const f1 = x => x.toFixed(1), f2 = x => x.toFixed(2);
+
+const ROUNDS = [
+  {title:"Round 1: one echo",
+   make(){
+     const d = rnd(3, 9, 0.1);
+     return {layers:[
+       {name:"Abdominal wall", v:1540, top:0, bot:d, fill:"#E3B9A0"},
+       {name:"Bladder (urine)", v:1540, top:d, bot:ZMAX, fill:"#9CC6E8"}]};
+   },
+   text:c => `<p>A patient’s bladder lies somewhere below the probe. Fire a pulse, measure the echo time, and find the depth of the bladder’s front wall. Assume sound travels at 1540 m/s.</p>`,
+   rows:c => [{kind:"depth", b:0, label:"Depth of the bladder’s front wall (echo 1)"}]},
+  {title:"Round 2: three echoes",
+   make(){
+     const d1 = rnd(1.8, 3.2, 0.1), d2 = d1 + rnd(3, 5, 0.1), d3 = d2 + rnd(2, 3.5, 0.1);
+     return {layers:[
+       {name:"Abdominal muscle", v:1540, top:0, bot:d1, fill:"#C97B7D"},
+       {name:"Liver", v:1540, top:d1, bot:d2, fill:"#A97663"},
+       {name:"Kidney", v:1540, top:d2, bot:d3, fill:"#B98AA0"},
+       {name:"Back muscle", v:1540, top:d3, bot:ZMAX, fill:"#C97B7D"}]};
+   },
+   text:c => `<p>This scan crosses three tissue boundaries. Find the depth of each one. Assume sound travels at 1540 m/s in every layer.</p>`,
+   rows:c => [0,1,2].map(i => ({kind:"depth", b:i, label:`Depth of boundary ${i+1} (echo ${i+1})`}))},
+  {title:"Round 3: predict the time",
+   make(){
+     const d1 = rnd(2, 3, 0.1), d2 = d1 + rnd(3, 6, 0.1);
+     return {layers:[
+       {name:"Abdominal wall", v:1540, top:0, bot:d1, fill:"#E3B9A0"},
+       {name:"Liver", v:1540, top:d1, bot:d2, fill:"#A97663"},
+       {name:"Gallbladder (bile)", v:1540, top:d2, bot:d2 + 2.5, fill:"#8FC4A8"},
+       {name:"Liver", v:1540, top:d2 + 2.5, bot:ZMAX, fill:"#A97663"}]};
+   },
+   text:c => `<p>Work backwards. The front wall of the gallbladder is <strong>${f1(c.layers[2].top)} cm</strong> deep. Predict how long after the pulse its echo will arrive, then fire to test your prediction. It will be the second echo. Assume 1540 m/s.</p>`,
+   rows:c => [{kind:"time", b:1, label:`Echo time from the gallbladder wall at ${f1(c.layers[2].top)} cm`}],
+   predictFirst:true},
+  {title:"Round 4: the speed trap",
+   make(){
+     const d1 = rnd(3, 5.5, 0.1), d2 = d1 + rnd(1.5, 2.5, 0.1);
+     return {layers:[
+       {name:"Fat", v:1450, top:0, bot:d1, fill:"#F1D98A"},
+       {name:"Muscle", v:1580, top:d1, bot:d2, fill:"#C97B7D"},
+       {name:"Liver", v:1550, top:d2, bot:ZMAX, fill:"#A97663"}]};
+   },
+   text:c => `<p>This patient has a thick layer of fat, and sound does not travel at 1540 m/s in every layer. For each echo, find the depth the scanner will display (it always assumes 1540 m/s), and the true depth using each layer’s real speed.</p>
+     <div class="table-scroll"><table><caption>Speed of sound in this patient, top to bottom</caption>
+     <thead><tr><th scope="col">Layer</th><th scope="col">Speed</th></tr></thead><tbody>
+     <tr><td>Fat (from the skin to echo 1)</td><td>1450 m/s</td></tr>
+     <tr><td>Muscle (from echo 1 to echo 2)</td><td>1580 m/s</td></tr>
+     <tr><td>Liver (below echo 2)</td><td>1550 m/s</td></tr></tbody></table></div>`,
+   rows:c => [
+     {kind:"scanner", b:0, label:"Echo 1: depth the scanner displays"},
+     {kind:"true", b:0, label:"Echo 1: true depth"},
+     {kind:"scanner", b:1, label:"Echo 2: depth the scanner displays"},
+     {kind:"true", b:1, label:"Echo 2: true depth"}]}
+];
+
+const st = {round:0, c:null, rows:[], fired:false, firing:false, tau:0, checked:false, revealed:false, predicted:null, cursor:0, solved:[false,false,false,false], showSol:false};
+
+function build(c){
+  let t = 0; c.bnds = [];
+  c.layers.forEach((L, i) => {
+    t += 2 * (L.bot - L.top) / cmPerUs(L.v);
+    if (i < c.layers.length - 1) c.bnds.push({z:L.bot, t, A:[0.85, 0.65, 0.55][c.bnds.length] || 0.5, from:L.name, to:c.layers[i+1].name});
+  });
+  return c;
+}
+function depthAtOneWay(c, tt){
+  let z = 0;
+  for (const L of c.layers){
+    const h = L.bot - L.top, dt = h / cmPerUs(L.v);
+    if (tt <= dt) return z + tt * cmPerUs(L.v);
+    tt -= dt; z += h;
+  }
+  return ZMAX;
+}
+
+/* ---------- expected answers ---------- */
+function expected(r){
+  const c = st.c, b = c.bnds[r.b];
+  if (r.kind === "depth" || r.kind === "scanner") return 0.154 * b.t / 2;
+  if (r.kind === "true") return b.z;
+  return b.t; // time
+}
+function solution(r){
+  const c = st.c, b = c.bnds[r.b], e = expected(r);
+  if (r.kind === "depth" || r.kind === "scanner")
+    return `d = v t ÷ 2 = 0.154 cm/µs × ${f1(b.t)} µs ÷ 2 = ${f2(e)} cm`;
+  if (r.kind === "time")
+    return `t = 2d ÷ v = 2 × ${f1(b.z)} cm ÷ 0.154 cm/µs = ${f1(e)} µs`;
+  const parts = []; let prevT = 0, sum = 0;
+  for (let i = 0; i <= r.b; i++){
+    const L = c.layers[i], bt = c.bnds[i].t, v = cmPerUs(L.v), h = v * (bt - prevT) / 2;
+    parts.push(`${L.name}: ${v.toFixed(3)} cm/µs × (${f1(bt)} − ${f1(prevT)}) µs ÷ 2 = ${f2(h)} cm`);
+    prevT = bt; sum += h;
+  }
+  return parts.join("; ") + (r.b > 0 ? `; total ${f2(sum)} cm` : "");
+}
+const near = (a, e, tol) => Math.abs(a - e) <= tol;
+function judge(r, a){
+  const e = expected(r), b = st.c.bnds[r.b];
+  const isTime = r.kind === "time";
+  const tol = isTime ? Math.max(0.8, 0.02*e) : Math.max(0.06, 0.02*e);
+  if (near(a, e, tol)) return {ok:true, msg:"Correct."};
+  if (isTime){
+    if (near(a, e/2, tol)) return {ok:false, msg:"That is the one-way time. The echo has to travel back up too, so double it."};
+    if (near(a, e*1e-6, 1e-6) || near(a, e/1000, 0.01)) return {ok:false, msg:"Check units: the display reads in microseconds (µs)."};
+    return {ok:false, msg:"Not yet. Use t = 2d ÷ v, with v = 0.154 cm/µs."};
+  }
+  for (const k of [10, 100, 0.1, 0.01]) if (near(a, e*k, tol*Math.max(1,k))) return {ok:false, msg:"Check your units. 1540 m/s is 0.154 cm/µs, so time in µs gives depth in cm."};
+  if (near(a, 2*e, tol*2)) return {ok:false, msg:"That is the round-trip distance. The sound goes down and back, so divide by 2."};
+  if (r.kind === "true" && near(a, 0.154*b.t, 0.1)) return {ok:false, msg:"That is the round-trip distance at 1540 m/s. Divide by 2, and use each layer’s real speed."};
+  if (r.kind === "true" && near(a, 0.077*b.t, tol)) return {ok:false, msg:"That is what the scanner displays. Use each layer’s real speed and the time spent in that layer."};
+  if (r.kind === "scanner" && near(a, b.z, tol)) return {ok:false, msg:"That is the true depth. The scanner doesn’t know the real speeds; it always uses 1540 m/s."};
+  if (r.kind === "true") return {ok:false, msg:"Not yet. Work layer by layer: thickness = v × Δt ÷ 2, then add the layers."};
+  return {ok:false, msg:"Not yet. Measure the echo time at its center, then use d = v t ÷ 2."};
+}
+
+/* ---------- column drawing ---------- */
+const col = $("column"), cx = col.getContext("2d");
+const TOPC = 48, PXC = 34, LEFT = 60;
+const zy = z => TOPC + z * PXC;
+function drawColumn(){
+  const c = st.c, W = 300, H = 580;
+  cx.clearRect(0, 0, W, H);
+  const ink = getComputedStyle(document.documentElement).getPropertyValue("--ink").trim() || "#16232F";
+  if (st.revealed){
+    for (const L of c.layers){ cx.fillStyle = L.fill; cx.fillRect(LEFT, zy(L.top), W - LEFT - 6, (L.bot - L.top)*PXC); }
+    cx.font = "700 17px 'Atkinson Hyperlegible', system-ui, sans-serif"; cx.textAlign = "left"; cx.textBaseline = "middle"; cx.lineJoin = "round";
+    for (const L of c.layers){
+      const y = zy((L.top + Math.min(L.bot, ZMAX))/2);
+      cx.lineWidth = 4; cx.strokeStyle = "rgba(255,255,255,.92)"; cx.strokeText(L.name, LEFT + 8, y);
+      cx.fillStyle = "#111A22"; cx.fillText(L.name, LEFT + 8, y);
+    }
+    cx.textAlign = "right"; cx.font = "700 16px 'Atkinson Hyperlegible', system-ui, sans-serif";
+    c.bnds.forEach((b, i) => {
+      cx.strokeStyle = "#111A22"; cx.lineWidth = 2;
+      cx.beginPath(); cx.moveTo(LEFT, zy(b.z)); cx.lineTo(W - 6, zy(b.z)); cx.stroke();
+      const t = `${i+1}: ${f2(b.z)} cm`;
+      cx.lineWidth = 4; cx.strokeStyle = "rgba(255,255,255,.92)"; cx.strokeText(t, W - 10, zy(b.z) - 11);
+      cx.fillStyle = "#111A22"; cx.fillText(t, W - 10, zy(b.z) - 11);
+      if (st.round === 3){
+        const sz = 0.077 * b.t;
+        cx.setLineDash([7,5]); cx.strokeStyle = "#0A3B4A"; cx.lineWidth = 2.5;
+        cx.beginPath(); cx.moveTo(LEFT, zy(sz)); cx.lineTo(W - 6, zy(sz)); cx.stroke(); cx.setLineDash([]);
+        const s = `scanner: ${f2(sz)} cm`;
+        cx.lineWidth = 4; cx.strokeStyle = "rgba(255,255,255,.92)"; cx.strokeText(s, W - 10, zy(sz) + 12);
+        cx.fillStyle = "#0A3B4A"; cx.fillText(s, W - 10, zy(sz) + 12);
+      }
+    });
+  } else {
+    cx.fillStyle = "#56636F"; cx.fillRect(LEFT, zy(0), W - LEFT - 6, ZMAX*PXC);
+    cx.fillStyle = "#FFFFFF"; cx.textAlign = "center"; cx.textBaseline = "middle";
+    cx.font = "700 64px 'Atkinson Hyperlegible', system-ui, sans-serif"; cx.fillText("?", (LEFT + W)/2, zy(7));
+    cx.font = "400 16px 'Atkinson Hyperlegible', system-ui, sans-serif"; cx.fillText("Anatomy hidden", (LEFT + W)/2, zy(8.4));
+  }
+  // ruler
+  cx.fillStyle = ink; cx.strokeStyle = ink; cx.lineWidth = 1;
+  cx.font = "400 13px 'Atkinson Hyperlegible', system-ui, sans-serif"; cx.textAlign = "right"; cx.textBaseline = "middle";
+  for (let z = 0; z <= ZMAX; z++){
+    cx.fillRect(LEFT - (z % 5 ? 6 : 12), zy(z) - 0.5, z % 5 ? 6 : 12, 1);
+    if (z % 5 === 0) cx.fillText(`${z} cm`, LEFT - 14, zy(z));
+  }
+  // probe
+  cx.fillStyle = "#0A6680"; cx.strokeStyle = "#0B2733"; cx.lineWidth = 2;
+  cx.beginPath(); cx.rect(LEFT + 60, 8, W - LEFT - 126, TOPC - 10); cx.fill(); cx.stroke();
+  cx.fillStyle = "#FFFFFF"; cx.textAlign = "center"; cx.font = "700 14px 'Atkinson Hyperlegible', system-ui, sans-serif";
+  cx.fillText("Probe", (LEFT + W)/2, 8 + (TOPC - 10)/2);
+  // pulses in flight
+  if (st.firing){
+    const tau = st.tau, mid = (LEFT + W)/2;
+    if (tau < c.bnds[c.bnds.length-1].t/2 + 20) packet(mid - 30, zy(depthAtOneWay(c, tau)), "down");
+    for (const b of c.bnds){
+      if (tau >= b.t/2 && tau <= b.t) packet(mid + 30, zy(depthAtOneWay(c, b.t - tau)), "up");
+    }
+  }
+  col.setAttribute("aria-label", st.revealed
+    ? `Revealed patient, top to bottom: ${c.layers.map(L => `${L.name} from ${f2(L.top)} to ${f2(Math.min(L.bot, ZMAX))} cm`).join("; ")}.` + (st.round === 3 ? ` Dashed lines show where the scanner places each boundary: ${c.bnds.map((b,i) => `echo ${i+1} at ${f2(0.077*b.t)} cm instead of ${f2(b.z)} cm`).join(", ")}.` : "")
+    : "Hidden patient: a 15 cm column of tissue with the probe on top. The anatomy is hidden until you check your answers.");
+}
+function packet(x, y, dir){
+  cx.save();
+  cx.fillStyle = dir === "down" ? "#66C8E2" : "#F2A030";
+  cx.strokeStyle = "#0B2733"; cx.lineWidth = 2;
+  cx.beginPath();
+  if (dir === "down"){ cx.moveTo(x - 12, y - 10); cx.lineTo(x + 12, y - 10); cx.lineTo(x, y + 10); }
+  else { cx.moveTo(x - 12, y + 10); cx.lineTo(x + 12, y + 10); cx.lineTo(x, y - 10); }
+  cx.closePath(); cx.fill(); cx.stroke();
+  cx.restore();
+}
+
+/* ---------- timeline ---------- */
+const tl = $("timeline"), tx = tl.getContext("2d");
+const TL = 60, TR = 20, TW = 900 - TL - TR, TH = 280, TB = 46, TT = 34;
+const xt = t => TL + t / TMAX * TW;
+const baseY = TT + (TH - TT - TB) * 0.62, amp = (TH - TT - TB) * 0.55;
+function signal(t){
+  let s = 0;
+  const bang = 0.95 * Math.exp(-(((t - 1.2)/0.9)**2)) * Math.sin(2*Math.PI*t/1.2);
+  s += bang;
+  for (const b of st.c.bnds){
+    const u = t - b.t;
+    if (Math.abs(u) < 4) s += b.A * Math.exp(-((u/0.8)**2)) * Math.cos(2*Math.PI*u/1.2);
+  }
+  return s;
+}
+function drawTimeline(){
+  tx.clearRect(0, 0, 900, TH);
+  tx.fillStyle = "#000"; tx.fillRect(TL, TT - 8, TW, TH - TT - TB + 16);
+  tx.font = "400 13px 'Atkinson Hyperlegible', system-ui, sans-serif";
+  tx.textAlign = "center"; tx.textBaseline = "middle";
+  for (let t = 0; t <= TMAX; t += 10){
+    const x = xt(t);
+    tx.fillStyle = t % 50 === 0 ? "#3A4C5A" : "#1D2A33";
+    tx.fillRect(x, TT - 8, 1, TH - TT - TB + 16);
+    tx.fillStyle = "#AFC0CD"; tx.fillRect(x, TH - TB + 8, 1, t % 20 ? 4 : 8);
+    if (t % 20 === 0) tx.fillText(`${t}`, x, TH - TB + 24);
+  }
+  tx.fillText("Time after the pulse is sent (µs)", TL + TW/2, TH - 8);
+  tx.fillStyle = "#3A4C5A"; tx.fillRect(TL, baseY, TW, 1);
+  const shown = st.firing ? st.tau : st.fired ? TMAX : -1;
+  if (shown >= 0){
+    tx.strokeStyle = "#E8F1F6"; tx.lineWidth = 1.5; tx.beginPath();
+    for (let px = 0; px <= TW; px++){
+      const t = px / TW * TMAX; if (t > shown) break;
+      const y = baseY - signal(t) * amp;
+      px ? tx.lineTo(TL + px, y) : tx.moveTo(TL + px, y);
+    }
+    tx.stroke();
+    tx.fillStyle = "#AFC0CD"; tx.textAlign = "left";
+    tx.fillText("Pulse sent", TL + 6, TT + 4);
+    tx.textAlign = "center"; tx.font = "700 15px 'Atkinson Hyperlegible', system-ui, sans-serif";
+    st.c.bnds.forEach((b, i) => { if (b.t <= shown){ tx.fillStyle = "#F2C46A"; tx.fillText(`${i+1}`, xt(b.t), TT + 4); } });
+  }
+  if (st.predicted != null){
+    tx.setLineDash([5,4]); tx.strokeStyle = "#F2A030"; tx.lineWidth = 2;
+    tx.beginPath(); tx.moveTo(xt(st.predicted), TT - 8); tx.lineTo(xt(st.predicted), TH - TB + 8); tx.stroke(); tx.setLineDash([]);
+    tx.fillStyle = "#F2A030"; tx.textAlign = "left"; tx.font = "400 13px 'Atkinson Hyperlegible', system-ui, sans-serif";
+    tx.fillText("your prediction", xt(st.predicted) + 5, TH - TB - 6);
+  }
+  // cursor
+  const x = xt(st.cursor);
+  tx.fillStyle = "#66C8E2"; tx.fillRect(x - 1, TT - 8, 2, TH - TT - TB + 16);
+  tx.beginPath(); tx.moveTo(x - 7, TT - 16); tx.lineTo(x + 7, TT - 16); tx.lineTo(x, TT - 7); tx.closePath(); tx.fill();
+  const n = st.c.bnds.length;
+  tl.setAttribute("aria-label", st.fired
+    ? `Echo display from 0 to 200 microseconds. The pulse is sent at 0, and ${n} echo${n > 1 ? "es are" : " is"} received, labeled 1 to ${n}. The time cursor is at ${f1(st.cursor)} microseconds.`
+    : "Echo display from 0 to 200 microseconds. No pulse fired yet.");
+}
+
+/* ---------- answers UI ---------- */
+function buildAnswers(){
+  const tb = $("answers"); tb.innerHTML = "";
+  st.rows.forEach((r, i) => {
+    const unit = r.kind === "time" ? "µs" : "cm";
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<th scope="row" style="background:none;font-weight:400">${r.label}</th>
+      <td><input type="text" inputmode="decimal" id="p2-ans${i}" aria-describedby="p2-res${i}" autocomplete="off"><span class="unit">${unit}</span></td>
+      <td class="res" id="p2-res${i}"></td>`;
+    tb.appendChild(tr);
+    tr.querySelector("input").setAttribute("aria-label", `${r.label}, in ${unit === "µs" ? "microseconds" : "centimeters"}`);
+    tr.querySelector("input").addEventListener("keydown", e => { if (e.key === "Enter") check(); });
+  });
+}
+function parseNum(s){ s = (s || "").trim().replace(",", "."); if (!s) return NaN; return Number(s); }
+function check(){
+  let good = 0, answered = 0;
+  st.rows.forEach((r, i) => {
+    const a = parseNum($("ans" + i).value), cell = $("res" + i);
+    if (isNaN(a)){ cell.innerHTML = `<span class="no">✗ Enter a number.</span>`; r.ok = false; return; }
+    answered++;
+    const j = judge(r, a); r.ok = j.ok; if (j.ok) good++;
+    cell.innerHTML = `<span class="${j.ok ? "ok" : "no"}">${j.ok ? "✓" : "✗"} ${j.msg}</span>` + ((j.ok || st.showSol) ? `<span class="sol">${solution(r)}</span>` : "");
+  });
+  const R = ROUNDS[st.round];
+  if (R.predictFirst && answered){
+    st.predicted = parseNum($("ans0").value);
+    $("fire").disabled = false; $("fireHint").textContent = st.fired ? "" : "Now fire a pulse and see if echo 2 lands on your prediction.";
+    drawTimeline();
+  }
+  st.checked = true;
+  $("reveal").disabled = false; $("revealHint").textContent = "";
+  $("showSol").disabled = false;
+  const all = good === st.rows.length;
+  let msg = `${good} of ${st.rows.length} correct.`;
+  if (all){
+    st.solved[st.round] = true; $("done" + st.round).hidden = false;
+    msg += st.round < 3 ? " Round solved. Reveal the anatomy, try a new patient, or move to the next round." : " Round solved. Reveal the anatomy to see where the scanner places each boundary.";
+  }
+  $("summary").textContent = msg;
+}
+
+/* ---------- round setup ---------- */
+function setup(round, keepFocus){
+  st.round = round;
+  const R = ROUNDS[round];
+  st.c = build(R.make());
+  st.rows = R.rows(st.c);
+  Object.assign(st, {fired:false, firing:false, tau:0, checked:false, revealed:false, predicted:null, cursor:0, showSol:false});
+  $("taskTitle").textContent = R.title;
+  $("taskText").innerHTML = R.text(st.c);
+  $("reveal").disabled = true; $("reveal").setAttribute("aria-pressed", "false"); $("reveal").textContent = "Reveal the anatomy";
+  $("revealHint").textContent = "Check your answers first to unlock the reveal.";
+  $("showSol").disabled = true;
+  $("summary").textContent = "";
+  $("fire").disabled = !!R.predictFirst;
+  $("fireHint").textContent = R.predictFirst ? "Enter and check your prediction first, then fire to test it." : "";
+  $("prevEcho").disabled = $("nextEcho").disabled = true;
+  setCursor(0);
+  buildAnswers(); drawColumn(); drawTimeline();
+}
+
+/* ---------- firing ---------- */
+const live = $("live");
+function say(m){ live.textContent = ""; setTimeout(() => live.textContent = m, 30); }
+const calm = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function finishFire(){
+  st.firing = false; st.fired = true;
+  $("prevEcho").disabled = $("nextEcho").disabled = false;
+  $("fire").disabled = false; $("fire").textContent = "Fire again";
+  drawColumn(); drawTimeline();
+  const n = st.c.bnds.length;
+  let m = `${n} echo${n > 1 ? "es" : ""} received. Use Next echo to move the time cursor to each one.`;
+  if (st.predicted != null){
+    const d = st.predicted - st.c.bnds[1].t;
+    m += Math.abs(d) <= Math.max(0.8, 0.02*st.c.bnds[1].t) ? " Echo 2 arrived right at your prediction." : ` Echo 2 arrived ${f1(Math.abs(d))} µs ${d > 0 ? "before" : "after"} your prediction.`;
+  }
+  $("fireHint").textContent = m; say(m);
+}
+function fire(){
+  if (st.firing) return;
+  $("fire").disabled = true;
+  if (calm()){ finishFire(); return; }
+  st.firing = true; st.tau = 0;
+  const end = Math.min(TMAX, st.c.bnds[st.c.bnds.length-1].t + 15), dur = 1200 + end * 14;
+  const t0 = performance.now();
+  const step = now => {
+    st.tau = (now - t0) / dur * end;
+    if (st.tau >= end){ finishFire(); return; }
+    drawColumn(); drawTimeline(); requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+/* ---------- cursor ---------- */
+const cur = $("cursor");
+function setCursor(t){
+  st.cursor = Math.max(0, Math.min(TMAX, Math.round(t*10)/10));
+  cur.value = st.cursor;
+  $("cursorOut").textContent = `${f1(st.cursor)} µs`;
+  let vt = `${f1(st.cursor)} microseconds`;
+  if (st.fired){ const i = st.c.bnds.findIndex(b => Math.abs(b.t - st.cursor) < 0.6); if (i >= 0) vt += `, on echo ${i+1}`; }
+  cur.setAttribute("aria-valuetext", vt);
+  drawTimeline();
+}
+function jump(dir){
+  const ts = st.c.bnds.map(b => b.t);
+  let target = dir > 0 ? ts.find(t => t > st.cursor + 0.15) : [...ts].reverse().find(t => t < st.cursor - 0.15);
+  if (target == null) target = dir > 0 ? ts[0] : ts[ts.length - 1];
+  setCursor(target);
+  const i = ts.indexOf(target);
+  say(`Echo ${i+1}: ${f1(st.cursor)} microseconds.`);
+}
+cur.addEventListener("input", () => setCursor(+cur.value));
+let drag = false;
+const fromEvt = e => { const r = tl.getBoundingClientRect(); return ((e.clientX - r.left)/r.width*900 - TL) / TW * TMAX; };
+tl.addEventListener("pointerdown", e => { drag = true; tl.setPointerCapture(e.pointerId); setCursor(fromEvt(e)); });
+tl.addEventListener("pointermove", e => { if (drag) setCursor(fromEvt(e)); });
+tl.addEventListener("pointerup", () => drag = false); tl.addEventListener("pointercancel", () => drag = false);
+
+/* ---------- wiring ---------- */
+$("fire").addEventListener("click", fire);
+$("nextEcho").addEventListener("click", () => jump(1));
+$("prevEcho").addEventListener("click", () => jump(-1));
+$("check").addEventListener("click", check);
+$("showSol").addEventListener("click", () => { st.showSol = true; check(); });
+$("newCase").addEventListener("click", () => { setup(st.round); say("New patient loaded. Anatomy hidden."); });
+$("reveal").addEventListener("click", e => {
+  st.revealed = !st.revealed;
+  e.currentTarget.setAttribute("aria-pressed", String(st.revealed));
+  e.currentTarget.textContent = st.revealed ? "Hide the anatomy" : "Reveal the anatomy";
+  drawColumn();
+  say(st.revealed ? col.getAttribute("aria-label") : "Anatomy hidden.");
+});
+document.querySelectorAll('input[name="p2-round"]').forEach(r => r.addEventListener("change", e => {
+  setup(+e.target.value); say(`${ROUNDS[st.round].title} loaded.`);
+}));
+if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", drawColumn);
+
+setup(0);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { drawColumn(); drawTimeline(); });
+})();
+
+// ===== Why do we need gel? =====
+
+(function(){
+"use strict";
+const $ = id => document.getElementById("p3-" + id);
+const M = {
+  air:{name:"Air", rho:1.2, v:343},
+  lung:{name:"Lung (air-filled)", rho:400, v:650},
+  oil:{name:"Mineral oil", rho:850, v:1440},
+  water:{name:"Water", rho:1000, v:1480},
+  gel:{name:"Ultrasound gel", rho:1030, v:1540},
+  fat:{name:"Fat", rho:950, v:1450},
+  skin:{name:"Skin", rho:1100, v:1550},
+  soft:{name:"Soft tissue (average)", rho:1060, v:1540},
+  muscle:{name:"Muscle", rho:1070, v:1580},
+  bone:{name:"Bone", rho:1900, v:4080},
+  pzt:{name:"Piezoelectric crystal (PZT)", rho:7600, v:3950}
+};
+for (const k in M) M[k].Z = M[k].rho * M[k].v / 1e6; // MRayl
+const R = (a, b) => ((b - a) / (b + a)) ** 2;
+const SUP = {"-":"⁻","0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹"};
+function sci(x, d){ const e = Math.floor(Math.log10(Math.abs(x))); return `${(x / 10**e).toFixed(d)} × 10${String(e).split("").map(c => SUP[c]).join("")}`; }
+const neg = s => String(s).replace("-", "−");
+const fmtZ = z => z < 0.01 ? z.toFixed(6) : z.toFixed(3);
+function pct(x){
+  const p = x * 100;
+  if (p === 0) return "0%";
+  if (p < 0.01) return sci(p, 1) + "%";
+  if (p < 1) return p.toFixed(2) + "%";
+  if (p > 99 && p < 100) return p.toFixed(2) + "%";
+  return p.toFixed(1) + "%";
+}
+const dB = x => 10 * Math.log10(x);
+const live = $("live");
+function say(m){ live.textContent = ""; setTimeout(() => live.textContent = m, 30); }
+
+/* ---------- part 1 ---------- */
+const COUP = {
+  air:{mat:"air", title:"Nothing between probe and skin: an air gap",
+    text:"Air’s impedance is about 4000 times smaller than skin’s, so about 99.9% of the sound bounces straight back at the skin. The tiny fraction that gets in is weakened again on the way out, so echoes from inside reach the probe at about one millionth of their normal strength. The screen shows only bright reverberation bands at the top, from sound bouncing between probe and skin, and nothing of the patient."},
+  water:{mat:"water", title:"Water",
+    text:"Water’s impedance is close to skin’s, so well under 1% reflects and the image looks good. The catch is practical: water runs off, evaporates, and won’t keep filling the tiny gaps on curved skin for a whole exam."},
+  oil:{mat:"oil", title:"Mineral oil",
+    text:"Oil is a slightly worse match, but about 98% still gets through and the image is fine. Probe manufacturers usually advise against oils and lotions, though, because they can damage the probe’s rubber lens."},
+  gel:{mat:"gel", title:"Ultrasound gel",
+    text:"Gel is mostly water, with an impedance very close to skin’s, so only about 0.1% reflects. It is thick enough to stay put and fill every gap, gentle on skin, and safe for the probe. The full image comes through."},
+  bubbles:{mat:"gel", title:"Gel with trapped air bubbles",
+    text:"Each air bubble is a tiny air gap. Under the bubbles almost all the sound reflects, so each one casts a dark streak straight down the image. That is why sonographers apply plenty of gel, spread it smoothly, and avoid shaking the bottle."}
+};
+const BUB = [[0.45, 0.05], [0.6, 0.06], [0.7, 0.04]]; // x fraction across face, radius fraction
+let coup = "air";
+
+function stats(){
+  const c = COUP[coup], z = M[c.mat].Z, zs = M.skin.Z;
+  const r = R(z, zs), t = 1 - r, rt = t * t;
+  return {z, zs, r, t, rt};
+}
+
+const sc = $("scene"), sx = sc.getContext("2d");
+const PROBE = {x0:250, x1:650, y0:24, y1:96}, CY0 = 96, CY1 = 170, SKY1 = 196;
+const fills = {air:"#EEF4F9", water:"#9DCBEA", oil:"#EFDC93", gel:"#86CFC6"};
+let phase = 0;
+function arrow(x0, y0, x1, y1, w, color, dashed, text, textSide){
+  if (w < 0.05){
+    sx.setLineDash([2, 5]); sx.strokeStyle = color; sx.lineWidth = 1.5;
+    sx.beginPath(); sx.moveTo(x0, y0); sx.lineTo(x1, y1); sx.stroke(); sx.setLineDash([]);
+  } else {
+    const lw = Math.max(2, w * 26), ang = Math.atan2(y1 - y0, x1 - x0), head = Math.max(12, lw * 0.9);
+    const bx = x1 - Math.cos(ang) * head, by = y1 - Math.sin(ang) * head;
+    sx.strokeStyle = color; sx.lineWidth = lw; sx.lineCap = "butt";
+    if (dashed){ sx.setLineDash([10, 7]); sx.lineDashOffset = -phase; }
+    sx.beginPath(); sx.moveTo(x0, y0); sx.lineTo(bx, by); sx.stroke(); sx.setLineDash([]);
+    sx.fillStyle = color; sx.beginPath();
+    const hw = Math.max(9, lw * 0.85);
+    sx.moveTo(x1, y1);
+    sx.lineTo(bx + Math.cos(ang + Math.PI/2) * hw, by + Math.sin(ang + Math.PI/2) * hw);
+    sx.lineTo(bx - Math.cos(ang + Math.PI/2) * hw, by - Math.sin(ang + Math.PI/2) * hw);
+    sx.closePath(); sx.fill();
+  }
+  if (text) tag(text, textSide.x, textSide.y, textSide.align || "left");
+}
+function tag(t, x, y, align){
+  sx.font = "700 19px 'Atkinson Hyperlegible', system-ui, sans-serif";
+  sx.textAlign = align || "left"; sx.textBaseline = "middle"; sx.lineJoin = "round";
+  sx.lineWidth = 5; sx.strokeStyle = "rgba(255,255,255,.95)"; sx.strokeText(t, x, y);
+  sx.fillStyle = "#111A22"; sx.fillText(t, x, y);
+}
+function drawScene(){
+  const s = stats(), c = COUP[coup];
+  sx.clearRect(0, 0, 900, 460);
+  // tissue
+  sx.fillStyle = "#D2A28C"; sx.fillRect(0, SKY1, 900, 460 - SKY1);
+  sx.fillStyle = "#E9C6A3"; sx.fillRect(0, CY1, 900, SKY1 - CY1);
+  sx.fillStyle = "#A6687A"; sx.strokeStyle = "#5A2C3A"; sx.lineWidth = 2;
+  sx.beginPath(); sx.ellipse(450, 395, 230, 48, 0, 0, 2*Math.PI); sx.fill(); sx.stroke();
+  // coupling layer under probe
+  sx.fillStyle = fills[c.mat === "gel" ? "gel" : c.mat];
+  sx.beginPath(); sx.moveTo(PROBE.x0 - 30, CY1); sx.lineTo(PROBE.x0, CY0); sx.lineTo(PROBE.x1, CY0); sx.lineTo(PROBE.x1 + 30, CY1); sx.closePath(); sx.fill();
+  sx.strokeStyle = "#3A4855"; sx.lineWidth = 1; sx.stroke();
+  if (coup === "air"){
+    sx.fillStyle = "#7E93A5"; sx.font = "400 14px 'Atkinson Hyperlegible', system-ui, sans-serif";
+    for (let i = 0; i < 9; i++) sx.fillRect(PROBE.x0 + 20 + i*42, CY0 + 18 + (i % 3)*14, 3, 3);
+  }
+  if (coup === "bubbles"){
+    sx.fillStyle = "#F7FBFF"; sx.strokeStyle = "#3A4855"; sx.lineWidth = 1.5;
+    for (const [fx, fr] of BUB){
+      const x = PROBE.x0 + fx * (PROBE.x1 - PROBE.x0), r = fr * 240;
+      sx.beginPath(); sx.arc(x, 142, r, 0, 2*Math.PI); sx.fill(); sx.stroke();
+    }
+  }
+  // probe
+  sx.fillStyle = "#4C5966"; sx.strokeStyle = "#0B1620"; sx.lineWidth = 2;
+  sx.fillRect(PROBE.x0, PROBE.y0, PROBE.x1 - PROBE.x0, PROBE.y1 - PROBE.y0 - 8); sx.strokeRect(PROBE.x0, PROBE.y0, PROBE.x1 - PROBE.x0, PROBE.y1 - PROBE.y0 - 8);
+  sx.fillStyle = "#9AA9B6"; sx.fillRect(PROBE.x0, PROBE.y1 - 8, PROBE.x1 - PROBE.x0, 8);
+  sx.fillStyle = "#FFFFFF"; sx.font = "700 18px 'Atkinson Hyperlegible', system-ui, sans-serif"; sx.textAlign = "center"; sx.textBaseline = "middle";
+  sx.fillText("Probe", 450, 52);
+  // labels for layers
+  tag(coup === "air" ? "Air gap" : coup === "bubbles" ? "Gel + bubbles" : M[c.mat].name, 16, (CY0 + CY1)/2 - 4);
+  tag("Skin", 16, (CY1 + SKY1)/2 + 2);
+  tag("Soft tissue", 16, 240);
+  tag("Organ", 450, 395, "center");
+
+  // arrows (main column = gel region, or full face)
+  const T = coup === "bubbles" ? 1 - R(M.gel.Z, M.skin.Z) : s.t, Rr = 1 - T;
+  const col = getComputedStyle(document.documentElement);
+  const tC = "#0A6680", rC = "#B4410E";
+  arrow(330, 104, 330, CY1 - 4, 1, tC, false);
+  tag("Sent: 100%", 318, 116, "right");
+  arrow(352, CY1 - 6, 420, 108, Rr, rC, true);
+  tag(`Reflected: ${pct(Rr)}`, 426, 108);
+  arrow(330, CY1 + 4, 330, 343, T, tC, false);
+  tag(`Gets in: ${pct(T)}`, 352, 275);
+  arrow(570, 343, 570, CY1 + 6, T, rC, true);
+  tag(`Echo from organ`, 590, 300);
+  arrow(570, CY1 - 4, 570, 106, T*T, rC, true);
+  tag(`Back at probe: ${pct(T*T)}`, 590, 132);
+  if (coup === "bubbles"){
+    const x = PROBE.x0 + BUB[1][0] * (PROBE.x1 - PROBE.x0) + 0;
+    sx.setLineDash([4,4]); sx.strokeStyle = "#111A22"; sx.lineWidth = 2;
+    sx.beginPath(); sx.moveTo(x, CY1); sx.lineTo(x, 340); sx.stroke(); sx.setLineDash([]);
+    tag("Bubble shadow", x - 8, 215, "right");
+  }
+  sc.setAttribute("aria-label", coup === "bubbles"
+    ? `Probe on skin with gel containing three air bubbles. Away from the bubbles ${pct(T)} of the sound gets in and ${pct(T*T)} of the normal echo returns. Under each bubble almost nothing gets through, leaving a shadow.`
+    : `Probe on skin with ${coup === "air" ? "an air gap" : M[c.mat].name.toLowerCase()} between them. Of the sound sent, ${pct(s.r)} reflects at the skin and ${pct(s.t)} gets in. Echoes from the organ return to the probe at ${pct(s.rt)} of their normal strength.`);
+}
+
+/* preview image */
+const pv = $("preview"), px = pv.getContext("2d");
+const PW = 360, PH = 460;
+const noise = new Float32Array(PW * PH);
+for (let i = 0; i < noise.length; i++) noise[i] = (-Math.log(Math.random() + 1e-9) - Math.log(Math.random() + 1e-9)) / 2;
+function drawPreview(){
+  const img = px.createImageData(PW, PH), d = img.data;
+  const tGel = 1 - R(M.gel.Z, M.skin.Z), tAir = 1 - R(M.air.Z, M.skin.Z);
+  const s = stats();
+  for (let x = 0; x < PW; x++){
+    let t = s.t;
+    if (coup === "bubbles"){
+      t = tGel;
+      for (const [fx, fr] of BUB) if (Math.abs(x/PW - fx) < fr) t = tAir;
+    }
+    const g = Math.max(0, Math.min(1, 1 + dB(t*t) / 50));
+    for (let y = 0; y < PH; y++){
+      let b = 0;
+      const n = noise[y*PW + x];
+      if (y < 10) b = 0.9 * (coup === "air" ? 1 : g);
+      else {
+        const inOrg = (((x - 180)/150) ** 2 + ((y - 300)/62) ** 2) <= 1;
+        const edge = Math.abs((((x - 180)/150) ** 2 + ((y - 300)/62) ** 2) - 1) < 0.08;
+        b = (inOrg ? 0.13 : 0.24) * n;
+        if (edge) b = 0.85;
+        if (y > 26 && y < 34) b = 0.6;
+        b *= g;
+      }
+      if ((coup === "air" || (coup === "bubbles" && t === tAir)) && y < 200){
+        for (let k = 0; k < 6; k++){ const yy = 10 + k*32; if (Math.abs(y - yy) < 3) b = Math.max(b, 0.9 * Math.pow(0.7, k)); }
+      }
+      b += 0.02 * n;
+      const v = Math.round(Math.min(1, b) * 255), p = (y*PW + x)*4;
+      d[p] = v; d[p+1] = v; d[p+2] = v; d[p+3] = 255;
+    }
+  }
+  px.putImageData(img, 0, 0);
+  const desc = coup === "air"
+    ? "The screen is black apart from a few bright horizontal bands at the top: reverberations between the probe and the skin. The organ is invisible."
+    : coup === "bubbles"
+      ? "The tissue and the oval organ show clearly, except for three dark vertical streaks running down from the top, one under each air bubble."
+      : "A clear image: a bright skin line at the top, grainy gray tissue, and an oval organ with a bright outline.";
+  pv.setAttribute("aria-label", desc);
+  return desc;
+}
+
+function verdict(){
+  const s = stats(), c = COUP[coup];
+  $("vTitle").textContent = c.title;
+  $("vText").innerHTML = `<p>${c.text}</p>`;
+  const zc = coup === "air" ? M.air.Z : M[c.mat].Z;
+  const items = coup === "bubbles"
+    ? [[`${fmtZ(M.gel.Z)} vs ${fmtZ(M.air.Z)}`, "Gel vs bubble impedance (MRayl)"],
+       [pct(R(M.gel.Z, M.skin.Z)), "Reflected where gel touches skin"],
+       [pct(R(M.air.Z, M.skin.Z)), "Reflected under each bubble"],
+       ["Dark streaks", "Where the bubbles sit"]]
+    : [[`${fmtZ(zc)} → ${fmtZ(s.zs)}`, "Impedance, coupling to skin (MRayl)"],
+       [pct(s.r), "Reflected at the skin"],
+       [pct(s.t), "Transmitted into the body"],
+       [`${pct(s.rt)} (${neg(dB(s.rt).toFixed(1))} dB)`, "Echo returning to the probe, compared with perfect contact"]];
+  $("stats").innerHTML = items.map(([b, l]) => `<div class="stat"><b>${b}</b><span>${l}</span></div>`).join("");
+}
+function updatePart1(announce){
+  drawScene(); const d = drawPreview(); verdict();
+  if (announce){
+    const s = stats();
+    say(coup === "bubbles" ? `Gel with air bubbles. ${d}` : `${COUP[coup].title}. ${pct(s.r)} reflects at the skin, ${pct(s.t)} gets in. ${d}`);
+  }
+}
+document.querySelectorAll('input[name="p3-coup"]').forEach(r => r.addEventListener("change", e => { coup = e.target.value; updatePart1(true); }));
+
+const calmEl = $("calm");
+calmEl.checked = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let lastT = 0;
+function loop(t){
+  if (!calmEl.checked && sc.offsetParent !== null && t - lastT > 40){ phase = (phase + 1.2) % 34; drawScene(); lastT = t; }
+  requestAnimationFrame(loop);
+}
+
+/* ---------- part 2 ---------- */
+const selA = $("matA"), selB = $("matB");
+for (const k in M){ selA.add(new Option(M[k].name, k)); selB.add(new Option(M[k].name, k)); }
+selA.value = "soft"; selB.value = "bone";
+function explore(announce){
+  const a = M[selA.value], b = M[selB.value], r = R(a.Z, b.Z), t = 1 - r;
+  const rW = Math.max(r*100, r > 0 ? 0.6 : 0), tW = 100 - rW;
+  const note = r > 0.99 ? "Almost everything reflects. Ultrasound can’t get past this boundary, which is why air (and air-filled lung) blocks imaging."
+    : r > 0.3 ? "A strong reflector: a bright echo on the screen, and much less sound left to image what lies beyond, which leaves an acoustic shadow."
+    : r > 0.005 ? "A modest reflection: enough for a visible boundary on the image while most of the sound carries on."
+    : r > 0 ? "A very close match: almost all the sound passes through. This is what good coupling looks like."
+    : "Identical materials: no boundary, no echo.";
+  $("explOut").innerHTML = `
+    <h4>${a.name} → ${b.name}</h4>
+    <p class="calc">Z₁ = ${a.rho} × ${a.v} = ${fmtZ(a.Z)} MRayl; Z₂ = ${b.rho} × ${b.v} = ${fmtZ(b.Z)} MRayl</p>
+    <p class="calc">R = ((${fmtZ(b.Z)} − ${fmtZ(a.Z)}) ÷ (${fmtZ(b.Z)} + ${fmtZ(a.Z)}))² = <strong>${pct(r)}</strong>; T = <strong>${pct(t)}</strong></p>
+    <div class="bar" role="img" aria-label="${pct(r)} reflected, ${pct(t)} transmitted">
+      <div class="r" style="width:${rW}%">${rW > 18 ? `Reflected ${pct(r)}` : ""}</div>
+      <div class="t" style="width:${tW}%">${tW > 18 ? `Transmitted ${pct(t)}` : ""}</div>
+    </div>
+    <div class="legendline"><span><span class="sw r"></span>Reflected (striped)</span><span><span class="sw t"></span>Transmitted (plain)</span></div>
+    <p>${note}</p>`;
+  if (announce) say(`${a.name} to ${b.name}: ${pct(r)} reflected, ${pct(t)} transmitted.`);
+}
+selA.addEventListener("change", () => explore(true));
+selB.addEventListener("change", () => explore(true));
+document.querySelectorAll("[data-p]").forEach(b => b.addEventListener("click", () => {
+  const [a, c] = b.dataset.p.split(","); selA.value = a; selB.value = c; explore(true);
+}));
+$("swap").addEventListener("click", () => { const t = selA.value; selA.value = selB.value; selB.value = t; explore(true); });
+$("matRows").innerHTML = Object.values(M).map(m => `<tr><th scope="row" style="background:none;font-weight:400">${m.name}</th><td>${m.rho}</td><td>${m.v}</td><td>${fmtZ(m.Z)}</td></tr>`).join("");
+
+/* ---------- part 3 ---------- */
+const zAirRayl = M.air.rho * M.air.v;
+const rAirSkin = R(M.air.Z, M.skin.Z), tAirSkin = 1 - rAirSkin;
+const rGelSkin = R(M.gel.Z, M.skin.Z);
+const rBone = R(M.soft.Z, M.bone.Z);
+const rPzt = R(M.pzt.Z, M.soft.Z);
+const zMatch = Math.sqrt(M.pzt.Z * M.soft.Z);
+const unR = (a, b) => (b - a) / (b + a);
+const Q = [
+  {label:"Impedance of air", unit:"Rayl", e:zAirRayl, tol:5,
+   sol:`Z = ρv = 1.2 kg/m³ × 343 m/s = ${zAirRayl.toFixed(1)} Rayl (${fmtZ(M.air.Z)} MRayl)`,
+   diag:a => Math.abs(a - zAirRayl/1e6) < 1e-5 ? "That is in MRayl. This question asks for Rayl." : "Multiply density by speed: Z = ρv."},
+  {label:"Percentage reflected at an air–skin boundary", unit:"%", e:rAirSkin*100, tol:0.03,
+   sol:`R = ((${fmtZ(M.skin.Z)} − ${fmtZ(M.air.Z)}) ÷ (${fmtZ(M.skin.Z)} + ${fmtZ(M.air.Z)}))² = ${(rAirSkin*100).toFixed(2)}%`,
+   diag:a => Math.abs(a - unR(M.air.Z, M.skin.Z)*100) < 0.02 ? "Close, but you forgot to square the ratio." : "Use R = ((Z₂ − Z₁) ÷ (Z₂ + Z₁))² with both impedances in the same units."},
+  {label:"Percentage reflected at a gel–skin boundary", unit:"%", e:rGelSkin*100, tol:0.02,
+   sol:`R = ((${fmtZ(M.skin.Z)} − ${fmtZ(M.gel.Z)}) ÷ (${fmtZ(M.skin.Z)} + ${fmtZ(M.gel.Z)}))² = ${(rGelSkin*100).toFixed(2)}%`,
+   diag:a => Math.abs(a - unR(M.gel.Z, M.skin.Z)*100) < 0.3 ? "You forgot to square the ratio." : "Use the gel and skin impedances from the table."},
+  {label:"Percentage reflected where soft tissue meets bone", unit:"%", e:rBone*100, tol:0.6,
+   sol:`R = ((${fmtZ(M.bone.Z)} − ${fmtZ(M.soft.Z)}) ÷ (${fmtZ(M.bone.Z)} + ${fmtZ(M.soft.Z)}))² = ${(rBone*100).toFixed(1)}%. With so much reflected, and the rest strongly absorbed, little sound reaches what lies behind bone.`,
+   diag:a => Math.abs(a - unR(M.soft.Z, M.bone.Z)*100) < 1 ? "You forgot to square the ratio." : Math.abs(a - (1 - rBone)*100) < 1 ? "That is the transmitted part. The question asks for reflected." : "Use the soft tissue (average) and bone impedances."}
+];
+const unitWords = {Rayl:"rayls", "%":"percent"};
+let showSol = false;
+$("answers").innerHTML = Q.map((q, i) => `<tr><th scope="row" style="background:none;font-weight:400">${q.label}</th>
+  <td><input type="text" inputmode="decimal" id="p3-q${i}" aria-describedby="p3-r${i}" aria-label="${q.label}, in ${unitWords[q.unit]}" autocomplete="off"><span class="unit">${q.unit}</span></td>
+  <td class="res" id="p3-r${i}"></td></tr>`).join("");
+Q.forEach((q, i) => $("q" + i).addEventListener("keydown", e => { if (e.key === "Enter") check(); }));
+const num = s => { s = (s || "").trim().replace(/\s/g, "").replace(",", "."); return s ? Number(s) : NaN; };
+function check(){
+  let good = 0;
+  Q.forEach((q, i) => {
+    const a = num($("q" + i).value), cell = $("r" + i);
+    if (isNaN(a)){ cell.innerHTML = `<span class="no">✗ Enter a number.</span>` + (showSol ? `<span class="sol">${q.sol}</span>` : ""); return; }
+    const ok = Math.abs(a - q.e) <= q.tol; if (ok) good++;
+    cell.innerHTML = `<span class="${ok ? "ok" : "no"}">${ok ? "✓ Correct." : "✗ " + q.diag(a)}</span>` + ((ok || showSol) ? `<span class="sol">${q.sol}</span>` : "");
+  });
+  $("showSol").disabled = false;
+  $("summary").textContent = `${good} of ${Q.length} correct.` + (good === Q.length ? " Well done: you can explain why every scan starts with gel." : "");
+}
+$("checkBtn").addEventListener("click", check);
+$("showSol").addEventListener("click", () => { showSol = true; check(); });
+
+updatePart1(false); explore(false);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => drawScene());
+requestAnimationFrame(loop);
+})();
+
+</script>
+<script>
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const parts = [0, 1, 2, 3, 4].map(n => $("part-" + n));
+const live = $("pageLive");
+function say(m){ live.textContent = ""; setTimeout(() => live.textContent = m, 30); }
+const calm = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- progress ---------- */
+function progress(){
+  const count = p => document.querySelectorAll(`[id^="${p}-done"]`);
+  const solved = p => [...count(p)].filter(el => !el.hidden).length;
+  const gelTxt = ($("p3-summary") || {}).textContent || "";
+  const m = gelTxt.match(/(\d+) of (\d+) correct/);
+  return [
+    {name:"Part 1: Echolocation", got:solved("p1"), of:count("p1").length, unit:"rounds solved"},
+    {name:"Part 2: Pulse-echo depth finder", got:solved("p2"), of:count("p2").length, unit:"rounds solved"},
+    {name:"Part 3: Why do we need gel?", got:m ? +m[1] : 0, of:m ? +m[2] : 4, unit:"questions correct"}
+  ];
+}
+function refreshProgress(){
+  progress().forEach((p, i) => { $("prog" + (i + 1)).textContent = `${p.got} of ${p.of} ${p.unit}`; });
+  $("progList").innerHTML = progress().map(p => `<li>${p.name}: ${p.got} of ${p.of} ${p.unit}</li>`).join("");
+}
+document.addEventListener("click", () => setTimeout(refreshProgress, 50));
+
+/* ---------- navigation ---------- */
+function go(n){
+  parts.forEach((s, i) => s.hidden = i !== n);
+  document.querySelectorAll(".steps button").forEach(b => {
+    if (+b.dataset.go === n) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current");
+  });
+  refreshProgress();
+  const h = n === 0 ? $("introTitle") : n === 4 ? $("finishTitle") : $(`p${n}-title`);
+  window.scrollTo({top:0, behavior:calm() ? "auto" : "smooth"});
+  if (h) h.focus({preventScroll:true});
+  if (n === 4 && $("nameRows").children.length === 0) addName();
+}
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go(+b.dataset.go)));
+
+/* ---------- names ---------- */
+let nameCount = 0;
+function renumber(){
+  [...$("nameRows").children].forEach((row, i) => {
+    row.querySelector("label").textContent = `Name ${i + 1}`;
+    const rm = row.querySelector("button");
+    rm.hidden = $("nameRows").children.length === 1;
+    rm.setAttribute("aria-label", `Remove name ${i + 1}`);
+  });
+  $("addName").disabled = $("nameRows").children.length >= 8;
+}
+function addName(focus){
+  nameCount++;
+  const id = "name" + nameCount, row = document.createElement("div");
+  row.className = "namerow";
+  row.innerHTML = `<label for="${id}"></label><input id="${id}" type="text" autocomplete="off" aria-describedby="nameErr"><button type="button" class="fbtn">Remove</button>`;
+  row.querySelector("button").addEventListener("click", () => {
+    const rows = [...$("nameRows").children], idx = rows.indexOf(row);
+    row.remove(); renumber();
+    const left = $("nameRows").querySelectorAll("input");
+    (left[Math.max(0, idx - 1)] || $("addName")).focus();
+  });
+  row.querySelector("input").addEventListener("keydown", e => { if (e.key === "Enter") celebrate(); });
+  $("nameRows").appendChild(row); renumber();
+  if (focus) row.querySelector("input").focus();
+}
+$("addName").addEventListener("click", () => addName(true));
+
+function joinNames(a){
+  if (a.length <= 1) return a.join("");
+  if (a.length === 2) return `${a[0]} and ${a[1]}`;
+  return `${a.slice(0, -1).join(", ")} and ${a[a.length - 1]}`;
+}
+
+/* ---------- celebration ---------- */
+function celebrate(){
+  const inputs = [...$("nameRows").querySelectorAll("input")];
+  const names = inputs.map(i => i.value.trim()).filter(Boolean);
+  inputs.forEach(i => i.setAttribute("aria-invalid", "false"));
+  if (!names.length){
+    $("nameErr").textContent = "Please enter at least one name.";
+    inputs[0].setAttribute("aria-invalid", "true"); inputs[0].focus();
+    return;
+  }
+  $("nameErr").textContent = "";
+  const P = progress(), all = P.every(p => p.got === p.of);
+  $("cardTitle").textContent = all ? "Echo experts!" : "Great work!";
+  $("cardNames").textContent = joinNames(names);
+  $("cardList").innerHTML = P.map(p => {
+    const full = p.got === p.of;
+    return `<li><span class="ic${full ? "" : " partial"}" aria-hidden="true">${full ? "✓" : "○"}</span><span><strong>${p.name}</strong>: ${p.got} of ${p.of} ${p.unit}${full ? ", complete" : ""}</span></li>`;
+  }).join("");
+  const sec = $("section").value.trim();
+  $("cardSection").textContent = sec ? `Class: ${sec}` : "";
+  $("cardDate").textContent = new Date().toLocaleDateString(undefined, {year:"numeric", month:"long", day:"numeric"});
+  $("signin").hidden = true; $("cardwrap").hidden = false;
+  $("card").focus();
+  say(`${all ? "Echo experts!" : "Great work!"} Congratulations, ${joinNames(names)}. ${P.map(p => `${p.name}: ${p.got} of ${p.of} ${p.unit}.`).join(" ")}`);
+  confetti();
+}
+$("celebrate").addEventListener("click", celebrate);
+$("editNames").addEventListener("click", () => { $("cardwrap").hidden = true; $("signin").hidden = false; refreshProgress(); $("nameRows").querySelector("input").focus(); });
+$("again").addEventListener("click", confetti);
+
+function confetti(){
+  if (calm()) return;
+  const cv = $("confetti"), ctx = cv.getContext("2d");
+  const r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+  cv.width = r.width * dpr; cv.height = r.height * dpr; ctx.scale(dpr, dpr);
+  const cols = ["#0A6680", "#66C8E2", "#F2A030", "#D7261E", "#145A2C", "#F2C46A"];
+  const bits = Array.from({length:140}, () => ({
+    x:r.width/2 + (Math.random() - 0.5)*120, y:r.height*0.45,
+    vx:(Math.random() - 0.5)*9, vy:-Math.random()*11 - 4,
+    s:5 + Math.random()*6, a:Math.random()*6, va:(Math.random() - 0.5)*0.3,
+    c:cols[Math.floor(Math.random()*cols.length)], shape:Math.random() < 0.5 ? 0 : 1
+  }));
+  const t0 = performance.now();
+  (function step(now){
+    const t = now - t0;
+    ctx.clearRect(0, 0, r.width, r.height);
+    for (const b of bits){
+      b.vy += 0.28; b.vx *= 0.99; b.x += b.vx; b.y += b.vy; b.a += b.va;
+      ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.a); ctx.globalAlpha = Math.max(0, 1 - t/2600);
+      ctx.fillStyle = b.c;
+      if (b.shape) ctx.fillRect(-b.s/2, -b.s/4, b.s, b.s/2); else { ctx.beginPath(); ctx.arc(0, 0, b.s/2.4, 0, 2*Math.PI); ctx.fill(); }
+      ctx.restore();
+    }
+    if (t < 2600) requestAnimationFrame(step); else ctx.clearRect(0, 0, r.width, r.height);
+  })(t0);
+}
+
+refreshProgress();
+})();
+</script>
+</body>
+</html>
