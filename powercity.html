@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Power the city: PHY 1020</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF1F5; --surface:#FFFFFF; --surface-2:#F5F8FA; --line:#C5D0DA;
+  --ink:#13202B; --muted:#475665;
+  --accent:#0A58AE; --accent-ink:#FFFFFF; --accent-soft:#DCEAF8;
+  --proton:#C2410C; --proton-edge:#7C2D12; --neutron:#475569;
+  --heat:#A34A06; --heat-soft:#FBEBD8;
+  --good:#166534; --warn:#8A3B00; --bad:#A3123A; --focus:#6D28D9;
+  --mix-coal:#3F3F46; --mix-gas:#1D4ED8; --mix-nuclear:#6D28D9; --mix-hydro:#0F766E; --mix-wind:#4D7C0F; --mix-solar:#A34A06; --mix-text:#FFFFFF;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B131C; --surface:#121D28; --surface-2:#182535; --line:#2E3F51;
+    --ink:#E8EEF4; --muted:#AAB8C6;
+    --accent:#62B3FF; --accent-ink:#04111E; --accent-soft:#143457;
+    --proton:#FF8B5E; --proton-edge:#FFD0BC; --neutron:#AEBDCC;
+    --heat:#F6B24C; --heat-soft:#3A2810;
+    --good:#86E3A6; --warn:#F8CB7A; --bad:#FF9DB3; --focus:#C9B8FF;
+    --mix-coal:#B4B4BC; --mix-gas:#93C5FD; --mix-nuclear:#C4B5FD; --mix-hydro:#5EEAD4; --mix-wind:#BEF264; --mix-solar:#FCD34D; --mix-text:#0B131C;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B131C; --surface:#121D28; --surface-2:#182535; --line:#2E3F51;
+  --ink:#E8EEF4; --muted:#AAB8C6;
+  --accent:#62B3FF; --accent-ink:#04111E; --accent-soft:#143457;
+  --proton:#FF8B5E; --proton-edge:#FFD0BC; --neutron:#AEBDCC;
+  --heat:#F6B24C; --heat-soft:#3A2810;
+  --good:#86E3A6; --warn:#F8CB7A; --bad:#FF9DB3; --focus:#C9B8FF;
+  --mix-coal:#B4B4BC; --mix-gas:#93C5FD; --mix-nuclear:#C4B5FD; --mix-hydro:#5EEAD4; --mix-wind:#BEF264; --mix-solar:#FCD34D; --mix-text:#0B131C;
+  color-scheme: dark;
+}
+:root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); font-size:100%; }
+:root.big-text{ font-size:125%; }
+html{ scroll-padding-top:env(safe-area-inset-top,0px); }
+*,*::before,*::after{ box-sizing:border-box; }
+body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', Verdana, sans-serif; font-size:1.0625rem; line-height:1.55; }
+.wrap{ max-width:1180px; margin:0 auto; padding:0 clamp(16px,4vw,40px); }
+.skip{ position:absolute; left:12px; top:-80px; background:var(--accent); color:var(--accent-ink); padding:10px 16px; border-radius:8px; font-weight:700; z-index:20; }
+.skip:focus{ top:12px; }
+.sr-only{ position:absolute!important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
+a{ color:var(--accent); }
+
+.masthead{ padding:40px 0 22px; }
+.course{ margin:0 0 4px; color:var(--muted); font-weight:700; }
+h1{ font-size:clamp(2.5rem,6.5vw,4.2rem); line-height:1.02; margin:0 0 12px; letter-spacing:-0.02em; }
+.lede{ max-width:60ch; margin:0 0 20px; color:var(--muted); font-size:1.125rem; }
+.prefs{ display:flex; gap:10px; flex-wrap:wrap; }
+
+button,select,input,textarea{ font:inherit; }
+.btn{ min-height:44px; padding:8px 16px; border-radius:8px; border:2px solid var(--line); background:var(--surface); color:var(--ink); cursor:pointer; font-weight:700; }
+.btn:hover{ border-color:var(--accent); }
+.btn.primary{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
+.btn.primary:hover{ filter:brightness(1.08); }
+.btn[aria-pressed="true"]{ background:var(--accent-soft); border-color:var(--accent); }
+.btn:disabled{ opacity:.5; cursor:not-allowed; }
+.btn.icon{ width:44px; padding:0; font-size:1.3rem; line-height:1; }
+
+.tabs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:6px; }
+.tab{ display:flex; gap:10px; align-items:center; text-align:left; min-height:58px; padding:10px 14px; border:2px solid var(--line); border-bottom-width:4px; border-radius:10px 10px 0 0; background:var(--surface-2); color:var(--ink); cursor:pointer; font-weight:700; }
+.tab:hover{ border-color:var(--accent); }
+.tab .num{ display:inline-grid; place-items:center; width:30px; height:30px; border-radius:50%; border:2px solid currentColor; font-size:.92rem; flex:none; }
+.tab[aria-selected="true"]{ background:var(--surface); border-color:var(--accent); }
+.tab[aria-selected="true"] .num{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
+.panel{ background:var(--surface); border:2px solid var(--line); border-top:none; border-radius:0 0 14px 14px; padding:clamp(18px,3vw,34px); margin-bottom:36px; }
+
+h2{ font-size:clamp(1.6rem,3vw,2.15rem); line-height:1.15; margin:0 0 6px; }
+h3{ font-size:1.25rem; line-height:1.25; margin:28px 0 10px; }
+h4{ font-size:1.05rem; margin:0 0 6px; }
+.goal{ margin:0 0 22px; color:var(--muted); max-width:68ch; }
+.station-grid{ display:grid; grid-template-columns:minmax(0,1fr) 290px; gap:32px; align-items:start; }
+@media (max-width:920px){ .station-grid{ grid-template-columns:1fr; } }
+.prompts{ background:var(--surface-2); border-left:5px solid var(--accent); border-radius:8px; padding:16px 18px; }
+.prompts h3{ margin-top:0; font-size:1.1rem; }
+.prompts ul{ margin:0; padding-left:1.2em; }
+.prompts li{ margin-bottom:10px; }
+.prompts .note{ font-size:.95rem; color:var(--muted); margin:12px 0 0; }
+
+.stage{ margin:0 0 14px; background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:10px; }
+.stage svg,.stage canvas{ display:block; width:100%; height:auto; }
+.legend{ display:flex; flex-wrap:wrap; gap:6px 18px; font-size:.95rem; color:var(--muted); padding:8px 4px 2px; margin:0; }
+.legend span{ display:inline-flex; align-items:center; gap:6px; }
+.legend svg{ width:20px; height:20px; flex:none; }
+
+.controls{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px 24px; margin-bottom:12px; }
+.field label,.field .lab{ display:flex; justify-content:space-between; gap:8px; font-weight:700; margin-bottom:4px; }
+.field output{ font-weight:700; color:var(--accent); font-variant-numeric:tabular-nums; }
+.hint{ font-size:.92rem; color:var(--muted); margin:2px 0 0; }
+input[type=range]{ width:100%; height:32px; accent-color:var(--accent); cursor:pointer; }
+select{ min-height:44px; padding:6px 10px; border:2px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink); max-width:100%; }
+.check{ display:flex; gap:10px; align-items:flex-start; font-weight:700; cursor:pointer; }
+.check input{ width:22px; height:22px; margin-top:2px; accent-color:var(--accent); flex:none; }
+.btn-row{ display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 18px; }
+
+.step-text{ background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:12px 16px; margin:0 0 4px; min-height:6.5em; }
+.step-count{ display:block; font-weight:700; color:var(--accent); }
+
+.table-scroll{ overflow-x:auto; margin:0 0 12px; }
+table{ border-collapse:collapse; width:100%; font-size:1rem; }
+caption{ text-align:left; font-weight:700; padding-bottom:6px; font-size:1.05rem; }
+th,td{ padding:9px 10px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+thead th{ border-bottom:2px solid var(--ink); white-space:normal; }
+th .hint{ font-weight:400; }
+.num{ text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.callout{ border-left:5px solid var(--heat); background:var(--heat-soft); padding:12px 16px; border-radius:6px; margin:14px 0; }
+
+fieldset{ border:2px solid var(--line); border-radius:10px; padding:12px 16px 14px; margin:0 0 18px; }
+legend{ font-weight:700; padding:0 6px; }
+.radio-row{ display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 10px; }
+.radio-row label{ display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:0 16px; border:2px solid var(--line); border-radius:8px; cursor:pointer; font-weight:700; }
+.radio-row input{ width:20px; height:20px; accent-color:var(--accent); }
+.feedback{ font-weight:700; margin:6px 0 0; min-height:1.5em; }
+.feedback.good{ color:var(--good); } .feedback.bad{ color:var(--bad); }
+
+.stats{ display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin:0 0 12px; }
+.stat{ background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin:0; }
+.stat dt{ font-size:.9rem; color:var(--muted); }
+.stat dd{ margin:2px 0 0; font-size:1.5rem; font-weight:700; font-variant-numeric:tabular-nums; }
+.status{ display:inline-block; padding:6px 14px; border-radius:999px; border:2px solid currentColor; font-weight:700; margin:0 0 12px; }
+.tone-good{ color:var(--good); } .tone-warn{ color:var(--warn); } .tone-bad{ color:var(--bad); } .tone-muted{ color:var(--muted); }
+
+/* Station 1 svg */
+.pr{ fill:var(--proton); stroke:var(--proton-edge); stroke-width:1; }
+.ne{ fill:var(--surface); stroke:var(--neutron); stroke-width:1.6; }
+.ne.free{ stroke:var(--accent); stroke-width:2.8; }
+.lbl{ fill:var(--ink); font-size:21px; font-weight:700; font-family:inherit; }
+.lbl.sub{ font-size:17px; font-weight:400; fill:var(--muted); }
+.lbl.heat{ fill:var(--heat); }
+.arrow{ stroke:var(--accent); stroke-width:2.5; stroke-dasharray:6 6; fill:none; }
+#glowDisk{ opacity:0; transition:opacity .8s ease; }
+#glowDisk.on{ opacity:1; }
+
+/* Station 3 */
+.bar-cell{ min-width:220px; }
+.bar-track{ position:relative; height:14px; margin-top:6px; border-radius:3px; background-color:var(--surface-2); border:1px solid var(--line); }
+.bar-fill{ position:absolute; left:0; top:0; bottom:0; border-radius:2px; background:var(--accent); }
+.bar-fill.nuclear{ background:var(--proton); }
+.sentence{ font-size:1.15rem; line-height:1.7; }
+.sentence select{ margin:2px 4px; }
+.big-answer{ font-weight:700; color:var(--accent); }
+
+/* Station 4 */
+.mix-rows{ display:grid; gap:8px; margin:0 0 14px; }
+.mix-row{ display:grid; grid-template-columns:minmax(110px,150px) 44px minmax(80px,1fr) 44px 56px; gap:8px; align-items:center; }
+.mix-row label{ font-weight:700; display:flex; align-items:center; gap:8px; }
+.mix-row output{ font-weight:700; text-align:right; font-variant-numeric:tabular-nums; }
+.dot{ width:14px; height:14px; border-radius:3px; flex:none; border:1px solid var(--ink); }
+.mixbar{ display:flex; height:52px; border-radius:8px; overflow:hidden; border:2px solid var(--ink); margin:6px 0 4px; background:var(--surface-2); }
+.seg{ display:flex; align-items:center; justify-content:center; color:var(--mix-text); font-weight:700; font-size:.9rem; white-space:nowrap; overflow:hidden; border-right:2px solid var(--surface); transition:flex-basis .3s ease; }
+.seg.unassigned{ color:var(--ink); background:repeating-linear-gradient(45deg,var(--surface-2) 0 8px,var(--line) 8px 16px); }
+.metrics{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; margin:14px 0; }
+.metric{ background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin:0; }
+.metric dt{ font-size:.92rem; color:var(--muted); }
+.metric dd{ margin:2px 0 0; font-size:1.4rem; font-weight:700; }
+.metric .small{ display:block; font-size:.9rem; font-weight:400; color:var(--muted); }
+.roles{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; padding:0; margin:0; list-style:none; }
+.role{ border:2px solid var(--line); border-radius:10px; padding:12px 14px; background:var(--surface); }
+.role p{ margin:6px 0 0; font-size:.98rem; }
+.badge{ display:inline-flex; align-items:center; gap:6px; font-weight:700; font-size:.95rem; }
+.badge .ic{ display:inline-grid; place-items:center; width:22px; height:22px; border-radius:50%; border:2px solid currentColor; font-size:.8rem; line-height:1; }
+.warnline{ font-weight:700; color:var(--warn); margin:4px 0 0; min-height:1.5em; }
+
+/* Station 5 */
+.atoms .alive{ fill:var(--heat); stroke:var(--ink); stroke-width:1; transition:r .4s ease, opacity .4s ease; }
+.atoms .dead{ fill:none; stroke:var(--muted); stroke-width:1.5; stroke-dasharray:3 2; }
+.hl-chart{ display:flex; align-items:flex-end; gap:6px; height:200px; padding:8px 8px 0; border-left:2px solid var(--ink); border-bottom:2px solid var(--ink); margin:8px 0 4px; overflow-x:auto; }
+.hl-col{ position:relative; flex:0 0 40px; height:100%; display:flex; flex-direction:column; justify-content:flex-end; }
+.hl-bar{ background:var(--heat); border:1px solid var(--ink); border-bottom:none; min-height:1px; }
+.hl-exp{ position:absolute; left:-3px; right:-3px; border-top:3px dashed var(--accent); }
+.hl-val{ font-size:.85rem; font-weight:700; text-align:center; }
+.hl-axis{ display:flex; gap:6px; padding:2px 8px 0 10px; font-size:.85rem; color:var(--muted); overflow:hidden; }
+.hl-axis span{ flex:0 0 40px; text-align:center; }
+.iso{ display:grid; grid-template-columns:minmax(120px,170px) 1fr 110px; gap:10px; align-items:center; margin:6px 0; }
+.iso .name{ font-weight:700; }
+.iso .name small{ display:block; font-weight:400; color:var(--muted); font-size:.85rem; }
+.iso .track{ height:22px; border:1px solid var(--line); background:var(--surface-2); border-radius:4px; overflow:hidden; }
+.iso .fill{ height:100%; background:var(--heat); transition:width .4s ease; }
+.iso .pct{ text-align:right; font-weight:700; font-variant-numeric:tabular-nums; }
+@media (max-width:560px){ .iso{ grid-template-columns:1fr 90px; } .iso .track{ grid-column:1 / -1; grid-row:2; } .mix-row{ grid-template-columns:1fr 44px 44px 52px; } .mix-row input[type=range]{ grid-column:1 / -1; grid-row:2; } }
+.context{ background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:12px 16px; min-height:4.5em; }
+.options{ display:grid; gap:10px; }
+details.opt{ border:2px solid var(--line); border-radius:10px; background:var(--surface); }
+details.opt summary{ cursor:pointer; padding:12px 16px; font-weight:700; min-height:44px; }
+details.opt[open] summary{ border-bottom:1px solid var(--line); }
+details.opt .body{ padding:4px 16px 14px; }
+.pc{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media (max-width:640px){ .pc{ grid-template-columns:1fr; } }
+.pc h4{ margin-top:10px; }
+.pc ul{ margin:0; padding-left:1.2em; }
+
+footer{ padding:0 0 48px; color:var(--muted); font-size:.95rem; }
+footer h2{ font-size:1.15rem; color:var(--ink); margin:22px 0 6px; }
+footer p{ max-width:80ch; margin:0 0 8px; }
+
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{ transition:none!important; animation:none!important; } }
+.reduce-motion *,.reduce-motion *::before,.reduce-motion *::after{ transition:none!important; animation:none!important; }
+@media (max-width:640px){ .tabs{ margin-bottom:12px; } .tab{ border-radius:10px; border-bottom-width:2px; } .tab[aria-selected="true"]{ border-width:3px; } .panel{ border-top:2px solid var(--line); border-radius:14px; } }
+.equation{ background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:16px 18px; margin:0 0 6px; }
+.eqv{ display:flex; flex-wrap:wrap; align-items:center; gap:.3em .5em; font-size:clamp(1.35rem,4vw,1.9rem); }
+.term{ display:inline-flex; align-items:center; }
+.nuc{ display:inline-flex; align-items:center; font-weight:700; }
+.az{ display:inline-flex; flex-direction:column; align-items:flex-end; font-size:.55em; line-height:1.1; margin-right:.1em; color:var(--muted); }
+.coef{ font-weight:700; margin-right:.2em; }
+.op{ color:var(--muted); font-weight:700; }
+.unknown{ display:inline-grid; place-items:center; min-width:2.4em; height:1.7em; border:3px dashed var(--accent); border-radius:8px; color:var(--accent); font-weight:700; }
+.answer-grid{ display:flex; flex-wrap:wrap; align-items:flex-end; gap:16px 24px; margin:14px 0 4px; }
+.answer-grid .field{ flex:1 1 220px; }
+input[type=number]{ min-height:48px; width:100%; max-width:14rem; padding:6px 12px; border:2px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink); font-size:1.25rem; }
+#s1puzzle details.opt{ margin-top:8px; }
+.panel{ border-top:2px solid var(--line); border-radius:14px; }
+</style>
+</head>
+<body>
+<a class="skip" href="#city">Skip to the activity</a>
+<header class="masthead">
+  <div class="wrap">
+    <p class="course">PHY 1020: Electricity and the environment</p>
+    <h1>Power the city</h1>
+    <p class="lede">A city must replace its old coal plant. Choose what takes its place, test whether the lights stay on, and see how each group in town reacts.</p>
+    <div class="prefs" role="group" aria-label="Display settings">
+      <button class="btn" id="textToggle" type="button" aria-pressed="false">Larger text</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="panel" id="city" tabindex="-1" aria-labelledby="cityH">
+    <h2 id="cityH">Replace the coal plant</h2>
+    <p class="goal">A city of 200,000 people is closing its old coal plant, which supplies 40% of its electricity. Build a new mix that adds up to 100%, then see how each group in town reacts.</p>
+    <div class="station-grid">
+      <div>
+        <div class="btn-row">
+          <button class="btn primary" type="button" id="mxRetire">Close the coal plant</button>
+          <button class="btn" type="button" id="mxReset">Back to the current mix</button>
+        </div>
+        <div class="mix-rows" id="mixRows" role="group" aria-label="Share of electricity from each source"></div>
+        <p class="warnline" id="mxTotal" aria-live="polite"></p>
+        <div class="mixbar" id="mixBar" aria-hidden="true"></div>
+        <fieldset id="scenSet" style="margin-top:16px">
+          <legend>Test the grid</legend>
+          <div class="radio-row">
+            <label><input type="radio" name="scen" value="normal" checked> Normal day</label>
+            <label><input type="radio" name="scen" value="calm"> Calm, dark night</label>
+            <label><input type="radio" name="scen" value="cold"> Cold winter night</label>
+            <label><input type="radio" name="scen" value="hot"> Hot summer night</label>
+          </div>
+          <p class="hint" id="scenText" style="margin:0"></p>
+        </fieldset>
+        <dl class="metrics">
+          <div class="metric"><dt>Carbon emissions</dt><dd><span id="mCO2"></span><span class="small" id="mCO2b"></span></dd></div>
+          <div class="metric"><dt>Estimated deaths per year (accidents and air pollution)</dt><dd><span id="mDeath"></span><span class="small" id="mDeathb"></span></dd></div>
+          <div class="metric"><dt>Cost to generate (new plants)</dt><dd><span id="mCost"></span><span class="small" id="mCostb"></span></dd></div>
+          <div class="metric"><dt id="mRelLab">Demand met on a normal day</dt><dd><span id="mRel"></span><span class="small" id="mRelb"></span></dd></div>
+        </dl>
+        <h3>How the town reacts</h3>
+        <ul class="roles" id="roles"></ul>
+        <p class="sr-only" id="mxLive" aria-live="polite"></p>
+      </div>
+      <aside class="prompts" aria-labelledby="p4h">
+        <h3 id="p4h">Questions for your group</h3>
+        <ul>
+          <li>Assign each person a role card. Can your group find a mix that every role supports? What did you give up?</li>
+          <li>Run all three night tests. Which one is hardest for your mix, and why? What could fill the gap besides fossil fuels?</li>
+          <li>Nuclear has very low emissions and deaths per unit of energy, but it is expensive to build. How should a city weigh those?</li>
+        </ul>
+        <p class="note">Numbers are rounded estimates for discussion. Costs change from year to year, and storage or backup costs are not included.</p>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <h2>About the numbers</h2>
+  <p>Figures are rounded for teaching. Emissions are lifecycle medians from the IPCC; deaths per unit of electricity are from Our World in Data; new-plant costs are approximate midpoints from Lazard (2024) and IRENA; household use is from the US EIA. Check costs before class, since they change often.</p>
+</footer>
+
+<div id="announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+<script>
+(function(){
+'use strict';
+const $ = id => document.getElementById(id);
+const root = document.documentElement;
+const nf = (x,o) => x.toLocaleString('en-US', o);
+const announcer = $('announcer'); let annTimer;
+function announce(msg){ clearTimeout(annTimer); announcer.textContent=''; annTimer=setTimeout(()=>{ announcer.textContent=msg; },80); }
+$('textToggle').addEventListener('click', ()=>{ const on=!root.classList.contains('big-text'); root.classList.toggle('big-text',on); $('textToggle').setAttribute('aria-pressed',String(on)); });
+
+/* =========================================================
+   Power the city
+   ========================================================= */
+(function(){
+  const SRC=[
+    {id:'coal',name:'Coal',co2:820,death:24.6,cost:118,night:1,start:40},
+    {id:'gas',name:'Natural gas',co2:490,death:2.8,cost:76,night:1,start:35},
+    {id:'nuclear',name:'Nuclear',co2:12,death:0.03,cost:182,night:1,start:10},
+    {id:'hydro',name:'Hydro',co2:24,death:1.3,cost:60,night:1,start:5},
+    {id:'wind',name:'Wind',co2:11,death:0.04,cost:50,night:0.15,start:5},
+    {id:'solar',name:'Solar',co2:48,death:0.02,cost:60,night:0,start:5}];
+  const TWH=2.4, PEOPLE=200000;
+  let scen='normal', liveTimer=null;
+  const SCEN={
+    normal:{label:'a normal day',text:'An average day. Every source delivers its usual share, so the only question is whether the mix adds up to 100%.'},
+    calm:{label:'a calm, dark night',plain:'calm, dark',demand:90,f:{coal:1.4,gas:1.5,nuclear:1,hydro:1.3,wind:0.15,solar:0},text:'No sun and almost no wind: solar drops to zero and wind to about 15% of its usual output. Demand dips to 90% of average because most people are asleep. Gas, coal, and hydro plants have spare capacity and can run harder than usual; nuclear already runs nearly flat out.'},
+    cold:{label:'a cold winter night',plain:'cold winter',demand:120,f:{coal:1.4,gas:1.35,nuclear:0.97,hydro:1.3,wind:0.15,solar:0},text:'A calm winter cold snap. Electric heating pushes demand to 120% of average. Solar is zero and wind is weak. Gas plants run short of fuel because gas is also needed to heat homes, and some equipment freezes, as happened in Texas in February 2021.'},
+    hot:{label:'a hot summer night',plain:'hot summer',demand:115,f:{coal:1.35,gas:1.45,nuclear:0.95,hydro:1.0,wind:0.3,solar:0},text:'A muggy summer evening just after sunset. Air conditioning pushes demand to 115% of average, solar has just dropped to zero, and wind is light. Warm cooling water makes power plants a little less efficient, and drought lowers the water behind dams.'}};
+  const NIGHTS=['calm','cold','hot'];
+  const pct=x=>Math.floor(Math.min(100,x));
+  function failText(m){ if(m.fails.length===1){ const k=m.fails[0]; return `On a ${SCEN[k].plain} night only ${pct(m.met[k])}% of demand is met.`; } const names=m.fails.map(k=>SCEN[k].plain); const list=names.length===2?names.join(' and '):names.slice(0,-1).join(', ')+', and '+names[names.length-1]; return `On ${list} nights, demand is not fully met (worst: ${pct(m.worst)}%).`; }
+  const rows=$('mixRows');
+  SRC.forEach(s=>{
+    const d=document.createElement('div'); d.className='mix-row';
+    d.innerHTML=`<label for="mix-${s.id}"><span class="dot" style="background:var(--mix-${s.id})" aria-hidden="true"></span>${s.name}</label>
+      <button class="btn icon" type="button" data-id="${s.id}" data-d="-5" aria-label="Decrease ${s.name} by 5 percent">−</button>
+      <input type="range" id="mix-${s.id}" min="0" max="100" step="5" value="${s.start}">
+      <button class="btn icon" type="button" data-id="${s.id}" data-d="5" aria-label="Increase ${s.name} by 5 percent">+</button>
+      <output id="out-${s.id}" for="mix-${s.id}">${s.start}%</output>`;
+    rows.appendChild(d);
+  });
+  const val=id=>+$('mix-'+id).value;
+  const total=()=>SRC.reduce((a,s)=>a+val(s.id),0);
+  function setVal(id,v,from){
+    const others=total()-val(id); v=Math.max(0,Math.min(v,100-others));
+    $('mix-'+id).value=v; update(from);
+  }
+  rows.addEventListener('input',e=>{ if(e.target.type==='range'){ const id=e.target.id.slice(4); setVal(id,+e.target.value,'slider'); } });
+  rows.addEventListener('click',e=>{ const b=e.target.closest('button[data-id]'); if(!b) return; const id=b.dataset.id, before=val(id); setVal(id,before+ +b.dataset.d,'button'); if(val(id)===before && +b.dataset.d>0) announce(`Cannot add more ${b.dataset.id==='gas'?'natural gas':b.dataset.id}: the mix is already at 100%. Lower another source first.`); else announce(`${SRC.find(s=>s.id===id).name} ${val(id)}%. Total ${total()}%.`); });
+  $('mxRetire').addEventListener('click',()=>{ $('mix-coal').value=0; update(); announce('Coal plant closed. 40% of the electricity is now unassigned.'); });
+  $('mxReset').addEventListener('click',()=>{ SRC.forEach(s=>{ $('mix-'+s.id).value=s.start; }); update(); announce('Back to the current mix with 40% coal.'); });
+  document.querySelectorAll('input[name=scen]').forEach(r=>r.addEventListener('change',()=>{ if(!r.checked) return; scen=r.value; update(); announce(`Testing ${SCEN[scen].label}. ${SCEN[scen].text} Result: ${$('mRel').textContent} of demand met.`); }));
+
+  function metrics(){
+    const t=total(), sh=SRC.map(s=>({s,f:val(s.id)/100}));
+    const co2=t?sh.reduce((a,x)=>a+x.f*x.s.co2,0)/(t/100):0;
+    const death=sh.reduce((a,x)=>a+x.f*x.s.death*TWH,0);
+    const cost=t?sh.reduce((a,x)=>a+x.f*x.s.cost,0)/(t/100):0;
+    const met={normal:t};
+    NIGHTS.forEach(k=>{ const S=SCEN[k]; met[k]=sh.reduce((a,x)=>a+x.f*100*S.f[x.s.id],0)/S.demand*100; });
+    const fails=NIGHTS.filter(k=>met[k]<100);
+    const worst=Math.min(...NIGHTS.map(k=>met[k]));
+    const variable=val('wind')+val('solar');
+    return {t,co2,death,cost,met,fails,worst,variable};
+  }
+  const baseline=(()=>{ const sh=SRC.map(s=>s.start/100); return {co2:SRC.reduce((a,s,i)=>a+sh[i]*s.co2,0), death:SRC.reduce((a,s,i)=>a+sh[i]*s.death*TWH,0)}; })();
+  const ROLES=[
+    {name:'Environmental advocate', judge:m=> m.co2<100?['s',`Emissions are down to ${Math.round(m.co2)} g per kWh. This is a real climate win.`]: m.co2<300?['c',`Better than before, but ${Math.round(m.co2)} g per kWh is still too high for our climate goals.`]:['o',`At ${Math.round(m.co2)} g of CO₂ per kWh, this barely helps the climate.`]},
+    {name:'Neighbor near the plant site', judge:m=> val('coal')>15?['o','The coal smoke hurts our air quality and our kids\' lungs.']: val('nuclear')>=30?['c','A big nuclear plant next door worries me: what about accidents and waste stored on site?']:['s','No smokestacks and no reactor next door. I can live with this.']},
+    {name:'Grid operator', judge:m=> m.t<100?['o',`${100-m.t}% of demand has no source at all. That means blackouts.`]: m.fails.length?['o',`${failText(m)} We need more backup or storage.`]: m.variable>30?['c','Lots of wind and solar. It works, but I will need storage and careful planning.']:['s','Enough steady power plants to keep the lights on day and night.']},
+    {name:'City budget officer', judge:m=> m.cost>130?['o',`About $${Math.round(m.cost)} per MWh. New plants this expensive will raise everyone's bills.`]: m.cost>95?['c',`About $${Math.round(m.cost)} per MWh. Affordable, but tight.`]:['s',`About $${Math.round(m.cost)} per MWh. This keeps bills reasonable.`]},
+    {name:'Utility engineer', judge:m=> val('nuclear')>=30?['c','New reactors take around ten years to build. What powers the city in the meantime?']: val('gas')>=50?['c','Relying this much on natural gas exposes us to fuel price swings.']:['s','A balanced mix we can build and run.']},
+    {name:'Local business owner', judge:m=> (m.t<100||m.worst<90)?['o','Any blackout means closing my shop. Reliability comes first.']: m.cost>110?['c','Higher electricity prices squeeze small businesses.']:['s','Reliable and affordable power: good for business.']}];
+  const BADGE={s:['tone-good','✓','Supports'],c:['tone-warn','!','Has concerns'],o:['tone-bad','✕','Opposes']};
+
+  function update(from){
+    SRC.forEach(s=>{ const v=val(s.id); $('out-'+s.id).textContent=v+'%'; $('mix-'+s.id).setAttribute('aria-valuetext',`${v} percent`); });
+    const m=metrics();
+    $('mxTotal').textContent = m.t===100 ? 'Total: 100%. The mix is complete.' : `Total: ${m.t}%. ${100-m.t}% of the city's electricity is unassigned.`;
+    $('mxTotal').style.color = m.t===100?'var(--good)':'var(--warn)';
+    const bar=$('mixBar'); bar.textContent='';
+    SRC.forEach(s=>{ const v=val(s.id); if(!v) return; const g=document.createElement('div'); g.className='seg'; g.style.flexBasis=v+'%'; g.style.background=`var(--mix-${s.id})`; g.textContent=v>=15?`${s.name.replace('Natural gas','Gas')} ${v}%`:''; bar.appendChild(g); });
+    if(m.t<100){ const g=document.createElement('div'); g.className='seg unassigned'; g.style.flexBasis=(100-m.t)+'%'; g.textContent=100-m.t>=10?`Unassigned ${100-m.t}%`:''; bar.appendChild(g); }
+    $('mCO2').textContent=`${Math.round(m.co2)} g CO₂ per kWh`;
+    const chg=baseline.co2?Math.round((1-m.co2/baseline.co2)*100):0;
+    $('mCO2b').textContent=`Current mix: ${Math.round(baseline.co2)} g. `+(m.t===0?'':chg>0?`Change: ${chg}% lower than the current mix.`:chg<0?`Change: ${-chg}% higher than the current mix.`:'Change: no change from the current mix.')+(m.t<100&&m.t>0?` (Counting only the ${m.t}% assigned.)`:'');
+    $('mDeath').textContent=`About ${m.death<1?m.death.toFixed(2):m.death.toFixed(1)}`;
+    $('mDeathb').textContent=`Current mix: about ${baseline.death.toFixed(1)}`+(m.t<100?` (counting only the ${m.t}% assigned)`:'');
+    $('mCost').textContent=m.t?`About $${Math.round(m.cost)} per MWh`:'—';
+    $('mCostb').textContent=m.t?`Roughly $${nf(Math.round(m.cost*TWH*1e6/PEOPLE/10)*10)} per person per year`:'';
+    const rel=m.met[scen];
+    $('mRelLab').textContent='Demand met on '+SCEN[scen].label;
+    $('scenText').textContent=SCEN[scen].text;
+    $('mRel').textContent=pct(rel)+'%';
+    $('mRelb').textContent=(rel>=100?'No shortfall':`Shortfall of ${100-pct(rel)}%`)+`. Night tests: calm ${pct(m.met.calm)}%, cold ${pct(m.met.cold)}%, hot ${pct(m.met.hot)}%.`;
+    const ul=$('roles'); ul.textContent=''; let sup=0;
+    ROLES.forEach(r=>{ const [k,msg]=r.judge(m); if(k==='s') sup++; const [tone,ic,word]=BADGE[k]; const li=document.createElement('li'); li.className='role';
+      li.innerHTML=`<h4>${r.name}</h4><span class="badge ${tone}"><span class="ic" aria-hidden="true">${ic}</span>${word}</span><p>${msg}</p>`; ul.appendChild(li); });
+    clearTimeout(liveTimer);
+    if(from==='slider') liveTimer=setTimeout(()=>{ $('mxLive').textContent=`Total ${m.t}%. Emissions ${Math.round(m.co2)} grams per kilowatt-hour, ${(()=>{const c=Math.round((1-m.co2/baseline.co2)*100);return c>=0?c+' percent lower':(-c)+' percent higher';})()} than the current mix. ${sup} of 6 groups support this mix.`; },900);
+  }
+  update();
+})();
+
+})();
+</script>
+</body>
+</html>
