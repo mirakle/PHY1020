@@ -1,0 +1,469 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grade Predictor PHY 1020</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #e4efec;
+    --bg-2: #ece8f8;
+    --pattern: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><g fill='none' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' opacity='0.5'><path d='M30 80l22-34h70l-22 34zM53 80l22-34M76 80l22-34M41 63h70M65 80v22M53 102h24' stroke='%234a90d0'/><circle cx='150' cy='34' r='9' stroke='%23e8913a'/><path d='M150 16v-6M150 52v6M132 34h-6M168 34h6M137 21l-4-4M163 47l4 4M163 21l4-4M137 47l-4 4' stroke='%23e8913a'/><path d='M300 76l-3 92h6zM288 168h24M300 66v-36M304 74l31 18M296 74l-31 18' stroke='%233fa592'/><circle cx='300' cy='70' r='5' stroke='%233fa592'/><path d='M20 200q12.5-18 25 0t25 0t25 0t25 0M20 225q12.5-18 25 0t25 0t25 0t25 0' stroke='%234a90d0'/><circle cx='280' cy='290' r='24' stroke='%233fa592'/><path d='M266 280q8 6 4 14t10 10M288 272q-4 8 6 12' stroke='%233fa592'/><circle cx='280' cy='290' r='46' stroke='%237a68d6' stroke-dasharray='5 8'/><path d='M195 205l60 64M245 266l10 3-2-11' stroke='%23e8913a'/><path d='M296 270l16-22 4 9 8-12M312 248l14-12M326 236l-14 22' stroke='%23d9546b'/><circle cx='90' cy='320' r='5' stroke='%237a68d6'/><path d='M85.0 311.3L76.0 295.8A28 28 0 0 1 104.0 295.8L95.0 311.3A10 10 0 0 0 85.0 311.3zM100.0 320.0L118.0 320.0A28 28 0 0 1 104.0 344.2L95.0 328.7A10 10 0 0 0 100.0 320.0zM85.0 328.7L76.0 344.2A28 28 0 0 1 62.0 320.0L80.0 320.0A10 10 0 0 0 85.0 328.7z' stroke='%237a68d6'/><path d='M168 385l14-58 14 58M172 368h20M177 348h10M156 340h52M182 327v13M156 340l-26 8M208 340l26 8' stroke='%234a90d0'/></g><g opacity='0.5'><path d='M366 280l-22 40h16l-12 36 32-46h-17l14-30z' fill='%23e8913a'/><circle cx='370' cy='170' r='4' fill='%23d9546b'/><circle cx='40' cy='270' r='5' fill='%233fa592'/><circle cx='220' cy='120' r='4' fill='%237a68d6'/></g></svg>");
+    --surface: #ffffff;
+    --ink: #14213d;
+    --muted: #46536a;
+    --line: #b9c6d3;
+    --accent: #1f5f8b;
+    --accent-ink: #ffffff;
+    --soft: #e3eef7;
+    --ok: #1d6b3a;
+    --warn: #8a2d1c;
+    --focus: #b35c00;
+    color-scheme: light;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1a1c;
+      --bg-2: #181a2e;
+      --pattern: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><g fill='none' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' opacity='0.32'><path d='M30 80l22-34h70l-22 34zM53 80l22-34M76 80l22-34M41 63h70M65 80v22M53 102h24' stroke='%237fbaf0'/><circle cx='150' cy='34' r='9' stroke='%23f6c26b'/><path d='M150 16v-6M150 52v6M132 34h-6M168 34h6M137 21l-4-4M163 47l4 4M163 21l4-4M137 47l-4 4' stroke='%23f6c26b'/><path d='M300 76l-3 92h6zM288 168h24M300 66v-36M304 74l31 18M296 74l-31 18' stroke='%236fd1bd'/><circle cx='300' cy='70' r='5' stroke='%236fd1bd'/><path d='M20 200q12.5-18 25 0t25 0t25 0t25 0M20 225q12.5-18 25 0t25 0t25 0t25 0' stroke='%237fbaf0'/><circle cx='280' cy='290' r='24' stroke='%236fd1bd'/><path d='M266 280q8 6 4 14t10 10M288 272q-4 8 6 12' stroke='%236fd1bd'/><circle cx='280' cy='290' r='46' stroke='%23a99cf2' stroke-dasharray='5 8'/><path d='M195 205l60 64M245 266l10 3-2-11' stroke='%23f6c26b'/><path d='M296 270l16-22 4 9 8-12M312 248l14-12M326 236l-14 22' stroke='%23f08aa0'/><circle cx='90' cy='320' r='5' stroke='%23a99cf2'/><path d='M85.0 311.3L76.0 295.8A28 28 0 0 1 104.0 295.8L95.0 311.3A10 10 0 0 0 85.0 311.3zM100.0 320.0L118.0 320.0A28 28 0 0 1 104.0 344.2L95.0 328.7A10 10 0 0 0 100.0 320.0zM85.0 328.7L76.0 344.2A28 28 0 0 1 62.0 320.0L80.0 320.0A10 10 0 0 0 85.0 328.7z' stroke='%23a99cf2'/><path d='M168 385l14-58 14 58M172 368h20M177 348h10M156 340h52M182 327v13M156 340l-26 8M208 340l26 8' stroke='%237fbaf0'/></g><g opacity='0.32'><path d='M366 280l-22 40h16l-12 36 32-46h-17l14-30z' fill='%23f6c26b'/><circle cx='370' cy='170' r='4' fill='%23f08aa0'/><circle cx='40' cy='270' r='5' fill='%236fd1bd'/><circle cx='220' cy='120' r='4' fill='%23a99cf2'/></g></svg>");
+      --surface: #19222e;
+      --ink: #e9eff6;
+      --muted: #b4c0cf;
+      --line: #3a4a5e;
+      --accent: #8cc4f0;
+      --accent-ink: #0f151d;
+      --soft: #22313f;
+      --ok: #8fd9a8;
+      --warn: #f4a896;
+      --focus: #ffb366;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1a1c;
+    --bg-2: #181a2e;
+    --pattern: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><g fill='none' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' opacity='0.32'><path d='M30 80l22-34h70l-22 34zM53 80l22-34M76 80l22-34M41 63h70M65 80v22M53 102h24' stroke='%237fbaf0'/><circle cx='150' cy='34' r='9' stroke='%23f6c26b'/><path d='M150 16v-6M150 52v6M132 34h-6M168 34h6M137 21l-4-4M163 47l4 4M163 21l4-4M137 47l-4 4' stroke='%23f6c26b'/><path d='M300 76l-3 92h6zM288 168h24M300 66v-36M304 74l31 18M296 74l-31 18' stroke='%236fd1bd'/><circle cx='300' cy='70' r='5' stroke='%236fd1bd'/><path d='M20 200q12.5-18 25 0t25 0t25 0t25 0M20 225q12.5-18 25 0t25 0t25 0t25 0' stroke='%237fbaf0'/><circle cx='280' cy='290' r='24' stroke='%236fd1bd'/><path d='M266 280q8 6 4 14t10 10M288 272q-4 8 6 12' stroke='%236fd1bd'/><circle cx='280' cy='290' r='46' stroke='%23a99cf2' stroke-dasharray='5 8'/><path d='M195 205l60 64M245 266l10 3-2-11' stroke='%23f6c26b'/><path d='M296 270l16-22 4 9 8-12M312 248l14-12M326 236l-14 22' stroke='%23f08aa0'/><circle cx='90' cy='320' r='5' stroke='%23a99cf2'/><path d='M85.0 311.3L76.0 295.8A28 28 0 0 1 104.0 295.8L95.0 311.3A10 10 0 0 0 85.0 311.3zM100.0 320.0L118.0 320.0A28 28 0 0 1 104.0 344.2L95.0 328.7A10 10 0 0 0 100.0 320.0zM85.0 328.7L76.0 344.2A28 28 0 0 1 62.0 320.0L80.0 320.0A10 10 0 0 0 85.0 328.7z' stroke='%23a99cf2'/><path d='M168 385l14-58 14 58M172 368h20M177 348h10M156 340h52M182 327v13M156 340l-26 8M208 340l26 8' stroke='%237fbaf0'/></g><g opacity='0.32'><path d='M366 280l-22 40h16l-12 36 32-46h-17l14-30z' fill='%23f6c26b'/><circle cx='370' cy='170' r='4' fill='%23f08aa0'/><circle cx='40' cy='270' r='5' fill='%236fd1bd'/><circle cx='220' cy='120' r='4' fill='%23a99cf2'/></g></svg>");
+    --surface: #19222e;
+    --ink: #e9eff6;
+    --muted: #b4c0cf;
+    --line: #3a4a5e;
+    --accent: #8cc4f0;
+    --accent-ink: #0f151d;
+    --soft: #22313f;
+    --ok: #8fd9a8;
+    --warn: #f4a896;
+    --focus: #ffb366;
+    color-scheme: dark;
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); min-height: 100%; }
+  body {
+    margin: 0;
+    font-family: "Atkinson Hyperlegible", "Verdana", "Segoe UI", system-ui, sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background-color: var(--bg);
+    background-image: var(--pattern), linear-gradient(160deg, var(--bg) 0%, var(--bg-2) 100%);
+    background-repeat: repeat, no-repeat;
+    background-size: 400px 400px, 100% 100%;
+    min-height: 100vh;
+  }
+  main {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 3rem;
+  }
+  h1 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1.15;
+    margin: 0 0 0.5rem;
+  }
+  .intro { color: var(--muted); margin: 0 0 1.75rem; max-width: 40rem; }
+  h2 { font-size: 1.25rem; margin: 0 0 1rem; }
+
+  .panel {
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem 1.25rem 1.5rem;
+  }
+
+  fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  legend { font-size: 1.25rem; font-weight: 700; padding: 0; margin-bottom: 1rem; }
+
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 1rem 1.25rem;
+  }
+  .field label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .weight { display: block; font-weight: 400; font-size: 0.9rem; color: var(--muted); }
+  input[type="number"] {
+    width: 100%;
+    font: inherit;
+    font-size: 1.15rem;
+    color: var(--ink);
+    background: var(--surface);
+    border: 2px solid var(--muted);
+    border-radius: 6px;
+    padding: 0.55rem 0.7rem;
+    min-height: 2.75rem;
+  }
+  input[type="number"][aria-invalid="true"] { border-color: var(--warn); border-width: 3px; }
+  .error {
+    color: var(--warn);
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 0.3rem 0 0;
+    min-height: 0;
+  }
+  .error:empty { display: none; }
+
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  .columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 46rem) {
+    .columns { grid-template-columns: 1fr; }
+  }
+
+  .predict .field { max-width: 14rem; }
+  .result {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 2px solid var(--line);
+  }
+  .result-label { font-weight: 700; font-size: 1.1rem; margin: 0; }
+  .letter {
+    font-size: clamp(4.5rem, 14vw, 7rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+    margin: 0.25rem 0 0.4rem;
+    letter-spacing: -0.02em;
+  }
+  .letter.empty { color: var(--muted); font-size: 2.5rem; padding: 1rem 0; }
+  .total { margin: 0; color: var(--muted); }
+  .total strong { color: var(--ink); }
+
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 1.05rem; }
+  caption {
+    text-align: left;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    caption-side: top;
+  }
+  th, td { padding: 0.6rem 0.75rem; text-align: left; border-bottom: 1px solid var(--line); }
+  thead th { font-size: 0.95rem; color: var(--muted); border-bottom: 2px solid var(--line); }
+  tbody th { font-size: 1.2rem; width: 4.5rem; }
+  td.need { font-variant-numeric: tabular-nums; }
+  .need-num { font-weight: 700; font-size: 1.15rem; }
+  .status-ok { color: var(--ok); font-weight: 700; }
+  .status-no { color: var(--warn); font-weight: 700; }
+  tr.current { background: var(--soft); }
+  tr.current th::after {
+    content: "";
+  }
+  .tag {
+    display: inline-block;
+    margin-left: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent-ink);
+    background: var(--accent);
+    border-radius: 4px;
+    padding: 0.05rem 0.4rem;
+    vertical-align: middle;
+  }
+  .note { color: var(--muted); font-size: 0.95rem; margin: 1rem 0 0; }
+
+  details { margin-top: 1.5rem; }
+  summary { cursor: pointer; font-weight: 700; padding: 0.35rem 0; }
+  details p { margin: 0.5rem 0; color: var(--muted); }
+  details ul { margin: 0.5rem 0; padding-left: 1.25rem; color: var(--muted); }
+
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .letter { transition: color 0.2s ease; }
+  }
+  @media print {
+    body { background: #fff; }
+    .panel { border-color: #555; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Grade Predictor PHY 1020</h1>
+  <p class="intro">Enter your current scores out of 100. Then try a Test 3 score to see your course grade, or check the table to see what you need on Test 3 for each letter grade.</p>
+
+  <section class="panel" aria-labelledby="scores-heading">
+    <fieldset>
+      <legend id="scores-heading">Your current scores</legend>
+      <div class="score-grid">
+        <div class="field">
+          <label for="t1">Test 1</label>
+          <input id="t1" type="number" inputmode="decimal" min="0" max="100" step="any" aria-describedby="t1-err" autocomplete="off">
+          <p class="error" id="t1-err"></p>
+        </div>
+        <div class="field">
+          <label for="t2">Test 2</label>
+          <input id="t2" type="number" inputmode="decimal" min="0" max="100" step="any" aria-describedby="t2-err" autocomplete="off">
+          <p class="error" id="t2-err"></p>
+        </div>
+        <div class="field">
+          <label for="icw">Quizzes <span class="weight">10% of grade</span></label>
+          <input id="icw" type="number" inputmode="decimal" min="0" max="100" step="any" aria-describedby="icw-err" autocomplete="off">
+          <p class="error" id="icw-err"></p>
+        </div>
+        <div class="field">
+          <label for="hw">Tutorials <span class="weight">10% of grade</span></label>
+          <input id="hw" type="number" inputmode="decimal" min="0" max="100" step="any" aria-describedby="hw-err" autocomplete="off">
+          <p class="error" id="hw-err"></p>
+        </div>
+        <div class="field">
+          <label for="lab">In-class work <span class="weight">20% of grade</span></label>
+          <input id="lab" type="number" inputmode="decimal" min="0" max="100" step="any" aria-describedby="lab-err" autocomplete="off">
+          <p class="error" id="lab-err"></p>
+        </div>
+      </div>
+    </fieldset>
+  </section>
+
+  <div class="columns">
+    <section class="panel predict" aria-labelledby="predict-heading">
+      <h2 id="predict-heading">Predict your grade</h2>
+      <div class="field">
+        <label for="t3">Predicted Test 3 score</label>
+        <input id="t3" type="number" inputmode="decimal" min="0" max="100" step="any" aria-describedby="t3-err" autocomplete="off">
+        <p class="error" id="t3-err"></p>
+      </div>
+      <div class="result" role="status" aria-live="polite" aria-atomic="true">
+        <p class="result-label">Course grade</p>
+        <p class="letter empty" id="letter">&ndash;</p>
+        <p class="total" id="total">Enter all six scores to see your course grade.</p>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="need-caption">
+      <div class="table-wrap">
+        <table>
+          <caption id="need-caption">Grade I need on Test 3 to get a&hellip;</caption>
+          <thead>
+            <tr>
+              <th scope="col">Letter</th>
+              <th scope="col">Test 3 score needed</th>
+            </tr>
+          </thead>
+          <tbody id="need-body"></tbody>
+        </table>
+      </div>
+      <p class="note" id="need-note">Fill in Test 1, Test 2, quizzes, tutorials and in-class work to see these scores.</p>
+    </section>
+  </div>
+
+  <details>
+    <summary>How the course grade is calculated</summary>
+    <p>Your three tests are ranked from highest to lowest. The best test counts more than the others.</p>
+    <ul>
+      <li>Quizzes: 10%</li>
+      <li>Tutorials: 10%</li>
+      <li>In-class work: 20%</li>
+      <li>Best test: 30%</li>
+      <li>Second-best test: 20%</li>
+      <li>Lowest test: 10%</li>
+    </ul>
+    <p>Letter grades: A is 89.5 or higher, B+ is 84.5 to 89.4, B is 79.5 to 84.4, C+ is 74.5 to 79.4, C is 69.5 to 74.4, D+ is 64.5 to 69.4, D is 59.5 to 64.4, and F is below 59.5.</p>
+  </details>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var GRADES = [
+    { letter: "A",  min: 89.5 },
+    { letter: "B+", min: 84.5 },
+    { letter: "B",  min: 79.5 },
+    { letter: "C+", min: 74.5 },
+    { letter: "C",  min: 69.5 },
+    { letter: "D+", min: 64.5 },
+    { letter: "D",  min: 59.5 },
+    { letter: "F",  min: -Infinity }
+  ];
+
+  var ids = ["t1", "t2", "icw", "hw", "lab", "t3"];
+  var inputs = {};
+  ids.forEach(function (id) { inputs[id] = document.getElementById(id); });
+
+  var letterEl = document.getElementById("letter");
+  var totalEl = document.getElementById("total");
+  var needBody = document.getElementById("need-body");
+  var needNote = document.getElementById("need-note");
+
+  var names = { t1: "Test 1", t2: "Test 2", icw: "Quizzes", hw: "Tutorials", lab: "In-class work", t3: "Test 3" };
+
+  // Returns a number, null (empty), or NaN (invalid)
+  function read(id) {
+    var el = inputs[id];
+    var err = document.getElementById(id + "-err");
+    var raw = el.value.trim();
+    if (raw === "") {
+      el.removeAttribute("aria-invalid");
+      err.textContent = "";
+      return null;
+    }
+    var v = Number(raw);
+    if (!isFinite(v) || v < 0 || v > 100) {
+      el.setAttribute("aria-invalid", "true");
+      err.textContent = names[id] + " must be a number from 0 to 100.";
+      return NaN;
+    }
+    el.removeAttribute("aria-invalid");
+    err.textContent = "";
+    return v;
+  }
+
+  function total(t1, t2, t3, icw, hw, lab) {
+    var tests = [t1, t2, t3].sort(function (a, b) { return b - a; });
+    return icw * 0.1 + hw * 0.1 + lab * 0.2 + tests[0] * 0.3 + tests[1] * 0.2 + tests[2] * 0.1;
+  }
+
+  function letterFor(t) {
+    for (var i = 0; i < GRADES.length; i++) {
+      if (t >= GRADES[i].min) return GRADES[i].letter;
+    }
+    return "F";
+  }
+
+  // Smallest Test 3 score (rounded up to 0.1) that reaches the threshold
+  function needed(threshold, t1, t2, icw, hw, lab) {
+    var f = function (x) { return total(t1, t2, x, icw, hw, lab); };
+    var eps = 1e-9;
+    if (f(0) >= threshold - eps) return { kind: "secured" };
+    if (f(100) < threshold - eps) return { kind: "impossible" };
+    var lo = 0, hi = 100;
+    for (var i = 0; i < 80; i++) {
+      var mid = (lo + hi) / 2;
+      if (f(mid) >= threshold - eps) hi = mid; else lo = mid;
+    }
+    var score = Math.ceil(hi * 10 - 1e-6) / 10;
+    while (f(score) < threshold - eps && score < 100) score = Math.round((score + 0.1) * 10) / 10;
+    return { kind: "score", value: Math.min(score, 100) };
+  }
+
+  function fmt(n) {
+    return (Math.round(n * 10) / 10).toFixed(1).replace(/\.0$/, "");
+  }
+
+  function update() {
+    var v = {};
+    var anyInvalid = false;
+    ids.forEach(function (id) {
+      v[id] = read(id);
+      if (Number.isNaN(v[id])) anyInvalid = true;
+    });
+
+    var baseReady = ["t1", "t2", "icw", "hw", "lab"].every(function (id) {
+      return typeof v[id] === "number" && !Number.isNaN(v[id]);
+    });
+
+    // Needed-score table
+    needBody.innerHTML = "";
+    var currentLetter = null;
+
+    if (baseReady && typeof v.t3 === "number" && !Number.isNaN(v.t3)) {
+      var t = total(v.t1, v.t2, v.t3, v.icw, v.hw, v.lab);
+      currentLetter = letterFor(t);
+      letterEl.textContent = currentLetter;
+      letterEl.classList.remove("empty");
+      letterEl.setAttribute("aria-label", "Course grade " + currentLetter);
+      totalEl.innerHTML = "Course total: <strong>" + t.toFixed(2) + "</strong> out of 100";
+    } else {
+      letterEl.textContent = "\u2013";
+      letterEl.classList.add("empty");
+      letterEl.removeAttribute("aria-label");
+      if (anyInvalid) {
+        totalEl.textContent = "Fix the highlighted scores to see your course grade.";
+      } else {
+        totalEl.textContent = "Enter all six scores to see your course grade.";
+      }
+    }
+
+    if (!baseReady) {
+      needNote.textContent = anyInvalid && !baseReady
+        ? "Fix the highlighted scores to see these results."
+        : "Fill in Test 1, Test 2, quizzes, tutorials and in-class work to see these scores.";
+      GRADES.slice(0, 7).forEach(function (g) {
+        var tr = document.createElement("tr");
+        tr.innerHTML = '<th scope="row">' + g.letter + '</th><td class="need">&ndash;</td>';
+        needBody.appendChild(tr);
+      });
+      return;
+    }
+
+    needNote.textContent = "Scores are rounded up to the nearest tenth of a point. The row marked \u201cpredicted\u201d matches your Test 3 prediction.";
+
+    GRADES.slice(0, 7).forEach(function (g) {
+      var r = needed(g.min, v.t1, v.t2, v.icw, v.hw, v.lab);
+      var tr = document.createElement("tr");
+      var cell;
+      if (r.kind === "secured") {
+        cell = '<span class="status-ok">Already secured</span> (any score from 0)';
+      } else if (r.kind === "impossible") {
+        cell = '<span class="status-no">Not reachable</span> (even with 100)';
+      } else {
+        cell = '<span class="need-num">' + fmt(r.value) + '</span> or higher';
+      }
+      var tag = "";
+      if (currentLetter === g.letter) {
+        tr.className = "current";
+        tag = ' <span class="tag">predicted</span>';
+      }
+      tr.innerHTML = '<th scope="row">' + g.letter + tag + '</th><td class="need">' + cell + '</td>';
+      needBody.appendChild(tr);
+    });
+  }
+
+  ids.forEach(function (id) {
+    inputs[id].addEventListener("input", update);
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>
+
+</body></html>
