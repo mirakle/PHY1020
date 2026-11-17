@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wind Power Lab — PHY 1020</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --muted:#4a4a4a; --bg:#f6f7f9; --card:#ffffff; --line:#c9ced6;
+    --accent:#0b5cad; --accent-ink:#ffffff; --ok:#0a6b3d; --bad:#a3200f;
+    --avail:#0072B2; --betz:#B35A00; --gen:#007A5A;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5;font-size:1rem}
+  a{color:var(--accent)}
+  .skip{position:absolute;left:-9999px;top:0;background:#000;color:#fff;padding:.5rem 1rem;z-index:10}
+  .skip:focus{left:0}
+  header{background:#0d2b4e;color:#fff;padding:1rem 1.25rem}
+  header h1{margin:0;font-size:1.6rem}
+  header p{margin:.25rem 0 0;color:#e3ecf7}
+  header .hdr{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+  header button{background:#fff;color:#0d2b4e;border-color:#fff}
+  .cover-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  @media (max-width:760px){.cover-grid{grid-template-columns:1fr}}
+  .unitbox{border:1px solid var(--line);border-radius:8px;padding:.4rem .9rem;background:#fbfcfd}
+  .unitbox ul{padding-left:1.2rem;margin:.3rem 0}
+  table.units{margin:.3rem 0 1rem}
+  .tries{font-size:.9rem;color:var(--muted)}
+  .instr-banner{background:#5c1d7a;color:#fff;padding:.6rem 1.25rem;font-size:1rem;position:sticky;top:0;z-index:5}
+  .instr-banner code{background:rgba(255,255,255,.18);padding:0 .3rem;border-radius:4px}
+  #panels table{max-width:680px;margin:.5rem 0}
+  #panels caption{text-align:left;font-weight:600;padding:.2rem 0}
+  .hint{margin:.3rem 0}
+  .sol{border-left:4px solid var(--ok);background:#eef8f2;padding:.3rem .8rem;margin-top:.5rem;border-radius:4px}
+  .sol h4{margin:.3rem 0;font-size:1rem}
+  button:disabled{opacity:.55;cursor:not-allowed}
+  input[readonly]{background:#eef0f3}
+  .tabs button.locked{background:#eceff3 !important;color:#555 !important;border-color:#9aa3ad !important;cursor:not-allowed}
+  .progress{border-top:2px solid var(--line);margin-top:1rem;padding-top:.6rem}
+  .progmsg{font-weight:600}
+  .names{display:grid;grid-template-columns:max-content minmax(0,22rem);gap:.5rem .8rem;align-items:center;margin:.5rem 0}
+  .names input{padding:.4rem;border:1px solid #767676;border-radius:6px;font-size:1rem}
+  @media (max-width:600px){.names{grid-template-columns:1fr}}
+  .cert{border:6px double #0d2b4e;border-radius:10px;padding:1.5rem 2rem;text-align:center;background:#fffdf6;max-width:760px;margin:0 auto}
+  .cert h3{font-size:1.5rem;margin:.4rem 0 1rem;color:#0d2b4e}
+  .cert-top{letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#7a5200;margin:0}
+  .cert-names{font-size:1.4rem;font-weight:700;margin:.5rem 0;color:#1a1a1a}
+  .cert-table{max-width:480px;margin:1rem auto 0}
+  .cert-table th{text-align:left;background:#f3f0e6}
+  #certText{margin-top:.5rem}
+  main{max-width:1250px;margin:0 auto;padding:1rem}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1rem;margin-bottom:1rem}
+  h2{font-size:1.3rem;margin:.2rem 0 .6rem}
+  h3{font-size:1.1rem;margin:.8rem 0 .4rem}
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:1rem}
+  @media (max-width:980px){.layout{grid-template-columns:1fr}}
+  .scene-wrap{position:relative}
+  canvas{display:block;width:100%;border-radius:8px;border:1px solid var(--line);background:#dfeefa}
+  #front{width:150px;height:150px;position:absolute;right:10px;top:10px;background:rgba(255,255,255,.92)}
+  .legend{display:flex;flex-wrap:wrap;gap:1rem;font-size:.9rem;color:var(--muted);margin-top:.5rem}
+  .legend span{display:inline-flex;align-items:center;gap:.35rem}
+  .controls label{display:block;font-weight:600;margin-top:.7rem}
+  .row{display:flex;align-items:center;gap:.5rem}
+  input[type=range]{flex:1;min-width:0;accent-color:var(--accent);height:28px}
+  input[type=number]{width:6.5rem;padding:.3rem;border:1px solid #767676;border-radius:6px;font-size:1rem}
+  select{width:100%;padding:.4rem;border:1px solid #767676;border-radius:6px;font-size:1rem;background:#fff}
+  .unit{color:var(--muted);font-size:.9rem;min-width:2.6rem}
+  .help{font-size:.85rem;color:var(--muted);margin:.15rem 0 0}
+  .check{display:flex;gap:.5rem;align-items:flex-start;margin-top:.6rem;font-weight:400}
+  .check input{width:1.2rem;height:1.2rem;margin-top:.2rem}
+  button{font:inherit;cursor:pointer;border-radius:6px;border:2px solid var(--accent);background:var(--accent);color:var(--accent-ink);padding:.4rem .8rem;font-weight:600}
+  button.secondary{background:#fff;color:var(--accent)}
+  button:hover{filter:brightness(1.08)}
+  :focus-visible{outline:3px solid #ffbf47;outline-offset:2px}
+  .btns{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.7rem}
+  .readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.6rem}
+  .ro{border:1px solid var(--line);border-radius:8px;padding:.5rem .7rem;background:#fbfcfd}
+  .ro .k{font-size:.85rem;color:var(--muted)}
+  .ro .v{font-size:1.15rem;font-weight:700;font-variant-numeric:tabular-nums}
+  .ro .s{font-size:.8rem;color:var(--muted)}
+  .bars{margin-top:.8rem}
+  .bar{display:grid;grid-template-columns:150px 1fr 150px;gap:.5rem;align-items:center;margin:.3rem 0;font-size:.95rem}
+  .track{height:22px;background:#eceff3;border-radius:4px;overflow:hidden;border:1px solid #b9c0ca}
+  .fill{height:100%;width:0}
+  .fill.avail{background:var(--avail)}
+  .fill.betz{background:repeating-linear-gradient(45deg,var(--betz) 0 6px,#d9822b 6px 12px)}
+  .fill.gen{background:repeating-linear-gradient(90deg,var(--gen) 0 10px,#0f9a73 10px 12px)}
+  .num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+  .formula{font-family:"Cambria Math","Times New Roman",serif;font-size:1.1rem;background:#f0f4fa;border-left:4px solid var(--accent);padding:.4rem .7rem;margin:.5rem 0;overflow-x:auto}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+  table{border-collapse:collapse;width:100%;font-size:.92rem}
+  th,td{border:1px solid var(--line);padding:.35rem .5rem;text-align:left;vertical-align:top}
+  th{background:#eef2f7}
+  td.n{text-align:right;font-variant-numeric:tabular-nums}
+  .tabs{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.7rem}
+  .tabs button[aria-selected=true]{background:#0d2b4e;border-color:#0d2b4e;color:#fff}
+  .tabs button[aria-selected=false]{background:#fff;color:#0d2b4e;border-color:#0d2b4e}
+  .q{border:1px solid var(--line);border-radius:8px;padding:.7rem .8rem;margin:.6rem 0;background:#fcfdfe}
+  .q p{margin:.2rem 0}
+  .ans{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-top:.4rem}
+  .fb{font-weight:600}
+  .fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
+  textarea{width:100%;min-height:4.2rem;font:inherit;padding:.4rem;border:1px solid #767676;border-radius:6px}
+  .note{background:#fff8e6;border:1px solid #e8c56b;border-radius:8px;padding:.6rem .8rem}
+  details summary{cursor:pointer;font-weight:600;color:var(--accent)}
+  .status{font-size:.9rem;color:var(--muted);margin-top:.3rem}
+  footer{max-width:1250px;margin:0 auto;padding:0 1rem 2rem;font-size:.85rem;color:var(--muted)}
+  @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto} }
+</style>
+</head>
+<body>
+<a class="skip" href="#cover">Skip to main content</a>
+<div id="instrBanner" class="instr-banner" role="note" hidden><strong>Instructor mode</strong> — all parts unlocked, hints and detailed answers shown. Nothing is saved in this browser. Remove <code>#instructor</code> from the address to see the student view.</div>
+<header>
+  <div class="hdr"><div><h1>Wind Power Lab: How Moving Air Carries Energy</h1>
+  <p>PHY 1020. Change the wind, the blades and the location, and watch what happens to the kinetic energy carried by the air.</p></div>
+  <button type="button" id="unitsBtn" hidden>Units reminder (cover page)</button></div>
+</header>
+
+<main>
+<section class="card cover" id="cover" aria-labelledby="cover-h" tabindex="-1">
+  <h2 id="cover-h">Before you start: energy, power and their units</h2>
+  <p>This lab is about how the wind carries <strong>energy</strong> and how fast a turbine converts it, which is <strong>power</strong>. Keep these units straight; most mistakes in wind-power problems are unit mistakes.</p>
+  <div class="cover-grid">
+    <div class="unitbox">
+      <h3>Energy → joules (J)</h3>
+      <p>Energy is measured in <strong>joules</strong>. The kinetic energy of moving air is</p>
+      <p class="formula" aria-label="K E equals one half m v squared">KE = ½ m v²</p>
+      <p>with m in kg and v in m/s, KE comes out in J. Example: 1 kg of air moving at 10 m/s carries ½ × 1 × 10² = <strong>50 J</strong>.</p>
+    </div>
+    <div class="unitbox">
+      <h3>Power → watts (W)</h3>
+      <p>Power is energy <strong>per second</strong>, how fast energy is delivered:</p>
+      <p class="formula" aria-label="P equals energy divided by time. 1 watt equals 1 joule per second">P = E / t &nbsp;&nbsp;&nbsp; 1 W = 1 J/s</p>
+      <p>A turbine rated at 2 MW delivers 2,000,000 J of electrical energy <strong>every second</strong>.</p>
+    </div>
+  </div>
+  <h3>Prefixes: watts, kilowatts, megawatts</h3>
+  <table class="units">
+    <caption class="sr-only">Power units and conversions</caption>
+    <thead><tr><th scope="col">Unit</th><th scope="col">Symbol</th><th scope="col">In watts</th><th scope="col">Typical example</th></tr></thead>
+    <tbody>
+      <tr><td>watt</td><td>W</td><td class="n">1 W</td><td>LED night light</td></tr>
+      <tr><td>kilowatt</td><td>kW</td><td class="n">1,000 W = 10³ W</td><td>Small home wind turbine (≈ 10 kW)</td></tr>
+      <tr><td>megawatt</td><td>MW</td><td class="n">1,000,000 W = 10⁶ W</td><td>Land wind turbine (≈ 3.4 MW); offshore turbine (13 MW)</td></tr>
+    </tbody>
+  </table>
+  <div class="cover-grid">
+    <div class="unitbox">
+      <h3>Converting</h3>
+      <ul>
+        <li>W → kW: divide by 1,000</li>
+        <li>W → MW: divide by 1,000,000</li>
+        <li>kW → MW: divide by 1,000</li>
+        <li>MW → W: multiply by 1,000,000</li>
+      </ul>
+      <p>Example: 408,407 W = 408.407 kW = 0.408407 MW ≈ 0.41 MW.</p>
+    </div>
+    <div class="unitbox">
+      <h3>Joules ↔ watts</h3>
+      <ul>
+        <li>Energy = power × time: E = P × t (J = W × s)</li>
+        <li>A 3 MW turbine running for 10 s delivers 3,000,000 W × 10 s = 30,000,000 J</li>
+        <li>In the lab, the kinetic energy carried through the blades <em>each second</em> (in J) is the power available (in W)</li>
+      </ul>
+      <p><strong>Watch out:</strong> W is a <em>rate</em> (J per second), not an amount of energy.</p>
+    </div>
+  </div>
+  <h3>Quick check</h3>
+  <p>Each question has a hint, 3 attempts, and a detailed answer that appears once you get it right or use your 3 attempts.</p>
+  <div id="coverQs"></div>
+  <div class="btns"><button type="button" id="startLab" disabled>Start the lab</button></div>
+  <p id="startMsg" class="status" aria-live="polite"></p>
+</section>
+<div id="labContent" hidden>
+<section class="card" aria-labelledby="sim-h">
+  <h2 id="sim-h">Simulation</h2>
+  <div class="layout">
+    <div>
+      <div class="scene-wrap">
+        <canvas id="scene" width="900" height="480" role="img" aria-describedby="scene-desc"></canvas>
+        <canvas id="front" width="150" height="150" role="img" aria-label="Front view of the rotor: the shaded disc is the swept area A equals pi R squared."></canvas>
+      </div>
+      <p id="scene-desc" class="sr-only"></p>
+      <div class="legend" aria-hidden="true">
+        <span>● Air parcels: bigger, darker dots with longer tails carry more kinetic energy (KE = ½mv²)</span>
+        <span>▭ Dashed box: the air that reaches the blades in the next 10 seconds (drawn to the same scale as the turbine)</span><span>Grey zone behind the rotor: the slower wake</span>
+      </div>
+      <div class="btns">
+        <button id="pauseBtn" type="button" aria-pressed="false">Pause animation</button>
+        <button id="cylBtn" type="button" class="secondary" aria-pressed="true">Hide 10-second air box</button>
+        <button id="tableBtn" type="button" class="secondary" aria-expanded="false" aria-controls="dataTableWrap">Show power data table</button>
+      </div>
+      <p id="motionNote" class="status"></p>
+
+      <h3>Power in the wind vs. wind speed</h3>
+      <canvas id="graph" width="900" height="300" role="img" aria-describedby="graph-desc"></canvas>
+      <p id="graph-desc" class="sr-only"></p>
+      <div class="legend" aria-hidden="true">
+        <span><svg width="34" height="10"><line x1="0" y1="5" x2="34" y2="5" stroke="#0072B2" stroke-width="3" stroke-dasharray="7 4"/></svg> Power available, ½ρAv³</span>
+        <span><svg width="34" height="10"><line x1="0" y1="5" x2="34" y2="5" stroke="#B35A00" stroke-width="3" stroke-dasharray="2 3"/></svg> Betz maximum (59.3%)</span>
+        <span><svg width="34" height="10"><line x1="0" y1="5" x2="34" y2="5" stroke="#007A5A" stroke-width="4"/></svg> Power generated</span>
+        <span>◆ current wind speed</span>
+      </div>
+      <div id="dataTableWrap" hidden>
+        <h3 id="dt-h">Power data for the current settings</h3>
+        <table aria-labelledby="dt-h"><thead><tr><th scope="col">Wind speed (m/s)</th><th scope="col">Power available (MW)</th><th scope="col">Betz maximum (MW)</th><th scope="col">Power generated (MW)</th></tr></thead><tbody id="dataBody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="controls" aria-labelledby="ctl-h">
+      <h3 id="ctl-h" style="margin-top:0">Controls</h3>
+
+      <label for="loc">Location</label>
+      <select id="loc"></select>
+      <p class="help" id="locHelp"></p>
+      <button type="button" class="secondary" id="typWind" style="margin-top:.4rem">Use this location's typical wind</button>
+
+      <label for="preset">Turbine</label>
+      <select id="preset"></select>
+      <p class="help" id="presetHelp"></p>
+
+      <label for="vRange">Wind speed, v</label>
+      <div class="row">
+        <input type="range" id="vRange" min="0" max="30" step="0.5" aria-describedby="vUnit">
+        <input type="number" id="vNum" min="0" max="30" step="0.1" aria-label="Wind speed in meters per second">
+        <span class="unit" id="vUnit">m/s</span>
+      </div>
+
+      <label for="rRange">Blade length (radius), R</label>
+      <div class="row">
+        <input type="range" id="rRange" min="1" max="120" step="0.5" aria-describedby="rUnit">
+        <input type="number" id="rNum" min="1" max="120" step="0.1" aria-label="Blade length in meters">
+        <span class="unit" id="rUnit">m</span>
+      </div>
+
+      <label for="cpRange">Power coefficient, C<sub>p</sub></label>
+      <div class="row">
+        <input type="range" id="cpRange" min="0" max="0.593" step="0.001" aria-describedby="cpHelp">
+        <input type="number" id="cpNum" min="0" max="0.593" step="0.01" aria-label="Power coefficient">
+        <span class="unit"></span>
+      </div>
+      <p class="help" id="cpHelp">Real turbines: about 0.35–0.45. The theoretical maximum (Betz limit) is 16/27 ≈ 0.593.</p>
+
+      <label class="check"><input type="checkbox" id="classRho" checked> <span>Use the class value ρ = 1.3 kg/m³ (uncheck to use the real air density at this location)</span></label>
+      <label class="check"><input type="checkbox" id="realMode"> <span>Real turbine behavior (cut-in speed, rated power, storm shut-down)</span></label>
+      <label class="check"><input type="checkbox" id="gusty"> <span>Gusty wind (wind speed fluctuates around v, by an amount typical of the location)</span></label>
+      <label class="check"><input type="checkbox" id="realScale" checked> <span>Draw turbine to real scale (uncheck to zoom in on small turbines)</span></label>
+    </div>
+  </div>
+
+  <h3>Live results</h3>
+  <div class="readouts" id="readouts" aria-live="polite" aria-atomic="false"></div>
+  <div class="bars" aria-hidden="true">
+    <div class="bar"><span>Available ½ρAv³</span><div class="track"><div class="fill avail" id="bAvail"></div></div><span class="num" id="nAvail"></span></div>
+    <div class="bar"><span>Betz maximum</span><div class="track"><div class="fill betz" id="bBetz"></div></div><span class="num" id="nBetz"></span></div>
+    <div class="bar"><span>Generated</span><div class="track"><div class="fill gen" id="bGen"></div></div><span class="num" id="nGen"></span></div>
+  </div>
+  <div class="formula" aria-label="Formulas: Power available equals one half rho A v cubed. Power generated equals C p times power available.">
+    P<sub>available</sub> = ½ ρ A v³ &nbsp;&nbsp;with&nbsp; A = πR² &nbsp;&nbsp;|&nbsp;&nbsp; P<sub>generated</sub> = C<sub>p</sub> × P<sub>available</sub>
+  </div>
+</section>
+
+<section class="card" id="activity" aria-labelledby="act-h" tabindex="-1">
+  <h2 id="act-h">Guided activity</h2>
+  <p>Work through the parts in order. Each <strong>Set up</strong> button puts the simulation in the right starting state. Type <strong>numbers only</strong> in the answer boxes (no units), then press <strong>Check</strong>. Round each answer to the number of decimal places shown in the question. You have <strong>3 attempts</strong> per question; open the <strong>Hint</strong> if you are stuck. A detailed answer appears when you get it right or after your third attempt. For written questions, write your answer first, then compare it with the model answer.</p>
+  <p><strong>Parts unlock one at a time:</strong> answer every question in a part to unlock the next one. When all parts are done you will get a completion certificate. Your progress is saved in this browser.</p>
+  <p id="lockLive" class="sr-only" aria-live="assertive"></p>
+  <div class="tabs" role="tablist" aria-label="Activity parts" id="tabs"></div>
+  <div id="panels"></div>
+</section>
+
+<section class="card" id="certSection" aria-labelledby="cs-h" hidden>
+  <h2 id="cs-h">Completion certificate</h2>
+  <form id="nameForm" novalidate>
+    <p>Enter the name of each student who worked on this lab (1 to 4 names). Only the first name box is required.</p>
+    <div class="names">
+      <label for="name1">Student 1 (required)</label><input id="name1" type="text" autocomplete="name" maxlength="60" aria-required="true" aria-describedby="nameErr">
+      <label for="name2">Student 2 (optional)</label><input id="name2" type="text" maxlength="60">
+      <label for="name3">Student 3 (optional)</label><input id="name3" type="text" maxlength="60">
+      <label for="name4">Student 4 (optional)</label><input id="name4" type="text" maxlength="60">
+    </div>
+    <p id="nameErr" class="fb bad" role="alert"></p>
+    <button type="submit">Create my certificate</button>
+  </form>
+  <div id="certWrap" hidden>
+    <div id="cert" class="cert"></div>
+    <p class="status">To submit: take a screenshot of the certificate and upload it to Canvas, or copy the certificate text and paste it into your submission.</p>
+    <div class="btns"><button type="button" id="copyCert">Copy certificate text</button><button type="button" class="secondary" id="editNames">Edit names</button><button type="button" class="secondary" id="resetLab">Start over for a new group</button></div>
+    <p id="copyMsg" class="status" role="status"></p>
+    <label for="certText" class="sr-only">Certificate text</label><textarea id="certText" readonly hidden></textarea>
+  </div>
+</section>
+<section class="card" aria-labelledby="data-h">
+  <h2 id="data-h">Real-world data used in this lab</h2>
+  <table>
+    <caption class="sr-only">Turbines used in the simulation</caption>
+    <thead><tr><th scope="col">Turbine</th><th scope="col">Blade length</th><th scope="col">Rated power</th><th scope="col">Hub height</th><th scope="col">Where it is used</th></tr></thead>
+    <tbody>
+      <tr><td>Charles Brush windmill (Cleveland, 1887)</td><td class="n">≈ 8.5 m</td><td class="n">12 kW</td><td class="n">≈ 18 m (60 ft tower)</td><td>First automatically operated wind turbine (from the lecture slides)</td></tr>
+      <tr><td>Small residential turbine (typical size class)</td><td class="n">≈ 3.5 m</td><td class="n">≈ 10 kW</td><td class="n">≈ 20–30 m</td><td>Homes, farms, remote sites</td></tr>
+      <tr><td>Average new U.S. land-based turbine (2023)</td><td class="n">≈ 67 m (133.8 m rotor)</td><td class="n">3.4 MW</td><td class="n">103.4 m</td><td>Wind farms in the Great Plains, Texas, Midwest</td></tr>
+      <tr><td>GE Haliade-X 13 MW</td><td class="n">107 m</td><td class="n">13 MW</td><td class="n">≈ 150 m</td><td>Vineyard Wind 1, about 15 miles south of Martha's Vineyard, Massachusetts (62 turbines)</td></tr>
+    </tbody>
+  </table>
+  <h3>Locations</h3>
+  <table>
+    <thead><tr><th scope="col">Location</th><th scope="col">Typical average wind at hub height</th><th scope="col">Air density</th><th scope="col">Gustiness</th></tr></thead>
+    <tbody id="locTable"></tbody>
+  </table>
+  <p class="help">Typical wind speeds are rounded, approximate annual averages read from NREL U.S. wind-resource maps (80–100 m height); real sites vary. Air densities are standard-atmosphere values for each elevation. The class value 1.3 kg/m³ corresponds to cold air near sea level. Areas with an average wind of about 6.5 m/s or more at 80 m are generally considered suitable for wind development (U.S. DOE).</p>
+  <p class="help">Sources: U.S. DOE / Berkeley Lab <em>Land-Based Wind Market Report: 2024 Edition</em>; GE Vernova Haliade-X specifications; Vineyard Wind 1 project information; NREL wind resource maps; University of Michigan Center for Sustainable Systems, <em>Wind Energy Factsheet</em> (U.S. onshore capacity factor averages about 38%).</p>
+  <p class="help">Florida data: Gainesville has 58,176 households (U.S. Census Bureau QuickFacts, American Community Survey 2019–2023). Average Florida household electricity use ≈ 1,100 kWh per month (U.S. EIA residential data, rounded).</p>
+</section>
+</div>
+</main>
+<footer>Simulation model: P<sub>available</sub> = ½ρAv³, P<sub>generated</sub> = C<sub>p</sub>P<sub>available</sub>. The slowing of air behind the rotor uses actuator-disc (Betz) theory. In "real turbine" mode: cut-in 3 m/s, output capped at the rated power, shut-down above the cut-out speed (25 m/s, or 34 m/s for the Haliade-X).</footer>
+
+<script>
+(function(){
+"use strict";
+const RHO_CLASS = 1.3;
+const LOCS = [
+  {id:"offshore", name:"Offshore — Atlantic, south of Massachusetts", v:9.5, rho:1.25, ti:0.06, elev:"sea level", scene:"sea",
+   note:"Strong, steady winds over smooth water. Home of Vineyard Wind 1."},
+  {id:"plains", name:"Inland plains — Kansas / Oklahoma", v:8.5, rho:1.15, ti:0.12, elev:"≈ 600 m", scene:"plains",
+   note:"Flat, open land with strong winds; Iowa, South Dakota, Kansas and Oklahoma get over 40% of their electricity from wind."},
+  {id:"mountain", name:"Mountain ridge — southern Wyoming", v:9.5, rho:0.99, ti:0.18, elev:"≈ 2,100 m", scene:"mountain",
+   note:"Very windy ridges, but the air is thinner at high elevation, and the flow over terrain is gusty."},
+  {id:"coast", name:"Coastline — Texas Gulf Coast", v:8.0, rho:1.20, ti:0.10, elev:"near sea level", scene:"coast",
+   note:"Sea breezes give good winds close to where people live."},
+  {id:"forest", name:"Inland forested hills — U.S. Southeast", v:5.5, rho:1.19, ti:0.16, elev:"≈ 300 m", scene:"forest",
+   note:"Trees and hills slow the wind near the ground; a weak wind resource."},
+  {id:"florida", name:"Florida inland — e.g., Gainesville", v:5.0, rho:1.18, ti:0.14, elev:"≈ 50 m", scene:"florida",
+   note:"Flat and warm; light winds most of the year, a weak wind resource. Warm air is also slightly less dense."},
+  {id:"urban", name:"City rooftop", v:4.0, rho:1.21, ti:0.25, elev:"≈ 50 m", scene:"urban",
+   note:"Buildings block and churn the wind: slow and very turbulent."}
+];
+const PRESETS = [
+  {id:"custom", name:"Custom (set your own blade length)", R:null, hub:null, rated:null, cutout:25, help:"Rated power in real mode is set to 300 W per m² of swept area."},
+  {id:"brush", name:"Brush windmill, Cleveland 1887 (12 kW)", R:8.5, hub:18, rated:12e3, cutout:25, help:"Rotor ≈ 17 m across with 144 wooden blades on a 60 ft tower."},
+  {id:"small", name:"Small residential turbine (≈ 10 kW)", R:3.5, hub:24, rated:10e3, cutout:25, help:"Homes, farms and remote sites."},
+  {id:"onshore", name:"Average new U.S. land turbine, 2023 (3.4 MW)", R:66.9, hub:103.4, rated:3.4e6, cutout:25, help:"Rotor diameter 133.8 m, hub height 103.4 m (Berkeley Lab, 2024)."},
+  {id:"haliade", name:"GE Haliade-X 13 MW (offshore)", R:107, hub:150, rated:13e6, cutout:34, help:"107 m blades, 220 m rotor; 62 of them at Vineyard Wind 1."}
+];
+const $ = id => document.getElementById(id);
+const st = { v:5, R:40, cp:0.40, loc:"plains", preset:"custom", classRho:true, real:false, gusty:false, realScale:true,
+             paused:false, showCyl:true, t:0, angle:0, vNow:5 };
+
+// ---------- physics ----------
+const area = R => Math.PI*R*R;
+function rho(){ return st.classRho ? RHO_CLASS : locObj().rho; }
+function locObj(){ return LOCS.find(l=>l.id===st.loc); }
+function presetObj(){ return PRESETS.find(p=>p.id===st.preset); }
+function ratedPower(){ const p=presetObj(); return p.rated ? p.rated : 300*area(st.R); }
+function cutout(){ return presetObj().cutout; }
+function hubHeight(){ const p=presetObj(); return p.hub ? p.hub : Math.max(st.R*1.4, st.R+10); }
+function pAvail(v){ return 0.5*rho()*area(st.R)*v*v*v; }
+function pGen(v){
+  const pa = pAvail(v)*st.cp;
+  if(!st.real) return pa;
+  if(v<3 || v>cutout()) return 0;
+  return Math.min(pa, ratedPower());
+}
+function inductionFromCp(cp){ // solve cp = 4a(1-a)^2, a in [0,1/3]
+  cp=Math.max(0,Math.min(cp,16/27)); let lo=0,hi=1/3;
+  for(let i=0;i<40;i++){ const m=(lo+hi)/2; (4*m*(1-m)*(1-m)<cp)?lo=m:hi=m; } return (lo+hi)/2;
+}
+function turbState(v){
+  if(st.real && (v<3)) return "below cut-in speed: blades not turning enough to generate";
+  if(st.real && v>cutout()) return "storm shut-down: blades feathered to protect the turbine";
+  if(st.real && pAvail(v)*st.cp>=ratedPower()) return "at rated power: blades pitched to spill extra wind";
+  return v>0 ? "generating" : "no wind";
+}
+
+// ---------- formatting ----------
+function fmtSig(x,s=3){ if(x===0) return "0"; const d=Math.max(0,s-1-Math.floor(Math.log10(Math.abs(x)))); return x.toLocaleString("en-US",{maximumFractionDigits:Math.min(d,6),minimumFractionDigits:0}); }
+function fmtP(w){ if(w>=1e6) return fmtSig(w/1e6,4)+" MW"; if(w>=1e3) return fmtSig(w/1e3,4)+" kW"; return fmtSig(w,3)+" W"; }
+const fmtInt = x => Math.round(x).toLocaleString("en-US");
+
+// ---------- UI setup ----------
+LOCS.forEach(l=>{ const o=document.createElement("option"); o.value=l.id; o.textContent=l.name; $("loc").appendChild(o);
+  const tr=document.createElement("tr"); tr.innerHTML=`<td>${l.name}<br><span class="help">Elevation ${l.elev}</span></td><td class="n">≈ ${l.v} m/s</td><td class="n">${l.rho.toFixed(2)} kg/m³</td><td class="n">±${Math.round(l.ti*100)}%</td>`; $("locTable").appendChild(tr); });
+PRESETS.forEach(p=>{ const o=document.createElement("option"); o.value=p.id; o.textContent=p.name; $("preset").appendChild(o); });
+
+function syncInputs(){
+  $("vRange").value=st.v; $("vNum").value=st.v;
+  $("rRange").value=st.R; $("rNum").value=st.R;
+  $("cpRange").value=st.cp; $("cpNum").value=st.cp;
+  $("loc").value=st.loc; $("preset").value=st.preset;
+  $("classRho").checked=st.classRho; $("realMode").checked=st.real; $("gusty").checked=st.gusty; $("realScale").checked=st.realScale;
+  $("locHelp").textContent = locObj().note + " Typical average wind ≈ " + locObj().v + " m/s; air density " + locObj().rho.toFixed(2) + " kg/m³.";
+  $("presetHelp").textContent = presetObj().help;
+  $("cylBtn").textContent=st.showCyl?"Hide 10-second air box":"Show 10-second air box"; $("cylBtn").setAttribute("aria-pressed",st.showCyl);
+  $("vRange").setAttribute("aria-valuetext", st.v+" meters per second");
+  $("rRange").setAttribute("aria-valuetext", st.R+" meters");
+  $("cpRange").setAttribute("aria-valuetext", st.cp.toFixed(3));
+}
+function clamp(x,a,b){ return Math.min(b,Math.max(a,x)); }
+function bindPair(rangeId,numId,key,min,max,onUser){
+  const h = e=>{ let x=parseFloat(e.target.value); if(isNaN(x)) return; st[key]=clamp(x,min,max); if(onUser) onUser(); syncInputs(); update(true); };
+  $(rangeId).addEventListener("input",h); $(numId).addEventListener("change",h);
+}
+bindPair("vRange","vNum","v",0,30);
+bindPair("rRange","rNum","R",1,120,()=>{ st.preset="custom"; });
+bindPair("cpRange","cpNum","cp",0,0.593);
+$("loc").addEventListener("change",e=>{ st.loc=e.target.value; syncInputs(); update(true); });
+$("preset").addEventListener("change",e=>{ st.preset=e.target.value; const p=presetObj(); if(p.R) st.R=p.R; syncInputs(); update(true); });
+$("typWind").addEventListener("click",()=>{ st.v=locObj().v; syncInputs(); update(true); });
+$("classRho").addEventListener("change",e=>{ st.classRho=e.target.checked; update(true); });
+$("realMode").addEventListener("change",e=>{ st.real=e.target.checked; update(true); });
+$("gusty").addEventListener("change",e=>{ st.gusty=e.target.checked; update(true); });
+$("realScale").addEventListener("change",e=>{ st.realScale=e.target.checked; update(true); });
+$("pauseBtn").addEventListener("click",()=>{ st.paused=!st.paused; $("pauseBtn").textContent=st.paused?"Play animation":"Pause animation"; $("pauseBtn").setAttribute("aria-pressed",st.paused); });
+$("cylBtn").addEventListener("click",()=>{ st.showCyl=!st.showCyl; $("cylBtn").textContent=st.showCyl?"Hide 10-second air box":"Show 10-second air box"; $("cylBtn").setAttribute("aria-pressed",st.showCyl); });
+$("tableBtn").addEventListener("click",()=>{ const w=$("dataTableWrap"); w.hidden=!w.hidden; $("tableBtn").setAttribute("aria-expanded",!w.hidden); $("tableBtn").textContent=w.hidden?"Show power data table":"Hide power data table"; fillTable(); });
+
+const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if(reduce){ st.paused=true; $("pauseBtn").textContent="Play animation"; $("pauseBtn").setAttribute("aria-pressed","true");
+  $("motionNote").textContent="Animation is paused because your device asks for reduced motion. Press Play animation to start it."; }
+
+// ---------- readouts ----------
+function update(fromUser){
+  const v=st.v, A=area(st.R), r=rho();
+  const mdot=r*A*v, pa=pAvail(v), pb=pa*16/27, pg=pGen(v);
+  const keParcel = 0.5*1*v*v;
+  const items = [
+    ["Swept area A = πR²", fmtInt(A)+" m²", "R = "+st.R+" m"],
+    ["Air density ρ", r.toFixed(2)+" kg/m³", st.classRho?"class value":"real value for this location"],
+    ["Mass of air through the blades each second (ρAv)", fmtInt(mdot)+" kg/s", "≈ "+fmtSig(mdot/1000,3)+" tonnes every second"],
+    ["Kinetic energy of 1 kg of this air (½·1·v²)", fmtSig(keParcel,3)+" J", "per kilogram"],
+    ["Power available ½ρAv³", fmtP(pa), fmtInt(pa)+" W"],
+    ["Betz maximum (16/27 of available)", fmtP(pb), fmtInt(pb)+" W"],
+    ["Power generated", fmtP(pg), fmtInt(pg)+" W"+(st.real?" · "+turbState(v):"")],
+    ["Rotor speed", rpm(v).toFixed(1)+" rpm", "longer blades turn more slowly"]
+  ];
+  $("readouts").innerHTML = items.map(i=>`<div class="ro"><div class="k">${i[0]}</div><div class="v">${i[1]}</div><div class="s">${i[2]}</div></div>`).join("");
+  const mx = Math.max(pa,1e-9);
+  $("bAvail").style.width="100%"; $("bBetz").style.width=(pb/mx*100)+"%"; $("bGen").style.width=(pg/mx*100)+"%";
+  $("nAvail").textContent=fmtP(pa); $("nBetz").textContent=fmtP(pb); $("nGen").textContent=fmtP(pg);
+  $("scene-desc").textContent = `Side view of a wind turbine at the ${locObj().name} site, hub height about ${Math.round(hubHeight())} meters, blade length ${st.R} meters. Wind blows from left to right at ${v} meters per second. Air parcels upstream carry ${fmtSig(keParcel,3)} joules per kilogram. ${pg>0?"After passing the blades the air slows down, because the turbine has taken part of its kinetic energy.":"The turbine is not extracting energy, so the air leaves at the same speed."} The turbine status is: ${turbState(v)}.`;
+  drawGraph(); drawFront(); if(!$("dataTableWrap").hidden) fillTable();
+  if(st.paused) drawScene(0);
+}
+function rpm(v){
+  if(st.real && (v<3 || v>cutout())) return 0;
+  let tip = Math.min(7*v, 90);
+  if(st.real && pAvail(v)*st.cp>=ratedPower()){ // hold at rated
+    let vr=v; while(vr>3 && pAvail(vr-0.1)*st.cp>=ratedPower()) vr-=0.1; tip=Math.min(7*vr,90);
+  }
+  return tip/st.R*60/(2*Math.PI);
+}
+function fillTable(){
+  let h=""; for(let v=0; v<=30; v+=1){ const pa=pAvail(v); h+=`<tr><td class="n">${v}</td><td class="n">${fmtSig(pa/1e6,4)}</td><td class="n">${fmtSig(pa*16/27/1e6,4)}</td><td class="n">${fmtSig(pGen(v)/1e6,4)}</td></tr>`; }
+  $("dataBody").innerHTML=h;
+}
+
+// ---------- graph ----------
+function drawGraph(){
+  const c=$("graph"), g=c.getContext("2d"), W=c.width, H=c.height, L=84, Rm=20, T=20, B=45;
+  g.clearRect(0,0,W,H); g.fillStyle="#fff"; g.fillRect(0,0,W,H);
+  const vmax=30; let ymax=Math.max(pAvail(Math.max(st.v,8))*1.25, st.real?ratedPower()*1.4:0, 1);
+  const unitDiv = ymax>=2e6?1e6:(ymax>=2e3?1e3:1), unit = unitDiv===1e6?"MW":(unitDiv===1e3?"kW":"W");
+  const X=v=>L+(W-L-Rm)*v/vmax, Y=p=>H-B-(H-B-T)*Math.min(p,ymax*1.05)/ymax;
+  g.strokeStyle="#d5dae1"; g.lineWidth=1; g.font="14px system-ui,Arial"; g.fillStyle="#333";
+  for(let v=0; v<=vmax; v+=5){ g.beginPath(); g.moveTo(X(v),T); g.lineTo(X(v),H-B); g.stroke(); g.fillText(v,X(v)-5,H-B+18); }
+  const step=niceStep(ymax/unitDiv);
+  for(let p=0;p<=ymax/unitDiv+1e-9;p+=step){ g.beginPath(); g.moveTo(L,Y(p*unitDiv)); g.lineTo(W-Rm,Y(p*unitDiv)); g.stroke(); g.textAlign="right"; g.fillText(fmtSig(p,3),L-8,Y(p*unitDiv)+5); g.textAlign="left"; }
+  g.fillText("Wind speed (m/s)", W/2-55, H-8);
+  g.save(); g.translate(16,H/2+30); g.rotate(-Math.PI/2); g.fillText("Power ("+unit+")",0,0); g.restore();
+  g.save(); g.beginPath(); g.rect(L,T,W-L-Rm,H-B-T); g.clip();
+  const line=(f,col,w,dash)=>{ g.strokeStyle=col; g.lineWidth=w; g.setLineDash(dash); g.beginPath(); for(let v=0; v<=vmax; v+=0.1){ const y=Y(f(v)); v===0?g.moveTo(X(v),y):g.lineTo(X(v),y);} g.stroke(); g.setLineDash([]); };
+  line(pAvail,"#0072B2",3,[7,4]); line(v=>pAvail(v)*16/27,"#B35A00",3,[2,3]); line(pGen,"#007A5A",4,[]);
+  g.restore();
+  const vx=st.v; g.fillStyle="#111"; [pAvail(vx),pGen(vx)].forEach(p=>{ const x=X(vx), y=Y(p); g.beginPath(); g.moveTo(x,y-7); g.lineTo(x+7,y); g.lineTo(x,y+7); g.lineTo(x-7,y); g.closePath(); g.fill(); });
+  $("graph-desc").textContent = `Graph of power versus wind speed from 0 to 30 meters per second. Power available rises with the cube of wind speed. At the current speed of ${st.v} meters per second, power available is ${fmtP(pAvail(st.v))} and power generated is ${fmtP(pGen(st.v))}. ${st.real?"In real turbine mode, generated power is zero below 3 m/s, levels off at the rated power of "+fmtP(ratedPower())+", and drops to zero above "+cutout()+" m/s.":""} Use the data table button for exact values.`;
+}
+function niceStep(m){ const raw=m/5, p=Math.pow(10,Math.floor(Math.log10(raw))); const n=raw/p; return (n<1.5?1:n<3.5?2:n<7.5?5:10)*p; }
+
+// ---------- front view ----------
+function drawFront(){
+  const c=$("front"), g=c.getContext("2d"); const W=c.width, cx=75, cy=78, rad=55;
+  g.clearRect(0,0,W,W);
+  g.fillStyle="#222"; g.font="bold 12px system-ui,Arial"; g.fillText("Front view",44,14);
+  g.fillStyle="rgba(0,114,178,.18)"; g.strokeStyle="#0072B2"; g.lineWidth=1.5; g.setLineDash([4,3]);
+  g.beginPath(); g.arc(cx,cy,rad,0,2*Math.PI); g.fill(); g.stroke(); g.setLineDash([]);
+  g.strokeStyle="#555"; g.lineWidth=3; g.beginPath(); g.moveTo(cx,cy); g.lineTo(cx,W); g.stroke();
+  g.fillStyle="#f4f4f4"; g.strokeStyle="#333"; g.lineWidth=1.2;
+  for(let k=0;k<3;k++){ const a=st.angle+k*2*Math.PI/3; g.save(); g.translate(cx,cy); g.rotate(a);
+    g.beginPath(); g.moveTo(0,-3); g.quadraticCurveTo(rad*0.35,-7,rad,-1.5); g.lineTo(rad,1.5); g.quadraticCurveTo(rad*0.35,5,0,3); g.closePath(); g.fill(); g.stroke(); g.restore(); }
+  g.fillStyle="#333"; g.beginPath(); g.arc(cx,cy,4,0,2*Math.PI); g.fill();
+  g.fillStyle="#0b3d66"; g.font="12px system-ui,Arial"; g.fillText("A = πR² = "+fmtSig(area(st.R),3)+" m²",8,146);
+}
+
+// ---------- scene ----------
+const sc=$("scene"), sg=sc.getContext("2d");
+let parts=[];
+function geom(){
+  const W=sc.width, H=sc.height, loc=locObj();
+  const groundBase = H-40;
+  const terrainRise = loc.scene==="mountain"?110 : (loc.scene==="urban"?0:0);
+  const roof = loc.scene==="urban"?60:0;
+  const towerBaseY = groundBase - terrainRise - roof;
+  const hub=hubHeight(), R=st.R;
+  let s;
+  if(st.realScale){ s = (H-40-110-20)/280; } else { s = (towerBaseY-25)/(hub+R); }
+  const rotorX = W*0.56, hubY = towerBaseY - hub*s, Rpx = R*s;
+  return {W,H,groundBase,towerBaseY,s,rotorX,hubY,Rpx,loc,terrainRise,roof};
+}
+function vWindNow(){
+  if(!st.gusty) return st.v;
+  const t=st.t, ti=locObj().ti;
+  const n = 0.55*Math.sin(t*0.9)+0.3*Math.sin(t*2.3+1.3)+0.15*Math.sin(t*5.1+0.4);
+  return Math.max(0, st.v*(1+ti*1.8*n));
+}
+const VIS = 16; // px per s per (m/s)
+function spawn(dt,gm){
+  const v=st.vNow; if(v<=0) return;
+  const top=10, bottom=gm.towerBaseY-4, hgt=bottom-top;
+  const rate = 0.0007*hgt*v*VIS; // parcels per second, proportional to v (flux)
+  let n = rate*dt; while(n>0){ if(Math.random()<n) parts.push({x:-10, y:top+Math.random()*hgt, sp:v, k:Math.random()}); n-=1; }
+  if(parts.length>700) parts.splice(0,parts.length-700);
+}
+function drawBackground(gm){
+  const g=sg, {W,H,groundBase,loc}=gm;
+  const sky=g.createLinearGradient(0,0,0,H); sky.addColorStop(0,"#bcdcf5"); sky.addColorStop(1,"#eef6fc");
+  g.fillStyle=sky; g.fillRect(0,0,W,H);
+  if(loc.scene==="sea"){ g.fillStyle="#2f6f9e"; g.fillRect(0,groundBase,W,H-groundBase); g.strokeStyle="#cfe6f7"; g.lineWidth=1.5;
+    for(let x=0;x<W;x+=24){ g.beginPath(); g.arc(x+((st.t*12)%24),groundBase+10,6,Math.PI*1.1,Math.PI*1.9); g.stroke(); } }
+  else if(loc.scene==="plains"){ g.fillStyle="#7da84a"; g.fillRect(0,groundBase,W,H-groundBase); g.fillStyle="#c8b45a"; g.fillRect(0,groundBase+14,W,8); }
+  else if(loc.scene==="mountain"){ g.fillStyle="#8b9aa8"; g.beginPath(); g.moveTo(0,H); g.lineTo(0,groundBase-30); g.lineTo(W*0.3,groundBase-80); g.lineTo(gm.rotorX-60,gm.towerBaseY); g.lineTo(gm.rotorX+60,gm.towerBaseY); g.lineTo(W*0.8,groundBase-60); g.lineTo(W,groundBase-20); g.lineTo(W,H); g.closePath(); g.fill();
+    }
+  else if(loc.scene==="coast"){ g.fillStyle="#2f6f9e"; g.fillRect(0,groundBase,W*0.4,H-groundBase); g.fillStyle="#e3cf96"; g.fillRect(W*0.4,groundBase,W*0.6,H-groundBase); }
+  else if(loc.scene==="florida"){ g.fillStyle="#6fa64a"; g.fillRect(0,groundBase,W,H-groundBase); g.fillStyle="#4f8fc0"; g.beginPath(); g.ellipse(W*0.22,groundBase+16,90,9,0,0,2*Math.PI); g.fill();
+    g.strokeStyle="#5b4a2f"; g.lineWidth=3; g.fillStyle="#2f6b2b"; [[W*0.08,46],[W*0.34,38],[W*0.82,50]].forEach(t=>{ const x=t[0],h=t[1]; g.beginPath(); g.moveTo(x,groundBase); g.quadraticCurveTo(x+6,groundBase-h/2,x+3,groundBase-h); g.stroke();
+      for(let k=0;k<5;k++){ const a=-Math.PI*(0.1+0.2*k); g.beginPath(); g.ellipse(x+3+Math.cos(a)*10,groundBase-h+Math.sin(a)*6,11,3,a,0,2*Math.PI); g.fill(); } }); }
+  else if(loc.scene==="forest"){ g.fillStyle="#5d8a45"; g.fillRect(0,groundBase,W,H-groundBase); g.fillStyle="#2f5d2b";
+    for(let x=10;x<W;x+=34){ const h=24+((x*7)%18); g.beginPath(); g.moveTo(x,groundBase); g.lineTo(x+14,groundBase-h); g.lineTo(x+28,groundBase); g.closePath(); g.fill(); } }
+  else if(loc.scene==="urban"){ g.fillStyle="#9aa1a8"; g.fillRect(0,groundBase,W,H-groundBase);
+    const bl=[[20,140],[120,90],[200,170],[300,110],[620,150],[720,95],[800,180]]; g.fillStyle="#6c7680"; bl.forEach(b=>g.fillRect(b[0],groundBase-b[1],70,b[1]));
+    g.fillStyle="#56606a"; g.fillRect(gm.rotorX-70,gm.towerBaseY,140,gm.roof); }
+}
+function drawTurbine(gm){
+  const g=sg, {rotorX,hubY,Rpx,towerBaseY,s}=gm;
+  const tw=Math.max(2,Rpx*0.06);
+  g.fillStyle="#e9edf1"; g.strokeStyle="#4b5563"; g.lineWidth=1;
+  g.beginPath(); g.moveTo(rotorX-tw*0.5,hubY); g.lineTo(rotorX+tw*0.5,hubY); g.lineTo(rotorX+tw,towerBaseY); g.lineTo(rotorX-tw,towerBaseY); g.closePath(); g.fill(); g.stroke();
+  const nl=Math.max(6,Rpx*0.22), nh=Math.max(4,Rpx*0.08);
+  g.fillStyle="#d7dde3"; g.fillRect(rotorX-nl*0.25,hubY-nh/2,nl,nh); g.strokeRect(rotorX-nl*0.25,hubY-nh/2,nl,nh);
+  // swept disc edge-on
+  g.strokeStyle="rgba(0,114,178,.55)"; g.setLineDash([5,4]); g.lineWidth=1.5;
+  g.beginPath(); g.ellipse(rotorX-nl*0.3,hubY,Math.max(2,Rpx*0.06),Rpx,0,0,2*Math.PI); g.stroke(); g.setLineDash([]);
+  g.strokeStyle="#2b2f36"; g.lineWidth=Math.max(2.5,Rpx*0.035); g.lineCap="round";
+  for(let k=0;k<3;k++){ const a=st.angle+k*2*Math.PI/3; const y=Rpx*Math.cos(a), dx=Math.sin(a)*Math.max(1,Rpx*0.04);
+    g.beginPath(); g.moveTo(rotorX-nl*0.3,hubY); g.lineTo(rotorX-nl*0.3+dx,hubY-y); g.stroke(); }
+  g.fillStyle="#2b2f36"; g.beginPath(); g.arc(rotorX-nl*0.3,hubY,Math.max(2,Rpx*0.05),0,2*Math.PI); g.fill();
+  // scale bar
+  const bar = st.R>=20?50:(st.R>=5?10:2); g.fillStyle="#111"; g.font="13px system-ui,Arial";
+  g.fillRect(14,gm.H-18,bar*s,4); g.fillText(bar+" m",18+bar*s,gm.H-12);
+  // R label
+  g.strokeStyle="#0b3d66"; g.lineWidth=1.2; const lx=rotorX+nl+12;
+  if(Rpx>18){ g.beginPath(); g.moveTo(lx,hubY); g.lineTo(lx,hubY-Rpx); g.moveTo(lx-5,hubY); g.lineTo(lx+5,hubY); g.moveTo(lx-5,hubY-Rpx); g.lineTo(lx+5,hubY-Rpx); g.stroke();
+    g.fillStyle="#0b3d66"; g.fillText("R = "+st.R+" m",lx+8,hubY-Rpx/2); }
+}
+function drawCylinder(gm){
+  if(!st.showCyl || st.vNow<=0) return;
+  const g=sg, {rotorX,hubY,Rpx,s}=gm; const TBOX=10; const len=st.vNow*TBOX*s; // 10 s of travel, same scale as the turbine
+  const x0=rotorX-len-Math.max(6,Rpx*0.22)*0.3;
+  g.fillStyle="rgba(0,114,178,.13)"; g.strokeStyle="#0b3d66"; g.setLineDash([6,4]); g.lineWidth=1.5;
+  g.fillRect(x0,hubY-Rpx,len,2*Rpx); g.strokeRect(x0,hubY-Rpx,len,2*Rpx); g.setLineDash([]);
+  g.fillStyle="#0b3d66"; g.font="13px system-ui,Arial";
+  const m=rho()*area(st.R)*st.vNow;
+  const label1="Air reaching the blades in 10 s: length v·t = "+fmtSig(st.vNow*TBOX,3)+" m", label2="Mass per second ρAv = "+fmtInt(m)+" kg/s";
+  const ty=Math.max(84,hubY-Rpx-30), tx=Math.max(8,Math.min(x0-60,gm.W-380));
+  label(g,[label1,label2],tx,ty);
+}
+function label(g,lines,x,y){
+  g.font="13px system-ui,Arial"; const w=Math.max(...lines.map(l=>g.measureText(l).width))+12;
+  g.fillStyle="rgba(255,255,255,.92)"; g.fillRect(x-6,y-14,w,lines.length*16+6); g.strokeStyle="#9aa3ad"; g.lineWidth=1; g.strokeRect(x-6,y-14,w,lines.length*16+6);
+  g.fillStyle="#0b3d66"; lines.forEach((l,i)=>g.fillText(l,x,y+i*16));
+}
+function drawWake(gm){
+  const pg=pGen(st.vNow); if(pg<=0) return;
+  const g=sg, {rotorX,hubY,Rpx,W}=gm; const a=inductionFromCp(pg/pAvail(st.vNow));
+  const grd=g.createLinearGradient(rotorX,0,W,0); grd.addColorStop(0,"rgba(120,130,140,.22)"); grd.addColorStop(1,"rgba(120,130,140,.05)");
+  g.fillStyle=grd; g.beginPath(); g.moveTo(rotorX,hubY-Rpx); g.lineTo(rotorX+120,hubY-Rpx*(1+a*0.8)); g.lineTo(W,hubY-Rpx*(1+a*0.8)); g.lineTo(W,hubY+Rpx*(1+a*0.8)); g.lineTo(rotorX+120,hubY+Rpx*(1+a*0.8)); g.lineTo(rotorX,hubY+Rpx); g.closePath(); g.fill();
+}
+function drawWakeLabel(gm){
+  const pg=pGen(st.vNow); if(pg<=0 || gm.Rpx<=25) return;
+  const a=inductionFromCp(pg/pAvail(st.vNow));
+  label(sg,["Wake: air slowed to "+(st.vNow*(1-2*a)).toFixed(1)+" m/s","(it gave up "+Math.round((1-(1-2*a)**2)*100)+"% of its KE per kg)"],Math.min(gm.W-250,gm.rotorX+gm.Rpx*0.4+40),Math.min(gm.towerBaseY-30,gm.hubY+gm.Rpx*0.55));
+}
+function stepParticles(dt,gm){
+  const cpEff = st.vNow>0 ? pGen(st.vNow)/Math.max(pAvail(st.vNow),1e-9) : 0;
+  const a = inductionFromCp(cpEff);
+  const v=st.vNow;
+  const x0=gm.rotorX-Math.max(6,gm.Rpx*0.22)*0.3;
+  parts.forEach(p=>{
+    const inTube = Math.abs(p.y-gm.hubY) < gm.Rpx*(p.x>x0? (1+ a*0.8*Math.min(1,(p.x-x0)/120)) : 1);
+    let target=v;
+    if(inTube){ if(p.x>x0) target=v*(1-2*a); else if(p.x>x0-60) target=v*(1-a*(1-(x0-p.x)/60)); }
+    p.sp += (target-p.sp)*Math.min(1,dt*3);
+    p.x += p.sp*VIS*dt;
+  });
+  parts = parts.filter(p=>p.x<gm.W+20 && p.y<gm.towerBaseY);
+}
+function drawParticles(gm){
+  const g=sg; const vref=20;
+  parts.forEach(p=>{
+    const ke=Math.min(1,(p.sp*p.sp)/(vref*vref));
+    const r=1.3+4.2*Math.min(1,p.sp/vref), tail=p.sp*VIS*0.12;
+    const light=72-50*Math.sqrt(ke);
+    g.strokeStyle=`hsla(215,70%,${light}%,0.85)`; g.lineWidth=Math.max(1,r*0.7);
+    g.beginPath(); g.moveTo(p.x-tail,p.y); g.lineTo(p.x,p.y); g.stroke();
+    g.fillStyle=`hsl(215,75%,${light-6}%)`; g.beginPath(); g.arc(p.x,p.y,r,0,2*Math.PI); g.fill();
+  });
+}
+function drawHUD(gm){
+  const g=sg; g.fillStyle="rgba(255,255,255,.9)"; g.fillRect(8,8,250,58); g.strokeStyle="#9aa3ad"; g.strokeRect(8,8,250,58);
+  g.fillStyle="#111"; g.font="bold 14px system-ui,Arial"; g.fillText("Wind "+st.vNow.toFixed(1)+" m/s  →",16,28);
+  g.font="13px system-ui,Arial"; g.fillText("Generated: "+fmtP(pGen(st.vNow)),16,46);
+  if(st.real) g.fillText(turbState(st.vNow).split(":")[0],16,61);
+}
+function drawScene(dt){
+  const gm=geom();
+  drawBackground(gm); drawWake(gm); drawParticles(gm); drawTurbine(gm); drawCylinder(gm); drawWakeLabel(gm); drawHUD(gm); drawFront();
+}
+let last=performance.now();
+function loop(now){
+  let dt=Math.min(0.05,(now-last)/1000); last=now;
+  if(!st.paused){
+    st.t+=dt; st.vNow=vWindNow();
+    const gm=geom(); spawn(dt,gm); stepParticles(dt,gm);
+    const omega = rpm(st.vNow)*2*Math.PI/60; st.angle += Math.min(omega, 2*2*Math.PI)*dt;
+    drawScene(dt);
+  }
+  requestAnimationFrame(loop);
+}
+// prefill air so the scene is not empty
+function prefill(){ const gm=geom(); st.vNow=st.v; for(let i=0;i<200;i++){ spawn(0.05,gm); stepParticles(0.05,gm);} }
+
+// ---------- activity ----------
+const set = o => { Object.assign(st,o); if(o.preset && o.preset!=="custom"){ const p=presetObj(); if(o.R===undefined && p.R) st.R=p.R; } syncInputs(); update(true); $("scene").scrollIntoView({behavior: reduce?"auto":"smooth", block:"center"}); };
+const P = (r,R,v,cp=1)=>0.5*r*Math.PI*R*R*v*v*v*cp;
+const HH_KW = 1100/720; // Florida household: 1,100 kWh per 30-day month
+const TURB_AVG = 3.4*0.38; // MW
+const FL = [["Gainesville",58176]];
+const cityMW = n => n*HH_KW/1000;
+const COVER_QS = [
+ {t:"num", d:1, p:"Convert 2,500,000 W to MW.", a:()=>2.5,
+  h:"1 MW = 1,000,000 W, so going from W to MW you divide by 1,000,000.",
+  s:"<p>2,500,000 W ÷ 1,000,000 W/MW = <strong>2.5 MW</strong>.</p><p>Moving from a small unit (W) to a big unit (MW) always makes the number smaller.</p>"},
+ {t:"num", d:0, p:"Convert 0.85 MW to kW.", a:()=>850,
+  h:"1 MW = 1,000 kW. Going from a big unit to a smaller unit, the number gets bigger.",
+  s:"<p>0.85 MW × 1,000 kW/MW = <strong>850 kW</strong>.</p>"},
+ {t:"num", d:0, p:"Air passing through a turbine's blades delivers 600,000 J of kinetic energy every second. What is the power available, in kW?", a:()=>600,
+  h:"Power is energy per second: 1 W = 1 J/s. First find the power in W, then convert to kW.",
+  s:"<p>P = E / t = 600,000 J ÷ 1 s = 600,000 W.</p><p>600,000 W ÷ 1,000 W/kW = <strong>600 kW</strong>.</p>"},
+ {t:"num", d:0, p:"A 2 MW turbine runs at full power for 1 minute. How much energy does it deliver, in MJ (megajoules, 1 MJ = 1,000,000 J)?", a:()=>120,
+  h:"E = P × t. Use P in W and t in seconds to get joules. 1 minute = 60 s.",
+  s:"<p>E = P × t = 2,000,000 W × 60 s = 120,000,000 J.</p><p>120,000,000 J ÷ 1,000,000 J/MJ = <strong>120 MJ</strong>.</p>"}
+];
+const PARTS = [
+ {title:"1. Wind carries kinetic energy",
+  setup:{v:5,R:40,cp:0.40,preset:"custom",loc:"plains",classRho:true,real:false,gusty:false,realScale:true,showCyl:true},
+  intro:`<p>Moving air has mass and speed, so it carries <strong>kinetic energy</strong>, KE = ½mv². Set the wind speed to 0 and then slowly raise it. Watch the air parcels: their size, darkness and tail length grow with their kinetic energy.</p>
+  <p>The dashed box in front of the blades is the air that will reach the blades in the next <strong>10 seconds</strong>. It is as tall as the rotor (2R) and as long as the distance the air travels, v × t. Every second, a mass m = ρAv of air passes through the blades.</p>`,
+  qs:[
+   {t:"text", p:"With the wind at 0 m/s, what happens to the turbine and why? What does the turbine need from the wind?",
+    h:"Look at the 'Power generated' box and the air parcels when v = 0. What does KE = ½mv² give when v = 0?",
+    s:"<p>The blades stop and the power generated is 0 W. With v = 0 the air has no kinetic energy (KE = ½m·0² = 0), and no air flows through the blades, so there is nothing for the turbine to convert. The turbine needs <strong>moving air</strong>: a flow of mass that carries kinetic energy.</p>"},
+   {t:"num", d:0, p:"Set v = 5 m/s and R = 40 m (press Set up). Using ρ = 1.3 kg/m³, what <strong>mass of air</strong> passes through the blades each second? Use m = ρ·A·v with A = πR². (kg)", a:()=>1.3*Math.PI*1600*5,
+    h:"First compute A = π × (40 m)². Then multiply by ρ = 1.3 kg/m³ and by v = 5 m/s.",
+    s:"<p>A = πR² = π × (40 m)² = 5,026.5 m².</p><p>m per second = ρAv = 1.3 kg/m³ × 5,026.5 m² × 5 m/s = <strong>32,673 kg</strong> (every second!).</p><p>That is about 33 tonnes of air passing through the blades each second.</p>"},
+   {t:"num", d:0, p:"What is the <strong>kinetic energy</strong> of that 1-second mass of air, KE = ½mv²? This is the power available in watts. (W)", a:()=>P(1.3,40,5),
+    h:"Use m from the previous question and v = 5 m/s. Since this is the energy arriving in 1 s, the number of joules equals the power in watts.",
+    s:"<p>KE = ½ × 32,672.6 kg × (5 m/s)² = ½ × 32,672.6 × 25 = <strong>408,407 J</strong>.</p><p>This energy arrives every second, so the power available is 408,407 J/s = 408,407 W ≈ 0.41 MW, the same as the lecture example. Combining the two steps gives the formula P = ½(ρAv)v² = ½ρAv³.</p>"},
+   {t:"text", p:"Look at the parcels before and after the blades. What happens to their speed after they pass through? Where did their kinetic energy go?",
+    h:"Compare the size and tail length of the dots on the left and in the grey wake on the right. Read the wake label.",
+    s:"<p>Behind the blades the parcels are slower (smaller dots, shorter tails); the wake label shows the new speed. Slower air has less kinetic energy. The missing kinetic energy was transferred to the blades, making the rotor turn, and the generator converts that rotation into electrical energy (with some losses as heat and sound).</p>"}
+  ]},
+ {title:"2. The cube of wind speed",
+  setup:{v:4,R:40,cp:0.40,preset:"custom",loc:"plains",classRho:true,real:false,gusty:false},
+  intro:`<p>Faster wind gives more energy <em>for two reasons</em>: each kilogram of air has more kinetic energy (½v²), and more kilograms arrive every second (ρAv). Together: P = ½ρAv³. Watch the dashed air box get longer as you raise v.</p>`,
+  qs:[
+   {t:"num", d:3, p:"With R = 40 m and C<sub>p</sub> = 0.40, what power is generated at v = 4 m/s? (MW)", a:()=>P(1.3,40,4,0.4)/1e6,
+    h:"P = Cp × ½ρAv³ with A = π(40)². Compute in W, then divide by 1,000,000 to get MW.",
+    s:"<p>P = 0.40 × ½ × 1.3 × π(40)² × 4³ = 0.40 × 0.5 × 1.3 × 5,026.5 × 64 = 83,642 W.</p><p>83,642 W ÷ 1,000,000 = <strong>0.084 MW</strong>.</p>"},
+   {t:"num", d:3, p:"Now set v = 8 m/s. What power is generated? (MW)", a:()=>P(1.3,40,8,0.4)/1e6,
+    h:"Same formula, but v³ = 8³ = 512.",
+    s:"<p>P = 0.40 × 0.5 × 1.3 × 5,026.5 × 512 = 669,134 W = <strong>0.669 MW</strong>.</p>"},
+   {t:"num", d:0, p:"By what factor did the power increase when the wind speed doubled?", a:()=>8,
+    h:"Divide the second answer by the first. Compare with 2³.",
+    s:"<p>0.669 MW ÷ 0.084 MW ≈ <strong>8</strong>. Because P ∝ v³, doubling v multiplies P by 2³ = 8.</p>"},
+   {t:"num", d:0, p:"Predict, then check: by what factor does the power increase when the wind speed triples (4 → 12 m/s)?", a:()=>27,
+    h:"If P ∝ v³, tripling v multiplies P by 3³.",
+    s:"<p>3³ = <strong>27</strong>. Check in the simulation: at 12 m/s, P = 2.258 MW, and 2.258 ÷ 0.0836 = 27.</p>"},
+   {t:"text", p:"Explain in your own words why doubling the wind speed does not just double the power. Use the dashed box and the size of the air parcels in your explanation.",
+    h:"Two things change when v doubles: how much air arrives each second, and how much energy each kilogram carries.",
+    s:"<p>When v doubles, the dashed box (air arriving in a given time) becomes twice as long, so <strong>twice the mass</strong> arrives each second (m ∝ v). Each kilogram also moves twice as fast, so it carries <strong>four times the kinetic energy</strong> (KE ∝ v²). Together: 2 × 4 = 8 times the power (P ∝ v³).</p>"}
+  ]},
+ {title:"3. Blade length and swept area",
+  setup:{v:8,R:20,cp:0.40,preset:"custom",loc:"plains",classRho:true,real:false,gusty:false,realScale:true},
+  intro:`<p>The blades sweep a disc of area A = πR² (see the front view, top right). Every bit of air passing through that disc can give energy to the turbine.</p>`,
+  qs:[
+   {t:"num", d:3, p:"At v = 8 m/s and C<sub>p</sub> = 0.40, what power is generated with R = 20 m? (MW)", a:()=>P(1.3,20,8,0.4)/1e6,
+    h:"A = π(20 m)² = 1,256.6 m². Then P = Cp × ½ρAv³.",
+    s:"<p>P = 0.40 × 0.5 × 1.3 × 1,256.6 × 8³ = 0.40 × 0.5 × 1.3 × 1,256.6 × 512 = 167,284 W = <strong>0.167 MW</strong>.</p>"},
+   {t:"num", d:3, p:"Change to R = 40 m. What power is generated? (MW)", a:()=>P(1.3,40,8,0.4)/1e6,
+    h:"A = π(40 m)² = 5,026.5 m², four times the area for R = 20 m.",
+    s:"<p>P = 0.40 × 0.5 × 1.3 × 5,026.5 × 512 = 669,134 W = <strong>0.669 MW</strong>.</p>"},
+   {t:"num", d:0, p:"By what factor did the power increase when the blade length doubled?", a:()=>4,
+    h:"P depends on A = πR². What happens to R² when R doubles?",
+    s:"<p>0.669 ÷ 0.167 = <strong>4</strong>. Doubling R multiplies A = πR² by 2² = 4, so the power is 4 times larger.</p>"},
+   {t:"text", p:"Look at the rotor speed readout. What happens to how fast the rotor turns as the blades get longer? Why do you think engineers make huge offshore blades turn slowly?",
+    h:"The blade tip of a long blade travels a much bigger circle in one turn. Think about how fast the tip moves.",
+    s:"<p>Longer blades turn more slowly (fewer rpm). The tip of a long blade covers a huge circle, so even at a few rpm the tip moves very fast (about 90 m/s for the Haliade-X). Turning slowly keeps tip speeds safe, reduces noise and wear, and keeps the forces on the blades manageable.</p>"}
+  ]},
+ {title:"4. The Betz limit",
+  setup:{v:10,R:40,cp:0.20,preset:"custom",loc:"plains",classRho:true,real:false,gusty:false},
+  intro:`<p>A turbine cannot take <em>all</em> the kinetic energy out of the wind: if it did, the air would stop behind the blades and no new air could flow through. The best possible fraction, the <strong>Betz limit</strong>, is 16/27 ≈ 59.3%. Move the C<sub>p</sub> slider from 0 up to 0.593 and watch the air behind the rotor.</p>`,
+  qs:[
+   {t:"num", d:3, p:"At v = 10 m/s and R = 40 m, what is the Betz maximum power? (MW)", a:()=>P(1.3,40,10,16/27)/1e6,
+    h:"First find P_available = ½ρAv³, then multiply by 16/27 = 0.593.",
+    s:"<p>P<sub>available</sub> = 0.5 × 1.3 × 5,026.5 × 10³ = 3,267,256 W.</p><p>P<sub>max</sub> = 0.593 × 3,267,256 W = 1,936,152 W = <strong>1.936 MW</strong>.</p>"},
+   {t:"text", p:"As C<sub>p</sub> increases, what happens to the speed of the air leaving the turbine? Explain why the air can never be brought to a complete stop.",
+    h:"Watch the wake label as you raise Cp. If the air behind the rotor stopped, what would happen to the air arriving next?",
+    s:"<p>The higher C<sub>p</sub>, the slower the air leaving the turbine. If the air were brought to a complete stop, it would pile up behind the blades and block the new air; no air would flow through, and the power would drop to zero. The best compromise slows the air to about 1/3 of its original speed, which gives the Betz limit of 59.3%.</p>"},
+   {t:"num", d:2, p:"A real turbine has C<sub>p</sub> = 0.40. What fraction of the Betz maximum does it reach?", a:()=>0.40/(16/27),
+    h:"Divide 0.40 by 0.593.",
+    s:"<p>0.40 ÷ 0.593 = <strong>0.67</strong>. A good real turbine reaches about two-thirds of the theoretical maximum.</p>"}
+  ]},
+ {title:"5. Location matters",
+  setup:{v:8.5,R:66.9,cp:0.40,preset:"onshore",loc:"plains",classRho:false,real:false,gusty:false},
+  intro:`<p>The same turbine produces very different power in different places. Choose each location, press <strong>Use this location's typical wind</strong>, and record the power generated. The class-value box is now unchecked, so the simulation uses the real air density at each site.</p>
+  <table><thead><tr><th scope="col">Location</th><th scope="col">Typical wind (m/s)</th><th scope="col">ρ (kg/m³)</th><th scope="col">Power generated (MW)</th></tr></thead><tbody>
+  ${LOCS.map(l=>`<tr><td>${l.name}</td><td class="n">${l.v}</td><td class="n">${l.rho.toFixed(2)}</td><td><label class="sr-only" for="loc-${l.id}">Power generated at ${l.name}, in MW</label><input type="number" step="any" id="loc-${l.id}"></td></tr>`).join("")}
+  </tbody></table>`,
+  qs:[
+   {t:"num", d:2, p:"With the average new U.S. land turbine (R = 66.9 m, C<sub>p</sub> = 0.40) in the Kansas/Oklahoma plains at 8.5 m/s with ρ = 1.15 kg/m³, what power is generated? (MW)", a:()=>P(1.15,66.9,8.5,0.4)/1e6,
+    h:"A = π(66.9 m)² ≈ 14,060 m². Use ρ = 1.15 kg/m³ (not 1.3) and v³ = 8.5³ = 614.1.",
+    s:"<p>A = π × 66.9² = 14,060.6 m².</p><p>P = 0.40 × 0.5 × 1.15 × 14,060.6 × 614.1 = 1,986,034 W = <strong>1.99 MW</strong>.</p>"},
+   {t:"num", d:2, p:"The Wyoming ridge and the Atlantic offshore site have the same typical wind (9.5 m/s). How many times more power does the offshore site give, only because of the denser air? (ratio of densities)", a:()=>1.25/0.99,
+    h:"P is proportional to ρ. With the same v, R and Cp, the ratio of powers is the ratio of densities.",
+    s:"<p>P<sub>offshore</sub> / P<sub>Wyoming</sub> = 1.25 / 0.99 = <strong>1.26</strong>. Thin mountain air gives about 26% less power at the same wind speed.</p>"},
+   {t:"num", d:1, p:"How many times more power does the turbine make at the offshore site (9.5 m/s, 1.25 kg/m³) than on a city rooftop (4.0 m/s, 1.21 kg/m³)?", a:()=> (1.25*9.5**3)/(1.21*4**3),
+    h:"Same R and Cp cancel. Ratio = (ρ₁v₁³)/(ρ₂v₂³).",
+    s:"<p>Ratio = (1.25 × 9.5³) / (1.21 × 4.0³) = (1.25 × 857.4) / (1.21 × 64) = 1,071.7 / 77.4 = <strong>13.8</strong>.</p><p>Wind speed is only 2.4 times higher offshore, but the power is almost 14 times higher because of v³.</p>"},
+   {t:"text", p:"Turn on <strong>Gusty wind</strong> and compare the offshore and city rooftop sites. How does gustiness show up in the power? Use the v³ relationship to explain why gusty sites are hard on turbines.",
+    h:"Watch the 'Generated' number in the top-left box jump around. A small change in v gives what change in v³?",
+    s:"<p>At gusty sites the power jumps up and down much more than the wind speed does. Because P ∝ v³, a 25% gust (1.25 × v) gives 1.25³ ≈ 2 times the power, and a 25% lull gives only 0.75³ ≈ 0.42 times. These rapid swings put large changing forces on the blades, gearbox and tower, causing fatigue and wear, and make the electricity output hard to predict.</p>"},
+   {t:"text", p:"Rank the sites from best to worst for a wind farm and justify your top choice. Mention at least two factors (wind speed, air density, gustiness, distance to cities, cost of building).",
+    h:"Use your table of power values first, then think about practical factors that the simulation does not show.",
+    s:"<p>By power: offshore (≈ 3.0 MW) > Wyoming ridge (≈ 2.4 MW) > Kansas plains (≈ 2.0 MW) > Gulf Coast (≈ 1.7 MW) > Southeast hills (≈ 0.6 MW) > Florida inland (≈ 0.4 MW) > city rooftop (≈ 0.2 MW). Offshore wins on wind speed, steady (low-gust) flow and dense air, and it is close to coastal cities, but it is expensive to build and maintain at sea. The plains are a strong, cheaper choice on land; Wyoming has strong wind but thin air, gusts and long distances to big cities. Any well-justified ranking is acceptable.</p>"}
+  ]},
+ {title:"6. Real turbines",
+  setup:{v:6,R:107,cp:0.42,preset:"haliade",loc:"offshore",classRho:false,real:true,gusty:false},
+  intro:`<p>Turn on <strong>Real turbine behavior</strong>. Real turbines do not follow ½ρAv³ forever: they start at a <em>cut-in</em> speed, stay at their <em>rated power</em> in strong wind, and shut down in storms (the power curve from the lecture). Slide v from 0 to 30 m/s with the GE Haliade-X and watch the green curve.</p>`,
+  qs:[
+   {t:"num", d:0, p:"Below what wind speed does the Haliade-X produce no power at all? (m/s)", a:()=>3,
+    h:"Move the wind slowly up from 0 and watch when the green curve leaves zero, or read the status line.",
+    s:"<p>The <strong>cut-in speed is 3 m/s</strong>. Below it, the wind does not carry enough energy to overcome friction and losses, so the turbine does not generate.</p>"},
+   {t:"num", d:1, p:"Find the lowest wind speed at which it reaches its rated 13 MW. (m/s)", a:()=>{ const A=Math.PI*107*107; return Math.cbrt(13e6/(0.42*0.5*1.25*A)); }, tol:0.05,
+    h:"Read it off the green curve or the status line ('at rated power'). Or solve 13,000,000 W = 0.42 × ½ × 1.25 × π(107)² × v³ for v.",
+    s:"<p>13,000,000 = 0.42 × 0.5 × 1.25 × 35,968 × v³ = 9,441.6 × v³</p><p>v³ = 1,376.9 → v = ∛1,376.9 = <strong>11.1 m/s</strong>, which matches the manufacturer's rated wind speed of about 11 m/s.</p>"},
+   {t:"text", p:"Above the rated wind speed the wind still carries more energy, but the turbine's output stays flat. Why might engineers choose to 'spill' that extra wind? Why does the turbine shut down above 34 m/s?",
+    h:"Think about what the generator, the gearbox and the blades can safely handle.",
+    s:"<p>The generator and electrical equipment are built for a maximum power (13 MW). Above the rated speed, the blades are pitched (turned) to let part of the wind pass, so the machine is not overloaded. In very strong wind (storms above 34 m/s), the forces on the blades and tower would be dangerous, so the blades are feathered and the rotor stops to protect the turbine.</p>"},
+   {t:"num", d:0, p:"Vineyard Wind 1 has 62 Haliade-X turbines. What is the total rated power of the wind farm? (MW)", a:()=>62*13,
+    h:"Multiply the number of turbines by the rated power of one turbine.",
+    s:"<p>62 × 13 MW = <strong>806 MW</strong>. This is the maximum the farm can produce; on average it produces less, because the wind is not always strong.</p>"}
+  ]},
+ {title:"7. Powering Gainesville",
+  setup:{v:5.0,R:66.9,cp:0.40,preset:"onshore",loc:"florida",classRho:false,real:false,gusty:false},
+  intro:`<p>How many wind turbines would it take to supply the <strong>homes</strong> of Gainesville? An average Florida household uses about <strong>1,100 kWh of electricity per month</strong> (U.S. EIA, rounded). Use a month of 30 days.</p>
+  <p>A turbine does not run at full power all the time. On average, a U.S. land turbine produces about <strong>38%</strong> of its rated power (its <em>capacity factor</em>). For the average new U.S. land turbine (3.4 MW), that is an average output of 0.38 × 3.4 MW.</p>
+  <table><caption>Households in Gainesville (U.S. Census Bureau, American Community Survey 2019–2023)</caption>
+  <thead><tr><th scope="col">City</th><th scope="col">Households</th></tr></thead><tbody>
+  ${FL.map(c=>`<tr><td>${c[0]}</td><td class="n">${c[1].toLocaleString("en-US")}</td></tr>`).join("")}
+  </tbody></table>`,
+  qs:[
+   {t:"num", d:2, p:"What is the <strong>average power</strong> used by one Florida household? (kW)", a:()=>HH_KW,
+    h:"Power = energy ÷ time. 1,100 kWh is used over 30 days = 30 × 24 hours. kWh ÷ h gives kW.",
+    s:"<p>Time = 30 days × 24 h/day = 720 h.</p><p>P = E / t = 1,100 kWh ÷ 720 h = <strong>1.53 kW</strong>.</p><p>On average, each home draws about 1,500 W all day and all night.</p>"},
+   {t:"num", d:1, p:"What is the total average power used by all the households in <strong>Gainesville</strong>? (MW)", a:()=>cityMW(58176),
+    h:"Multiply the number of households by the power of one household (in kW), then convert kW to MW (÷ 1,000).",
+    s:"<p>58,176 households × 1.528 kW = 88,880 kW.</p><p>88,880 kW ÷ 1,000 = <strong>88.9 MW</strong>.</p>"},
+   {t:"num", d:3, p:"What is the average power output of one 3.4 MW turbine with a 38% capacity factor? (MW)", a:()=>TURB_AVG,
+    h:"38% = 0.38. Multiply the rated power by the capacity factor.",
+    s:"<p>0.38 × 3.4 MW = <strong>1.292 MW</strong> on average.</p>"},
+   {t:"num", d:0, p:"How many of these turbines would be needed to supply all the homes in Gainesville? Round <strong>up</strong> to the next whole turbine.", a:()=>Math.ceil(cityMW(58176)/TURB_AVG),
+    h:"Divide the city's average power by the average output of one turbine. You can't build part of a turbine, so round up.",
+    s:"<p>88.88 MW ÷ 1.292 MW per turbine = 68.8 → <strong>69 turbines</strong>.</p>"},
+   {t:"num", d:2, p:"The 38% capacity factor is typical of windy sites, where the wind averages about 8.5 m/s. In Florida, the typical wind is closer to 5 m/s (choose 'Florida inland' in the simulation). If the power scales with v³, by what factor is the turbine's output reduced?", a:()=>(5/8.5)**3,
+    h:"Compute (5 / 8.5)³.",
+    s:"<p>(5.0 / 8.5)³ = (0.588)³ = <strong>0.20</strong>. A turbine in Florida's wind would produce only about one-fifth as much as on the Great Plains.</p>"},
+   {t:"num", d:0, p:"With Florida's weaker wind, how many turbines would Gainesville's homes need? Round up.", a:()=>Math.ceil(cityMW(58176)/(TURB_AVG*(5/8.5)**3)), tol:0.02,
+    h:"Each turbine now averages 1.292 MW × 0.2035. Divide Gainesville's 88.88 MW by that.",
+    s:"<p>Average output per turbine = 1.292 MW × 0.2035 = 0.263 MW.</p><p>88.88 MW ÷ 0.263 MW = 337.98 → <strong>338 turbines</strong>, about 5 times more than the 69 needed in a windy region.</p>"},
+   {t:"text", p:"These numbers only include homes. What else in a city uses electricity, and how would that change your answers? Based on your results, is wind power a good choice for Florida? What other renewable source might work better there?",
+    h:"Think about businesses, schools, hospitals, factories and street lights. Compare Florida's wind with the windy sites in Part 5, and think about Florida's nickname.",
+    s:"<p>Businesses, offices, schools, hospitals, industry and public lighting also use electricity; in Florida, homes use roughly half of all electricity, so the real number of turbines would be about twice as large. Because Florida's wind is weak (≈ 5 m/s) and power depends on v³, land-based wind is a poor fit: each turbine produces only about one-fifth of what it would in Kansas. Solar power is a better match for the Sunshine State, which is why Florida builds large solar farms rather than wind farms. Offshore wind could help in the future, but costs are high.</p>"}
+  ]},
+ {title:"8. Wrap-up",
+  setup:{v:5,R:40,cp:0.40,preset:"custom",loc:"plains",classRho:true,real:false,gusty:false},
+  intro:`<p>Summarize what you learned. Use the simulation to back up each answer.</p>`,
+  qs:[
+   {t:"text", p:"In one or two sentences: where does the energy produced by a wind turbine come from, and what happens to the air after it passes through the blades?",
+    h:"Think about the size of the air parcels before and after the rotor.",
+    s:"<p>The energy comes from the <strong>kinetic energy of the moving air</strong> (½mv²). The turbine slows the air down; the air leaves the blades with less speed and therefore less kinetic energy, and the difference becomes the rotor's mechanical energy and then electrical energy.</p>"},
+   {t:"text", p:"If you could change only one thing (wind speed, blade length or air density) by 10%, which would give the biggest increase in power? Explain using the formula.",
+    h:"P = ½ρAv³ with A = πR². What power of each variable appears in the formula?",
+    s:"<p><strong>Wind speed</strong>. P ∝ ρ (power 1), P ∝ R² (power 2) and P ∝ v³ (power 3). A 10% increase gives ×1.10 for ρ, ×1.21 for R, and ×1.331 for v. This is why engineers build taller towers (wind is faster higher up) and choose windy sites.</p>"},
+   {t:"num", d:3, p:"Check: a 10% increase in wind speed multiplies the power by what factor?", a:()=>1.1**3, tol:0.005,
+    h:"A 10% increase means multiplying v by 1.10. Then cube it.",
+    s:"<p>(1.10)³ = 1.10 × 1.10 × 1.10 = <strong>1.331</strong>, so the power rises by 33.1%.</p>"}
+  ]}
+];
+
+const MAXTRY=3, qstate={};
+function dPhrase(d){ return d===0 ? "Give your answer as a whole number (0 decimal places)." : "Round your answer to "+d+" decimal place"+(d>1?"s":"")+"."; }
+function renderQ(q,id,label){
+  const dtxt = q.t==="num" ? ` <em>${dPhrase(q.d)}</em>` : "";
+  let h=`<div class="q" data-qid="${id}"><p id="${id}-p"><strong>${label}</strong> ${q.p}${dtxt}</p>`;
+  if(q.t==="num"){
+    h+=`<div class="ans"><label class="sr-only" for="${id}">Your answer</label><input type="number" step="any" id="${id}" aria-describedby="${id}-p ${id}-fb ${id}-tries"><button type="button" class="chk" data-qid="${id}">Check</button><span class="tries" id="${id}-tries">${MAXTRY} attempts left</span></div>`;
+  } else {
+    h+=`<label class="sr-only" for="${id}">Your written answer</label><textarea id="${id}" aria-describedby="${id}-p"></textarea><div class="ans"><button type="button" class="secondary showsol" data-qid="${id}">Compare with the model answer</button></div>`;
+  }
+  h+=`<p class="fb" id="${id}-fb" role="status" aria-live="polite"></p>`;
+  h+=`<details class="hint"><summary>Hint</summary><p>${q.h}</p></details>`;
+  h+=`<div class="sol" id="${id}-sol" hidden><h4>${q.t==="num"?"Detailed answer":"Model answer"}</h4>${q.s}</div></div>`;
+  return h;
+}
+const QMAP={};
+const STORE="phy1020-windlab-v1";
+const INSTR = location.hash==="#instructor";
+let saved={q:{},t:{},n:{},names:null,doneAt:null};
+function load(){ if(INSTR) return; try{ const x=JSON.parse(localStorage.getItem(STORE)||"null"); if(x) saved=Object.assign(saved,x); }catch(e){} }
+function save(){ if(INSTR) return; try{ localStorage.setItem(STORE,JSON.stringify(saved)); }catch(e){} }
+function revealSol(id){ $(id+"-sol").hidden=false; }
+function paintNum(id,result){
+  const q=QMAP[id], s2=qstate[id], fb=$(id+"-fb"), inp=$(id);
+  const shown=q.a().toLocaleString("en-US",{minimumFractionDigits:q.d,maximumFractionDigits:q.d});
+  const left=MAXTRY-s2.n;
+  if(result==="ok"){ fb.className="fb ok"; fb.textContent="✔ Correct ("+shown+"). See the detailed answer below."; }
+  else if(result==="out"){ fb.className="fb bad"; fb.textContent="✘ No attempts left. The correct answer is "+shown+". Study the detailed answer below."; }
+  else if(result==="bad"){ fb.className="fb bad"; fb.textContent="✘ Not yet. Check your units and rounding, or open the hint. "+left+" attempt"+(left>1?"s":"")+" left."; }
+  $(id+"-tries").textContent = s2.done ? "Attempts used: "+s2.n+" of "+MAXTRY : left+" attempt"+(left!==1?"s":"")+" left";
+  if(s2.done){ inp.readOnly=true; inp.setAttribute("aria-readonly","true"); document.querySelector(`.chk[data-qid="${id}"]`).disabled=true; revealSol(id); }
+}
+function checkQ(id){
+  const q=QMAP[id], s2=qstate[id]||(qstate[id]={n:0,done:false,ok:false,first:false});
+  if(s2.done) return;
+  const fb=$(id+"-fb"), x=parseFloat($(id).value);
+  if(isNaN(x)){ fb.className="fb bad"; fb.textContent="Enter a number first (this does not use an attempt)."; return; }
+  s2.n++;
+  const ans=q.a(), tol=q.tol??0.02, step=Math.pow(10,-q.d);
+  const ok=Math.abs(x-ans)<=Math.max(Math.abs(ans)*tol, step)+1e-9;
+  let result="bad";
+  if(ok){ s2.done=true; s2.ok=true; s2.first=(s2.n===1); result="ok"; }
+  else if(s2.n>=MAXTRY){ s2.done=true; result="out"; }
+  paintNum(id,result);
+  saved.q[id]=s2; saved.n[id]=$(id).value; save(); refreshLocks();
+}
+function showModel(id){
+  const fb=$(id+"-fb");
+  if(!$(id).value.trim()){ fb.className="fb bad"; fb.textContent="Write your own answer first, then compare it with the model answer."; return; }
+  fb.className="fb"; fb.textContent="Model answer shown below. Compare it with yours."; revealSol(id);
+}
+// ---------- progress & locks ----------
+const qDone = id => QMAP[id].t==="num" ? !!(qstate[id]&&qstate[id].done) : $(id).value.trim()!=="";
+const coverIds = () => COVER_QS.map((q,j)=>"cv"+j);
+const partIds = i => PARTS[i].qs.map((q,j)=>`q${i}_${j}`);
+const remaining = ids => ids.filter(id=>!qDone(id)).length;
+function unlockedUpTo(){ if(INSTR) return PARTS.length; for(let i=0;i<PARTS.length;i++){ if(remaining(partIds(i))>0) return i; } return PARTS.length; } // index of first incomplete part
+let lastUnlocked=-1;
+function refreshLocks(){
+  const cr=remaining(coverIds());
+  if(INSTR){ $("startLab").disabled=false; $("startMsg").textContent="Instructor mode: the lab is unlocked."; }
+  else $("startLab").disabled = cr>0;
+  $("startMsg").textContent = cr>0 ? `Answer all ${COVER_QS.length} quick-check questions to start the lab (${cr} left).` : "Quick check complete. You can start the lab.";
+  const u=unlockedUpTo();
+  [...$("tabs").children].forEach((b,i)=>{
+    const locked = i>u; const done = i<u;
+    b.setAttribute("aria-disabled",locked); b.classList.toggle("locked",locked);
+    b.textContent = (locked?"🔒 ":done?"✔ ":"")+PARTS[i].title;
+    b.setAttribute("aria-label", PARTS[i].title + (locked?" (locked)":done?" (complete)":" (in progress)"));
+  });
+  PARTS.forEach((pt,i)=>{
+    const r=remaining(partIds(i)), msg=$("prog"+i), nb=$("next"+i);
+    if(INSTR){ msg.textContent="Instructor mode: all parts are unlocked."; nb.disabled=false; }
+    else if(r>0){ msg.textContent=`${r} of ${pt.qs.length} question${pt.qs.length>1?"s":""} still to answer before ${i<PARTS.length-1?"Part "+(i+2)+" unlocks":"you can get your certificate"}. Numeric questions count once they are correct or all 3 attempts are used; written questions count once you have typed an answer.`; nb.disabled=true; }
+    else { msg.textContent = i<PARTS.length-1 ? `Part ${i+1} complete. Part ${i+2} is unlocked.` : "All parts complete! Get your certificate."; nb.disabled=false; }
+  });
+  if(u>lastUnlocked && lastUnlocked>=0 && u>0 && u<=PARTS.length){ $("lockLive").textContent = u<PARTS.length ? `Part ${u+1} unlocked.` : "All parts complete. Your certificate is ready."; }
+  lastUnlocked=u;
+  $("certSection").hidden = u<PARTS.length;
+}
+function selectTab(n){
+  if(n>unlockedUpTo()){ $("lockLive").textContent=`Part ${n+1} is locked. Answer all questions in Part ${unlockedUpTo()+1} first.`; return false; }
+  [...$("tabs").children].forEach((b,i)=>{ b.setAttribute("aria-selected",i===n); b.tabIndex=i===n?0:-1; });
+  [...$("panels").children].forEach((p,i)=>{ p.hidden=i!==n; });
+  return true;
+}
+function buildActivity(){
+  const cov=$("coverQs");
+  cov.innerHTML = COVER_QS.map((q,j)=>{ const id="cv"+j; QMAP[id]=q; return renderQ(q,id,(j+1)+"."); }).join("");
+  const tabs=$("tabs"), panels=$("panels");
+  PARTS.forEach((pt,i)=>{
+    const b=document.createElement("button"); b.type="button"; b.role="tab"; b.id="tab"+i; b.textContent=pt.title;
+    b.setAttribute("aria-controls","panel"+i); b.setAttribute("aria-selected",i===0); b.tabIndex = i===0?0:-1; tabs.appendChild(b);
+    const p=document.createElement("div"); p.id="panel"+i; p.setAttribute("role","tabpanel"); p.setAttribute("aria-labelledby","tab"+i); p.hidden=i!==0; p.tabIndex=0;
+    let h=`<h3>${pt.title}</h3>${pt.intro}<button type="button" class="setup" data-i="${i}">Set up the simulation for this part</button>`;
+    pt.qs.forEach((q,j)=>{ const id=`q${i}_${j}`; QMAP[id]=q; h+=renderQ(q,id,"Q"+(j+1)+"."); });
+    h+=`<div class="progress"><p id="prog${i}" class="progmsg"></p><button type="button" class="next" id="next${i}" data-i="${i}" disabled>${i<PARTS.length-1?"Go to Part "+(i+2)+" →":"Get my certificate →"}</button></div>`;
+    p.innerHTML=h; panels.appendChild(p);
+  });
+  tabs.addEventListener("click",e=>{ if(e.target.role==="tab") selectTab(+e.target.id.slice(3)); });
+  tabs.addEventListener("keydown",e=>{
+    const max=Math.min(unlockedUpTo(),PARTS.length-1);
+    const cur=[...tabs.children].findIndex(b=>b.getAttribute("aria-selected")==="true"); let n=null;
+    if(e.key==="ArrowRight") n=cur+1>max?0:cur+1; if(e.key==="ArrowLeft") n=cur-1<0?max:cur-1;
+    if(e.key==="Home") n=0; if(e.key==="End") n=max;
+    if(n!==null){ e.preventDefault(); selectTab(n); tabs.children[n].focus(); }
+  });
+  document.addEventListener("click",e=>{
+    const t=e.target;
+    if(t.classList.contains("setup")) set(Object.assign({},PARTS[+t.dataset.i].setup));
+    if(t.classList.contains("chk")) checkQ(t.dataset.qid);
+    if(t.classList.contains("showsol")) showModel(t.dataset.qid);
+    if(t.classList.contains("next")){ const i=+t.dataset.i;
+      if(i<PARTS.length-1){ selectTab(i+1); $("tab"+(i+1)).focus(); $("activity").scrollIntoView({behavior:reduce?"auto":"smooth"}); }
+      else { $("certSection").hidden=false; $("certSection").scrollIntoView({behavior:reduce?"auto":"smooth"}); (saved.names? $("certH") : $("name1")).focus(); } }
+  });
+  document.addEventListener("keydown",e=>{ if(e.key==="Enter" && e.target.matches(".q input[type=number]")){ e.preventDefault(); checkQ(e.target.id); } });
+  document.addEventListener("input",e=>{ if(e.target.matches(".q textarea")){ saved.t[e.target.id]=e.target.value; save(); refreshLocks(); } });
+}
+function restore(){
+  Object.keys(saved.t).forEach(id=>{ if($(id)) $(id).value=saved.t[id]; });
+  Object.keys(saved.q).forEach(id=>{ if(!QMAP[id]) return; qstate[id]=saved.q[id]; if(saved.n[id]!==undefined) $(id).value=saved.n[id];
+    const s2=qstate[id]; paintNum(id, s2.done ? (s2.ok?"ok":"out") : (s2.n>0?"bad":"")); });
+  if(saved.names){ saved.names.forEach((n,k)=>{ $("name"+(k+1)).value=n; }); }
+}
+// ---------- certificate ----------
+function stats(){
+  const ids=[...coverIds(), ...PARTS.flatMap((p,i)=>partIds(i))];
+  const nums=ids.filter(id=>QMAP[id].t==="num"), texts=ids.filter(id=>QMAP[id].t==="text");
+  return {nNum:nums.length, ok:nums.filter(id=>qstate[id]&&qstate[id].ok).length, first:nums.filter(id=>qstate[id]&&qstate[id].first).length,
+          nText:texts.length, text:texts.filter(id=>$(id).value.trim()).length};
+}
+function makeCert(e){
+  e.preventDefault();
+  const names=[1,2,3,4].map(k=>$("name"+k).value.trim()).filter(Boolean);
+  if(!names.length){ $("nameErr").textContent="Enter at least one name."; $("name1").focus(); return; }
+  $("nameErr").textContent="";
+  saved.names=names; if(!saved.doneAt) saved.doneAt=new Date().toISOString(); save();
+  renderCert();
+}
+function renderCert(){
+  const s=stats(), names=saved.names, d=new Date(saved.doneAt);
+  const when=d.toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})+" at "+d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
+  const nameList = names.length===1 ? names[0] : names.slice(0,-1).join(", ")+" and "+names[names.length-1];
+  $("cert").innerHTML=`<p class="cert-top">PHY 1020 · Certificate of Completion</p>
+    <h3 id="certH" tabindex="-1">Wind Power Lab: How Moving Air Carries Energy</h3>
+    <p>This certifies that</p>
+    <p class="cert-names">${names.map(n=>n.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))).join("<br>")}</p>
+    <p>completed all ${PARTS.length} parts of the Wind Power Lab and the units quick check.</p>
+    <table class="cert-table"><caption class="sr-only">Results</caption><tbody>
+      <tr><th scope="row">Numeric questions answered correctly</th><td>${s.ok} of ${s.nNum}</td></tr>
+      <tr><th scope="row">Correct on the first attempt</th><td>${s.first} of ${s.nNum}</td></tr>
+      <tr><th scope="row">Written questions answered</th><td>${s.text} of ${s.nText}</td></tr>
+      <tr><th scope="row">Completed</th><td>${when}</td></tr>
+    </tbody></table>`;
+  $("certText").value=`PHY 1020 — Certificate of Completion\nWind Power Lab: How Moving Air Carries Energy\nCompleted by: ${nameList}\nNumeric questions correct: ${s.ok} of ${s.nNum} (${s.first} on the first attempt)\nWritten questions answered: ${s.text} of ${s.nText}\nCompleted: ${when}`;
+  $("nameForm").hidden=true; $("certWrap").hidden=false; $("certH").focus();
+}
+$("nameForm").addEventListener("submit",makeCert);
+$("editNames").addEventListener("click",()=>{ $("certWrap").hidden=true; $("nameForm").hidden=false; $("name1").focus(); });
+$("copyCert").addEventListener("click",async()=>{ try{ await navigator.clipboard.writeText($("certText").value); $("copyMsg").textContent="Copied. Paste it into your Canvas submission."; }catch(err){ $("certText").hidden=false; $("certText").select(); $("copyMsg").textContent="Copying is blocked here: the text is selected below, press Ctrl+C (or ⌘+C) to copy it."; } });
+
+function showLab(){ if($("startLab").disabled && !INSTR) return; $("labContent").hidden=false; $("cover").hidden=true; $("unitsBtn").hidden=false; drawGraph(); drawScene(0); $("sim-h").setAttribute("tabindex","-1"); $("sim-h").focus(); window.scrollTo(0,0); }
+function showCover(){ $("cover").hidden=false; $("labContent").hidden=true; $("unitsBtn").hidden=true; $("cover").focus(); window.scrollTo(0,0); }
+let resetArmed=false; if(INSTR) $("resetLab").hidden=true;
+$("resetLab").addEventListener("click",()=>{
+  if(!resetArmed){ resetArmed=true; $("resetLab").textContent="Click again to erase all answers and the certificate"; $("copyMsg").textContent="Warning: this clears all progress saved in this browser. Make sure the certificate has been submitted first."; return; }
+  try{ localStorage.removeItem(STORE); }catch(e){} location.reload();
+});
+$("startLab").addEventListener("click",showLab);
+$("unitsBtn").addEventListener("click",showCover);
+
+load(); buildActivity(); restore();
+if(INSTR){ document.body.classList.add("instr"); $("instrBanner").hidden=false;
+  document.querySelectorAll(".sol").forEach(e=>e.hidden=false); document.querySelectorAll("details.hint").forEach(d=>d.open=true);
+  if(!$("startMsg").textContent) $("startMsg").textContent=""; }
+window.addEventListener("hashchange",()=>{ if((location.hash==="#instructor")!==INSTR) location.reload(); });
+refreshLocks(); { const u=unlockedUpTo(); selectTab(Math.min(u,PARTS.length-1)); if(saved.names) renderCert(); } syncInputs(); update(false); prefill(); drawScene(0); requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
