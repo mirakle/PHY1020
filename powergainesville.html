@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Power Gainesville: Group Review Challenge — PHY 1020</title>
+<style>
+  :root{
+    --ink:#14213D; --body:#2E3A4F; --muted:#4F5A6B; --bg:#F7F5EF; --card:#FFFFFF; --line:#B8C2D1;
+    --accent:#0B5CAD; --accent-ink:#FFFFFF; --ok:#0A6B3D; --ok-bg:#E8F5EE; --bad:#A3200F; --bad-bg:#FDECEA;
+    --note-bg:#FFF6E0; --note-line:#9A6B00; --orange:#B4480E;
+  }
+  *{box-sizing:border-box}
+  html{font-size:106.25%}
+  body{margin:0;font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--body);background:var(--bg);line-height:1.55}
+  .skip{position:absolute;left:-9999px;top:0;background:#000;color:#fff;padding:.6rem 1rem;z-index:10}
+  .skip:focus{left:1rem;top:1rem}
+  :focus-visible{outline:3px solid #C2410C;outline-offset:2px}
+  header{background:var(--ink);color:#F7F5EF;padding:1.2rem 1.25rem}
+  header .in{max-width:60rem;margin:0 auto}
+  header h1{margin:0;font-size:1.7rem;line-height:1.25}
+  header p{margin:.35rem 0 0;color:#DCE4F0}
+  .bar{position:sticky;top:0;z-index:5;background:#FFFFFF;border-bottom:1px solid var(--line)}
+  .bar .in{max-width:60rem;margin:0 auto;padding:.5rem 1.25rem;display:flex;flex-wrap:wrap;gap:.3rem 1.5rem;justify-content:space-between;align-items:center}
+  .bar p{margin:0;font-weight:700;color:var(--ink)}
+  .bar .v{font-weight:400;color:var(--muted)}
+  main{max-width:60rem;margin:0 auto;padding:1.25rem 1.25rem 4rem}
+  h2{font-size:1.4rem;color:var(--ink);margin:2.2rem 0 .6rem;padding-bottom:.3rem;border-bottom:2px solid var(--line)}
+  h3{font-size:1.1rem;color:var(--ink);margin:0 0 .4rem}
+  p{margin:.5rem 0}
+  ul{padding-left:1.3rem}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1rem 1.1rem;margin:1rem 0}
+  .note{background:var(--note-bg);border-left:5px solid var(--note-line);border-radius:6px;padding:.7rem 1rem;margin:1rem 0}
+  .key{background:#E8EEF4;border-left:5px solid var(--accent);border-radius:6px;padding:.6rem 1rem;margin:.8rem 0}
+  .key p{margin:.2rem 0}
+  .eyebrow{font-size:.85rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);margin:2rem 0 0}
+  .q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1rem 1.1rem;margin:1rem 0}
+  .qhead{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:baseline}
+  .tries{color:var(--muted);font-size:.95rem}
+  .ans{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-top:.7rem}
+  input[type=text]{font:inherit;font-size:1.05rem;padding:.5rem .7rem;min-height:44px;width:11rem;border:2px solid #767676;border-radius:6px;background:#fff;color:var(--ink)}
+  input[readonly]{background:#EEF0F3}
+  fieldset{border:none;margin:.5rem 0 0;padding:0}
+  legend{font-weight:400;padding:0}
+  .opt{display:flex;gap:.6rem;align-items:flex-start;padding:.5rem .6rem;border:1px solid var(--line);border-radius:8px;margin:.4rem 0;cursor:pointer;min-height:44px}
+  .opt input{width:1.2rem;height:1.2rem;margin-top:.25rem;flex:none}
+  .opt.ruled{opacity:.6;text-decoration:line-through}
+  button{font:inherit;min-height:44px;cursor:pointer;border-radius:6px;border:2px solid var(--accent);background:var(--accent);color:var(--accent-ink);padding:.45rem 1rem;font-weight:700}
+  button.secondary{background:#fff;color:var(--accent)}
+  button:disabled{opacity:.55;cursor:not-allowed}
+  .fmt{color:var(--muted);font-size:.95rem;margin:.4rem 0 0}
+  .fb{margin:.6rem 0 0;font-weight:700;border-radius:6px}
+  .fb:empty{display:none}
+  .fb.ok{color:var(--ok);background:var(--ok-bg);border:1px solid var(--ok);padding:.5rem .8rem}
+  .fb.bad{color:var(--bad);background:var(--bad-bg);border:1px solid var(--bad);padding:.5rem .8rem}
+  .fb.info{color:var(--ink);background:#EEF2F7;border:1px solid var(--line);padding:.5rem .8rem}
+  details{margin-top:.6rem}
+  summary{cursor:pointer;font-weight:700;color:var(--accent);min-height:44px;display:flex;align-items:center}
+  .sol{border-left:4px solid var(--ok);background:#F1F8F4;padding:.4rem .9rem;margin-top:.7rem;border-radius:4px}
+  .sol h4{margin:.3rem 0;font-size:1rem;color:var(--ink)}
+  .sol ol{margin:.3rem 0;padding-left:1.3rem}
+  table{border-collapse:collapse;width:100%;margin:.5rem 0}
+  th,td{border:1px solid var(--line);padding:.4rem .6rem;text-align:left}
+  th{background:#EEF2F7}
+  .names{display:grid;grid-template-columns:max-content minmax(0,22rem);gap:.5rem .8rem;align-items:center;margin:.6rem 0}
+  .names input{width:100%}
+  @media (max-width:600px){.names{grid-template-columns:1fr}}
+  .cert{border:6px double var(--ink);border-radius:10px;padding:1.5rem 2rem;text-align:center;background:#FFFDF6;max-width:46rem;margin:0 auto}
+  .cert-top{letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#7A5200;margin:0}
+  .cert h3{font-size:1.5rem;margin:.4rem 0 1rem}
+  .cert-names{font-size:1.4rem;font-weight:700;color:var(--ink);margin:.5rem 0}
+  .cert table{max-width:30rem;margin:1rem auto 0}
+  .cert th{background:#F3F0E6}
+  .btns{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
+  .status{color:var(--muted)}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .instr{background:#5C1D7A;color:#fff;padding:.6rem 1.25rem}
+  .instr .in{max-width:60rem;margin:0 auto}
+  textarea{width:100%;min-height:8rem;font:inherit;padding:.5rem;border:1px solid #767676;border-radius:6px}
+  footer{max-width:60rem;margin:0 auto;padding:0 1.25rem 2rem;color:var(--muted);font-size:.95rem}
+  @media print{.bar,.btns,#nameForm,header,.skip,main > *:not(#certSection){display:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#questions">Skip to the questions</a>
+<div id="instrBanner" class="instr" role="note" hidden><div class="in"><strong>Instructor mode:</strong> answers and worked solutions are shown, and nothing is saved. Remove <code>#instructor</code> from the address for the student view. <button type="button" class="secondary" id="newNums" style="margin-left:.5rem">New set of numbers</button></div></div>
+<header><div class="in">
+  <h1>Power Gainesville: Group Review Challenge</h1>
+  <p>PHY 1020 · Energy and Society · Waves, global warming, solar and wind</p>
+</div></header>
+<div class="bar" role="region" aria-label="Progress"><div class="in">
+  <p id="scoreline" aria-live="polite">0 of 11 questions finished · 0 correct</p>
+  <p class="v" id="vcode"></p>
+</div></div>
+
+<main>
+<section aria-labelledby="h-intro">
+  <h2 id="h-intro">Your mission</h2>
+  <p>Gainesville wants a small neighborhood to run on clean electricity. Your group will follow the energy from sunlight to the power grid: how sunlight travels, why extra greenhouse gases warm the planet, and whether solar panels or wind turbines are the better choice here.</p>
+  <div class="note">
+    <ul>
+      <li>Work as a group of up to 4 students. Discuss every question before you answer.</li>
+      <li>Type <strong>numbers only</strong>: no units, commas, dollar signs or percent signs.</li>
+      <li>Round as each question asks. Answers within about 1% of the exact value are accepted.</li>
+      <li>You have <strong>3 attempts</strong> on number questions and <strong>2 attempts</strong> on multiple-choice questions. A worked solution appears after a correct answer or your last attempt.</li>
+      <li>As in lecture, <strong>one month = 30 days</strong>.</li>
+      <li>Your numbers are different from other groups’ numbers. Progress is saved in this browser.</li>
+      <li>When every question is finished, enter your names to get your completion certificate.</li>
+    </ul>
+  </div>
+</section>
+
+<div id="questions" tabindex="-1"></div>
+
+<p id="certHint" class="note" aria-live="polite"></p>
+<section class="card" id="certSection" aria-labelledby="h-cert" hidden>
+  <h2 id="h-cert" style="margin-top:0">Completion certificate</h2>
+  <form id="nameForm" novalidate>
+    <p>Enter the name of each student in your group (1 to 4 names). Only the first box is required.</p>
+    <div class="names">
+      <label for="name1">Student 1 (required)</label><input id="name1" type="text" maxlength="60" autocomplete="name" aria-required="true" aria-describedby="nameErr">
+      <label for="name2">Student 2 (optional)</label><input id="name2" type="text" maxlength="60">
+      <label for="name3">Student 3 (optional)</label><input id="name3" type="text" maxlength="60">
+      <label for="name4">Student 4 (optional)</label><input id="name4" type="text" maxlength="60">
+    </div>
+    <p id="nameErr" class="fb bad" role="alert"></p>
+    <button type="submit">Create our certificate</button>
+  </form>
+  <div id="certWrap" hidden>
+    <div id="cert" class="cert"></div>
+    <p class="status">To submit: take a screenshot of the certificate and upload it to Canvas, or copy the certificate text and paste it into your submission.</p>
+    <div class="btns">
+      <button type="button" id="copyCert">Copy certificate text</button>
+      <button type="button" class="secondary" id="editNames">Edit names</button>
+      <button type="button" class="secondary" id="resetAll">Start over for a new group</button>
+    </div>
+    <p id="copyMsg" class="status" role="status"></p>
+    <label for="certText" class="sr-only">Certificate text</label>
+    <textarea id="certText" readonly hidden></textarea>
+  </div>
+</section>
+</main>
+<footer>
+  <p>Data used: Gainesville solar radiation average 5.11 kWh/m²/day (NASA POWER, latitude tilt, 2001–2025). Average Florida household electricity use about 1,100 kWh per month (U.S. EIA, rounded). Class value for air density 1.3 kg/m³.</p>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var STORE="phy1020-power-gnv-v1", INSTR=location.hash==="#instructor";
+var MAXNUM=3, MAXMC=2, GNV=5.11;
+
+/* ---------- helpers ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function fmt(x,d){return Number(x).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});}
+function roundTo(x,d){var f=Math.pow(10,d);return Math.round(x*f)/f;}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function parseNum(s){var t=String(s).trim().replace(/[,\s$%]/g,""); if(!/^-?(\d+\.?\d*|\.\d+)$/.test(t)) return null; return parseFloat(t);}
+
+/* ---------- state ---------- */
+var state;
+function fresh(){return {seed:(Math.floor(Math.random()*4294967295)>>>0),q:{},names:null,doneAt:null};}
+function load(){ if(INSTR) return fresh(); try{var s=JSON.parse(localStorage.getItem(STORE)||"null"); if(s&&typeof s.seed==="number"){s.q=s.q||{};return s;}}catch(e){} return fresh(); }
+function save(){ if(INSTR) return; try{localStorage.setItem(STORE,JSON.stringify(state));}catch(e){} }
+
+/* ---------- randomized numbers ---------- */
+function variant(seed){
+  var r=mulberry32(seed);
+  function step(lo,hi,s){var n=Math.round((hi-lo)/s);return +(lo+s*Math.floor(r()*(n+1))).toFixed(4);}
+  return {
+    lam:step(450,650,10), ppm:step(400,430,1), cut:step(3,9,0.5),
+    homes:step(40,90,5), use:step(1000,1200,50),
+    pa:step(1.9,2.1,0.05), eff:step(19,23,0.5), loss:step(10,20,1),
+    R:step(30,60,5), v:step(4.5,5.5,0.1), v2:step(6.5,10,0.5),
+    mcShuffle:[r(),r(),r(),r(),r(),r(),r(),r(),r(),r(),r(),r()]
+  };
+}
+
+/* ---------- questions ---------- */
+var Q=[];
+function build(V){
+  var daily=V.homes*V.use/30, per=V.pa*GNV*V.eff/100;
+  var panelsExact=daily/(1-V.loss/100)/per;
+  var panelsRounded=roundTo(daily,1)/(1-V.loss/100)/roundTo(per,2);
+  var A=Math.PI*V.R*V.R, Pw=0.40*0.5*1.3*A*Math.pow(V.v,3);
+  var f14=3000/V.lam;
+  Q=[
+  {part:"Part 1 · Sunlight is a wave", id:"q1", t:"num", d:2, ans:f14,
+   html:"<p>Sunlight reaching Gainesville includes light with a wavelength of <strong>"+V.lam+" nm</strong> (1 nm = 10⁻⁹ m). Light travels at 3.0 × 10⁸ m/s. What is its frequency, in units of <strong>10¹⁴ Hz</strong>?</p><p class='fmt'>Example: if you find 5.5 × 10¹⁴ Hz, type 5.5. Round to 2 decimal places.</p>",
+   hint:"Use v = f × λ, so f = v ÷ λ. Write λ in meters first: "+V.lam+" nm = "+V.lam+" × 10⁻⁹ m.",
+   sol:"<ol><li>λ = "+V.lam+" × 10⁻⁹ m.</li><li>f = v ÷ λ = 3.0 × 10⁸ ÷ ("+V.lam+" × 10⁻⁹) = "+fmt(f14,4)+" × 10¹⁴ Hz.</li><li>Answer: <strong>"+fmt(f14,2)+"</strong>.</li></ol><p>A shorter wavelength would give a higher frequency, because the speed of light stays the same.</p>"},
+  {part:null, id:"q2", t:"mc",
+   html:"<p>The Sun is very hot (about 5,800 K) and Earth is much cooler (about 288 K). Which statement is correct?</p>",
+   opts:[
+    {t:"The Sun gives off mostly visible light, and Earth gives off mostly infrared.", ok:true},
+    {t:"The Sun gives off mostly infrared, and Earth gives off mostly visible light."},
+    {t:"Both give off mostly visible light, but Earth gives off less of it."},
+    {t:"Earth does not give off any radiation, because it is not hot like the Sun."}],
+   hint:"Hotter objects radiate at shorter wavelengths. Every object above absolute zero radiates.",
+   sol:"<p>Hotter objects radiate at shorter wavelengths. The Sun mostly shines in <strong>visible light</strong>. Earth is much cooler, so it radiates mostly <strong>infrared</strong>. Every object above absolute zero radiates (P = eσAT⁴), so Earth radiates too.</p>"},
+  {part:"Part 2 · Why the planet is warming", id:"q3", t:"mc",
+   html:"<p>Which statement best explains why adding greenhouse gases makes Earth’s surface warmer?</p>",
+   opts:[
+    {t:"Greenhouse gases absorb infrared given off by the ground and send part of it back down.", ok:true},
+    {t:"Greenhouse gases block incoming sunlight before it reaches the ground."},
+    {t:"Greenhouse gases make the Sun shine more brightly."},
+    {t:"Greenhouse gases are hot gases that heat the air directly when they are released."}],
+   hint:"Think about the PhET Greenhouse Effect simulation: what happened to the sunlight photons, and what happened to the infrared photons?",
+   sol:"<p>Visible sunlight passes through the air and warms the ground. The warm ground gives off <strong>infrared</strong>. Greenhouse gases absorb that infrared and re-emit part of it back toward the surface, so less energy escapes to space and the surface warms.</p>"},
+  {part:null, id:"q4", t:"num", d:4, ans:V.ppm/10000,
+   html:"<p>The air above Gainesville contains <strong>"+V.ppm+" ppm</strong> of CO₂. What <strong>percent</strong> of the air is CO₂?</p><p class='fmt'>Round to 4 decimal places.</p>",
+   hint:"ppm means parts per million. Divide by 1,000,000, then multiply by 100.",
+   sol:"<ol><li>"+V.ppm+" ÷ 1,000,000 = "+fmt(V.ppm/1e6,6)+".</li><li>× 100 = <strong>"+fmt(V.ppm/1e4,4)+"%</strong>.</li></ol><p>Such a tiny amount still matters, because CO₂ absorbs infrared strongly.</p>"},
+  {part:null, id:"q5", t:"num", d:1, ans:70/V.cut,
+   html:"<p>Gainesville plans to cut its carbon emissions by <strong>"+fmt(V.cut,1)+"% per year</strong>. Use the rule of 70: about how many years will it take for its emissions to be cut in half?</p><p class='fmt'>Round to 1 decimal place.</p>",
+   hint:"Years to halve ≈ 70 ÷ (percent cut per year). Use the percentage as a number, for example 7, not 0.07.",
+   sol:"<ol><li>Years to halve ≈ 70 ÷ "+fmt(V.cut,1)+" = <strong>"+fmt(70/V.cut,1)+"</strong> years.</li></ol><p>A faster yearly cut halves emissions sooner. The same rule tells how fast something doubles when it grows by a steady percentage.</p>"},
+  {part:"Part 3 · Solar power for the neighborhood", id:"q6", t:"num", d:1, ans:daily,
+   html:"<p>The neighborhood has <strong>"+V.homes+" homes</strong>. Each home uses <strong>"+fmt(V.use,0)+" kWh</strong> of electricity per month. How much electrical energy does the whole neighborhood use <strong>per day</strong>, in kWh?</p><p class='fmt'>Round to 1 decimal place.</p>",
+   hint:"Find the energy for all homes in one month, then divide by 30 days.",
+   sol:"<ol><li>Per month: "+V.homes+" × "+fmt(V.use,0)+" = "+fmt(V.homes*V.use,0)+" kWh.</li><li>Per day: "+fmt(V.homes*V.use,0)+" ÷ 30 = <strong>"+fmt(daily,1)+"</strong> kWh.</li></ol>"},
+  {part:null, id:"q7", t:"num", d:2, ans:per,
+   html:"<p>Each solar panel has an area of <strong>"+fmt(V.pa,2)+" m²</strong> and an efficiency of <strong>"+fmt(V.eff,1)+"%</strong>. Gainesville receives an average of <strong>5.11 kWh/m²/day</strong> of solar radiation. How much electrical energy does one panel produce per day, in kWh?</p><p class='fmt'>Assume no losses. Round to 2 decimal places.</p>",
+   hint:"Sunlight landing on the panel = area × solar radiation. Electricity = sunlight × efficiency (as a decimal).",
+   sol:"<ol><li>Sunlight landing: "+fmt(V.pa,2)+" × 5.11 = "+fmt(V.pa*GNV,4)+" kWh.</li><li>Efficiency as a decimal: "+fmt(V.eff/100,3)+".</li><li>Electricity: "+fmt(V.pa*GNV,4)+" × "+fmt(V.eff/100,3)+" = <strong>"+fmt(per,2)+"</strong> kWh per day.</li></ol>"},
+  {part:null, id:"q8", t:"ceil", ans:panelsExact, alt:panelsRounded,
+   html:"<p>The solar system has <strong>"+V.loss+"% losses</strong> (inverter, wires, heat and dust). How many panels from Question 7 are needed to supply the neighborhood’s daily energy from Question 6?</p><p class='fmt'>Answer as a whole number of panels.</p>",
+   hint:"The panels must produce more than the neighborhood uses: energy needed ÷ (1 − loss). Then divide by one panel’s daily energy. You can’t buy part of a panel.",
+   sol:"<ol><li>Energy the panels must produce: "+fmt(daily,1)+" ÷ (1 − "+fmt(V.loss/100,2)+") = "+fmt(daily,1)+" ÷ "+fmt(1-V.loss/100,2)+" = "+fmt(daily/(1-V.loss/100),1)+" kWh per day.</li><li>Number of panels: "+fmt(daily/(1-V.loss/100),1)+" ÷ "+fmt(per,2)+" = "+fmt(panelsExact,2)+".</li><li>Round <em>up</em>: <strong>"+Math.ceil(panelsExact)+"</strong> panels.</li></ol><p>Dividing by (1 − loss) is not the same as adding the loss percentage: a "+V.loss+"% loss needs about "+fmt(100/(1-V.loss/100)-100,0)+"% more panels.</p>"},
+  {part:"Part 4 · Could wind do the job?", id:"q9", t:"num", d:0, ans:Pw/1000,
+   html:"<p>Instead of solar panels, the city considers one wind turbine with <strong>"+V.R+" m</strong> blades. The typical wind in Gainesville is <strong>"+fmt(V.v,1)+" m/s</strong>. Use ρ = 1.3 kg/m³ and C<sub>p</sub> = 0.40. What power does the turbine generate, in <strong>kW</strong>?</p><p class='fmt'>Round to a whole number.</p>",
+   hint:"P = Cₚ × ½ × ρ × A × v³, with A = π × R². Compute P in watts, then divide by 1,000 to get kW.",
+   sol:"<ol><li>A = π × "+V.R+"² = "+fmt(A,1)+" m².</li><li>v³ = "+fmt(V.v,1)+"³ = "+fmt(Math.pow(V.v,3),3)+".</li><li>P = 0.40 × 0.5 × 1.3 × "+fmt(A,1)+" × "+fmt(Math.pow(V.v,3),3)+" = "+fmt(Pw,0)+" W.</li><li>"+fmt(Pw,0)+" W ÷ 1,000 = <strong>"+fmt(Pw/1000,0)+"</strong> kW.</li></ol>"},
+  {part:null, id:"q10", t:"num", d:2, ans:Math.pow(V.v2/V.v,3),
+   html:"<p>A site on the coast has a typical wind of <strong>"+fmt(V.v2,1)+" m/s</strong> instead of "+fmt(V.v,1)+" m/s. By what <strong>factor</strong> would the same turbine’s power increase there?</p><p class='fmt'>Round to 2 decimal places.</p>",
+   hint:"Power is proportional to v³. Everything else stays the same, so the factor is (new speed ÷ old speed)³.",
+   sol:"<ol><li>Speed ratio: "+fmt(V.v2,1)+" ÷ "+fmt(V.v,1)+" = "+fmt(V.v2/V.v,4)+".</li><li>Cube it: ("+fmt(V.v2/V.v,4)+")³ = <strong>"+fmt(Math.pow(V.v2/V.v,3),2)+"</strong>.</li></ol><p>The wind is only "+fmt(V.v2/V.v,2)+" times faster, but the power is "+fmt(Math.pow(V.v2/V.v,3),2)+" times larger.</p>"},
+  {part:"Part 5 · Your recommendation", id:"q11", t:"mc",
+   html:"<p>Which recommendation should your group give the city for this inland neighborhood?</p>",
+   opts:[
+    {t:"Solar: Gainesville gets plenty of sunlight, while its light winds give little power because power depends on v³.", ok:true},
+    {t:"Wind: turbines are bigger than solar panels, so they always produce more energy."},
+    {t:"Wind: doubling the wind speed only doubles the power, so light winds are not a problem."},
+    {t:"Solar: solar panels turn all of the sunlight that lands on them into electricity."}],
+   hint:"Think about how sensitive each source is to the local conditions, and check each option for a physics mistake.",
+   sol:"<p><strong>Solar</strong> is the better fit. Gainesville receives about 5 kWh/m²/day of sunlight, but its winds average only about 5 m/s. Because wind power depends on v³, a weak wind gives very little power. The other options contain errors: doubling the wind speed gives 8 times the power, not 2; panels convert only about 19% to 23% of the sunlight; and size alone doesn’t decide energy output.</p>"}
+  ];
+  // shuffle MC options deterministically per group
+  var k=0;
+  Q.forEach(function(q){ if(q.t!=="mc") return;
+    var o=q.opts.map(function(x,i){return {t:x.t,ok:!!x.ok,key:i,r:V.mcShuffle[k++%V.mcShuffle.length]+i*0.013};});
+    o.sort(function(a,b){return a.r-b.r;}); q.opts=o; });
+}
+
+/* ---------- rendering ---------- */
+function maxTry(q){return q.t==="mc"?MAXMC:MAXNUM;}
+function qs(id){return state.q[id]||(state.q[id]={n:0,done:false,ok:false,first:false,val:"",wrong:[]});}
+function render(){
+  var V=variant(state.seed); build(V);
+  $("vcode").textContent="Group version "+String(state.seed%100000).padStart(5,"0");
+  var h="";
+  Q.forEach(function(q,i){
+    if(q.part) h+='<p class="eyebrow">'+q.part.split(" · ")[0]+'</p><h2 style="margin-top:.2rem">'+q.part.split(" · ")[1]+'</h2>';
+    var n=i+1;
+    h+='<section class="q" id="'+q.id+'" aria-labelledby="'+q.id+'-h"><div class="qhead"><h3 id="'+q.id+'-h">Question '+n+'</h3><span class="tries" id="'+q.id+'-tries"></span></div>';
+    h+='<div id="'+q.id+'-p">'+q.html+'</div>';
+    h+='<details><summary>Hint</summary><p>'+q.hint+'</p></details>';
+    if(q.t==="mc"){
+      h+='<form class="mcf" data-i="'+i+'" novalidate><fieldset><legend class="sr-only">Choices for Question '+n+'</legend>';
+      q.opts.forEach(function(o,j){ h+='<label class="opt" id="'+q.id+'-o'+o.key+'"><input type="radio" name="'+q.id+'" value="'+o.key+'"><span>'+o.t+'</span></label>'; });
+      h+='</fieldset><div class="ans"><button type="submit" id="'+q.id+'-btn">Check answer</button></div></form>';
+    } else {
+      h+='<form class="numf ans" data-i="'+i+'" novalidate><label for="'+q.id+'-in" class="sr-only">Your answer to Question '+n+', numbers only</label><input type="text" inputmode="decimal" autocomplete="off" id="'+q.id+'-in" aria-describedby="'+q.id+'-p '+q.id+'-fb"><button type="submit" id="'+q.id+'-btn">Check answer</button></form>';
+    }
+    h+='<p class="fb" id="'+q.id+'-fb" role="status"></p><div class="sol" id="'+q.id+'-sol" hidden><h4>Worked solution</h4>'+q.sol+'</div></section>';
+  });
+  $("questions").innerHTML=h;
+  Array.prototype.forEach.call(document.querySelectorAll("form.numf, form.mcf"),function(f){
+    f.addEventListener("submit",function(e){e.preventDefault();check(+f.getAttribute("data-i"));});
+  });
+  Q.forEach(function(q){ paint(q,null); });
+  if(INSTR){ Q.forEach(function(q){ $(q.id+"-sol").hidden=false; var fb=$(q.id+"-fb"); fb.className="fb info"; fb.textContent="Answer: "+shown(q); }); Array.prototype.forEach.call(document.querySelectorAll("details"),function(d){d.open=true;}); }
+  refresh();
+}
+function shown(q){
+  if(q.t==="mc"){ var o=q.opts.filter(function(x){return x.ok;})[0]; return o.t; }
+  if(q.t==="ceil") return String(Math.ceil(q.ans));
+  return fmt(q.ans,q.d);
+}
+function paint(q,result){
+  var s=qs(q.id), fb=$(q.id+"-fb"), btn=$(q.id+"-btn"), left=maxTry(q)-s.n;
+  $(q.id+"-tries").textContent = s.done ? "Attempts used: "+s.n+" of "+maxTry(q) : left+" attempt"+(left===1?"":"s")+" left";
+  if(q.t==="mc"){
+    s.wrong.forEach(function(k){ var l=$(q.id+"-o"+k); l.classList.add("ruled"); l.querySelector("input").disabled=true; l.setAttribute("aria-label","Ruled out: "+l.textContent); });
+    if(s.val!==""){ var r=document.querySelector('input[name="'+q.id+'"][value="'+s.val+'"]'); if(r) r.checked=true; }
+  } else if(s.val!=="") $(q.id+"-in").value=s.val;
+  if(s.done){
+    btn.disabled=true;
+    if(q.t==="mc") Array.prototype.forEach.call(document.querySelectorAll('input[name="'+q.id+'"]'),function(x){x.disabled=true;});
+    else $(q.id+"-in").readOnly=true;
+    fb.className = s.ok ? "fb ok" : "fb bad";
+    fb.textContent = s.ok ? "✔ Correct. See the worked solution below." : "✘ No attempts left. The correct answer is: "+shown(q)+". Study the worked solution below.";
+    $(q.id+"-sol").hidden=false;
+  } else if(result==="bad"){
+    fb.className="fb bad";
+    fb.textContent="✘ Not yet. "+(q.t==="mc"?"That choice is ruled out. ":"Check your units and rounding, or open the hint. ")+left+" attempt"+(left===1?"":"s")+" left.";
+  }
+}
+function accept(q,u){
+  if(q.t==="ceil"){ return u===Math.ceil(q.ans) || u===Math.ceil(q.alt) || u===Math.ceil(q.ans*0.995) || u===Math.ceil(q.ans*1.005); }
+  var step=Math.pow(10,-q.d), tol=Math.max(Math.abs(q.ans)*0.01, step/2+1e-9);
+  return Math.abs(u-q.ans)<=tol || Math.abs(u-roundTo(q.ans,q.d))<1e-9;
+}
+function check(i){
+  var q=Q[i], s=qs(q.id), fb=$(q.id+"-fb"); if(s.done||INSTR&&false) return;
+  var ok;
+  if(q.t==="mc"){
+    var sel=document.querySelector('input[name="'+q.id+'"]:checked');
+    if(!sel){ fb.className="fb info"; fb.textContent="Choose an answer first. This did not use an attempt."; return; }
+    s.val=sel.value; var opt=q.opts.filter(function(o){return String(o.key)===sel.value;})[0]; ok=opt.ok;
+    if(!ok) s.wrong.push(opt.key);
+  } else {
+    var v=$(q.id+"-in").value, u=parseNum(v);
+    if(u===null){ fb.className="fb info"; fb.textContent="Type a number only, using digits and a decimal point. This did not use an attempt."; $(q.id+"-in").focus(); return; }
+    s.val=v.trim(); ok=accept(q,u);
+  }
+  s.n++;
+  if(ok){ s.done=true; s.ok=true; s.first=(s.n===1); }
+  else if(s.n>=maxTry(q)){ s.done=true; }
+  paint(q, ok?"ok":"bad");
+  if(!s.done && q.t!=="mc"){ $(q.id+"-in").focus(); $(q.id+"-in").select(); }
+  save(); refresh();
+}
+function totals(){
+  var done=0, ok=0, first=0;
+  Q.forEach(function(q){ var s=state.q[q.id]; if(s&&s.done){done++; if(s.ok) ok++; if(s.first) first++;} });
+  return {done:done, ok:ok, first:first, all:done===Q.length};
+}
+var wasAll=false;
+function refresh(){
+  var t=totals();
+  $("scoreline").textContent=t.done+" of "+Q.length+" questions finished · "+t.ok+" correct";
+  $("certSection").hidden=!t.all && !INSTR;
+  $("certHint").textContent = t.all ? "All questions finished. Enter your names below to get your certificate." : "Finish all "+Q.length+" questions to unlock your completion certificate ("+(Q.length-t.done)+" left).";
+  if(t.all && !wasAll && state.names) renderCert();
+  wasAll=t.all;
+}
+
+/* ---------- certificate ---------- */
+function renderCert(){
+  var t=totals(), names=state.names, d=new Date(state.doneAt);
+  var when=d.toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})+" at "+d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
+  var list=names.length===1?names[0]:names.slice(0,-1).join(", ")+" and "+names[names.length-1];
+  var pct=Math.round(100*t.ok/Q.length);
+  $("cert").innerHTML='<p class="cert-top">PHY 1020 · Certificate of Completion</p><h3 id="certH" tabindex="-1">Power Gainesville: Group Review Challenge</h3><p>This certifies that</p><p class="cert-names">'+names.map(esc).join("<br>")+'</p><p>completed all '+Q.length+' questions of the review challenge on waves, global warming, solar and wind energy.</p><table><caption class="sr-only">Results</caption><tbody><tr><th scope="row">Questions correct</th><td>'+t.ok+' of '+Q.length+' ('+pct+'%)</td></tr><tr><th scope="row">Correct on the first attempt</th><td>'+t.first+' of '+Q.length+'</td></tr><tr><th scope="row">Group version</th><td>'+String(state.seed%100000).padStart(5,"0")+'</td></tr><tr><th scope="row">Completed</th><td>'+when+'</td></tr></tbody></table>';
+  $("certText").value="PHY 1020 — Certificate of Completion\nPower Gainesville: Group Review Challenge\nCompleted by: "+list+"\nQuestions correct: "+t.ok+" of "+Q.length+" ("+pct+"%), "+t.first+" on the first attempt\nGroup version: "+String(state.seed%100000).padStart(5,"0")+"\nCompleted: "+when;
+  $("nameForm").hidden=true; $("certWrap").hidden=false;
+}
+$("nameForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  var names=[1,2,3,4].map(function(k){return $("name"+k).value.trim();}).filter(Boolean);
+  if(!names.length){ $("nameErr").textContent="Enter at least one name."; $("name1").focus(); return; }
+  $("nameErr").textContent=""; state.names=names; if(!state.doneAt) state.doneAt=new Date().toISOString(); save();
+  renderCert(); $("certH").focus();
+});
+$("editNames").addEventListener("click",function(){ $("certWrap").hidden=true; $("nameForm").hidden=false; $("name1").focus(); });
+$("copyCert").addEventListener("click",function(){
+  var txt=$("certText").value;
+  var done=function(){ $("copyMsg").textContent="Copied. Paste it into your Canvas submission."; };
+  var fail=function(){ $("certText").hidden=false; $("certText").focus(); $("certText").select(); $("copyMsg").textContent="Copying is blocked here. The text is selected below: press Ctrl+C (or ⌘+C) to copy it."; };
+  try{ if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,fail); else fail(); }catch(e){ fail(); }
+});
+var armed=false;
+$("resetAll").addEventListener("click",function(){
+  if(!armed){ armed=true; $("resetAll").textContent="Click again to erase all answers"; $("copyMsg").textContent="Warning: this clears all progress in this browser. Submit your certificate first."; return; }
+  try{ localStorage.removeItem(STORE); }catch(e){} location.reload();
+});
+
+/* ---------- start ---------- */
+state=load();
+if(INSTR){ $("instrBanner").hidden=false; $("newNums").addEventListener("click",function(){ state=fresh(); render(); }); }
+if(state.names){ state.names.forEach(function(n,k){ $("name"+(k+1)).value=n; }); }
+render();
+if(totals().all && state.names) renderCert();
+window.addEventListener("hashchange",function(){ if((location.hash==="#instructor")!==INSTR) location.reload(); });
+})();
+</script>
+</body>
+</html>
